@@ -154,12 +154,15 @@ const Join = () => {
 
                   {/* CTA Button */}
                   <Button
+                    asChild
                     variant={pack.popular ? "gold" : "default"}
                     className="w-full"
                     size="lg"
                   >
-                    Select Plan
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <Link to="/user/login">
+                      Select Plan
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>

@@ -18,6 +18,10 @@ const Header = () => {
     { name: "Join Now", path: "/join" },
   ];
 
+  const userMenuItems = [
+    { name: "User Login", path: "/user/login" },
+  ];
+
   const isActive = (path: string) => location.pathname === path;
 
   return (
@@ -52,8 +56,11 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
+          {/* CTA Buttons */}
+          <div className="hidden md:flex items-center gap-3">
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/user/login">User Login</Link>
+            </Button>
             <Button variant="hero" size="sm" asChild>
               <Link to="/join">Get Started</Link>
             </Button>
@@ -88,6 +95,9 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
+              <Button variant="outline" size="sm" asChild className="w-full mb-2">
+                <Link to="/user/login" onClick={() => setIsMenuOpen(false)}>User Login</Link>
+              </Button>
               <Button variant="hero" size="sm" asChild className="w-full">
                 <Link to="/join" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
               </Button>
