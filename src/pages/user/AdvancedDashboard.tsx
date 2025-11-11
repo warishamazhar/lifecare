@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
-import { getDashboardStats } from '@/api/auth';
+import { authAPI } from '@/api/auth';
 
 interface DashboardStats {
   user: {
@@ -45,8 +45,12 @@ const AdvancedDashboard: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await getDashboardStats();
-      setStats(data);
+      const response = await authAPI.getDashboardStats();
+      if (response && response.user) {
+        setStats(response);
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (err: any) {
       console.error('Dashboard fetch error:', err);
       setError(err.message || 'Failed to fetch dashboard data');
@@ -184,24 +188,24 @@ const AdvancedDashboard: React.FC = () => {
         
         <Card className="border-green-200 bg-green-50/50">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center space-x-3 flex-1 min-w-0">
-                <Badge variant="default" className="bg-green-600 hover:bg-green-700">
-                  LEFT POSITION
-                </Badge>
-                <code className="bg-white px-3 py-2 rounded border text-sm flex-1 truncate">
-                  https://byoliva.com/join?ref={stats?.user?.referralCode || 'DEMO'}&pos=LEFT
-                </code>
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center space-x-3 flex-1 min-w-0">
+                  <Badge variant="default" className="bg-green-600 hover:bg-green-700">
+                    LEFT POSITION
+                  </Badge>
+                  <code className="bg-white px-3 py-2 rounded border text-sm flex-1 truncate">
+                    {window.location.origin}/user/register?ref={stats?.user?.referralCode || 'DEMO'}&pos=LEFT
+                  </code>
+                </div>
+                <Button 
+                  onClick={() => shareLink(`${window.location.origin}/user/register?ref=${stats?.user?.referralCode || 'DEMO'}&pos=LEFT`, "LEFT")}
+                  size="sm" 
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  <Share2 className="h-4 w-4 mr-1" />
+                  Share
+                </Button>
               </div>
-              <Button 
-                onClick={() => shareLink(`https://byoliva.com/join?ref=${stats?.user?.referralCode || 'DEMO'}&pos=LEFT`, "LEFT")}
-                size="sm" 
-                className="bg-green-600 hover:bg-green-700"
-              >
-                <Share2 className="h-4 w-4 mr-1" />
-                Share
-              </Button>
-            </div>
           </CardContent>
         </Card>
 
@@ -213,11 +217,11 @@ const AdvancedDashboard: React.FC = () => {
                   RIGHT POSITION
                 </Badge>
                 <code className="bg-white px-3 py-2 rounded border text-sm flex-1 truncate">
-                  https://byoliva.com/join?ref={stats?.user?.referralCode || 'DEMO'}&pos=RIGHT
+                  {window.location.origin}/user/register?ref={stats?.user?.referralCode || 'DEMO'}&pos=RIGHT
                 </code>
               </div>
               <Button 
-                onClick={() => shareLink(`https://byoliva.com/join?ref=${stats?.user?.referralCode || 'DEMO'}&pos=RIGHT`, "RIGHT")}
+                onClick={() => shareLink(`${window.location.origin}/user/register?ref=${stats?.user?.referralCode || 'DEMO'}&pos=RIGHT`, "RIGHT")}
                 size="sm" 
                 className="bg-blue-600 hover:bg-blue-700"
               >

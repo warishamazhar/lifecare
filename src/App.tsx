@@ -29,6 +29,7 @@ import UserSettings from "./pages/user/Settings";
 import UserPanel from "./pages/user/UserPanel";
 import UserLayout from "./components/user-panel/UserLayout";
 import ErrorBoundary from "./components/ErrorBoundary";
+import { CartProvider } from "./contexts/CartContext";
 
 // Main Navigation Pages
 import FirstPurchase from "./pages/user/FirstPurchase";
@@ -54,6 +55,8 @@ import IncomeHistoryDetails from "./pages/user/IncomeHistory";
 import BonusDetails from "./pages/user/BonusDetails";
 import EditProfile from "./pages/user/EditProfile";
 import ChangePassword from "./pages/user/ChangePassword";
+import UserProducts from "./pages/user/UserProducts";
+import Checkout from "./pages/Checkout";
 
 const queryClient = new QueryClient();
 
@@ -62,7 +65,8 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <ErrorBoundary>
+      <CartProvider>
+        <ErrorBoundary>
         <BrowserRouter>
           <Routes>
             {/* Public Routes with Layout */}
@@ -83,6 +87,9 @@ const App = () => (
             <Route path="/user" element={<UserPanel />} />
             <Route path="/user/login" element={<UserLogin />} />
             <Route path="/user/register" element={<UserRegister />} />
+            
+            {/* Checkout Route */}
+            <Route path="/checkout" element={<Checkout />} />
             
             {/* Protected User Panel Routes with Layout */}
             <Route path="/user" element={<UserLayout />}>
@@ -108,6 +115,7 @@ const App = () => (
               {/* Existing Routes */}
               <Route path="profile" element={<UserProfile />} />
               <Route path="wallet" element={<UserWallet />} />
+              <Route path="products" element={<UserProducts />} />
               <Route path="referrals" element={<MyReferrals />} />
               <Route path="income" element={<IncomeHistory />} />
               <Route path="settings" element={<UserSettings />} />
@@ -131,6 +139,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
       </ErrorBoundary>
+      </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

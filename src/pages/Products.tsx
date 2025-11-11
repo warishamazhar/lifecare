@@ -1,111 +1,81 @@
-import { useState } from "react";
-import { Shield, Heart, Zap, Baby } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Shield, Heart, Zap, Baby, ShoppingCart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import productsAPI, { Product } from "@/api/products";
+import { useCart } from "@/contexts/CartContext";
 
 const Products = () => {
   const [activeCategory, setActiveCategory] = useState("all");
-
-  const categories = [
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([
     { id: "all", name: "All Products", icon: Heart },
     { id: "health", name: "Health Care", icon: Heart },
     { id: "men", name: "Men's Care", icon: Zap },
     { id: "women", name: "Women's Care", icon: Heart },
     { id: "kids", name: "Kids Care", icon: Baby },
-  ];
+  ]);
+  
+  const { addItem } = useCart();
 
-  const products = [
-    {
-      id: 1,
-      name: "Immunity Booster",
-      category: "health",
-      description: "Natural immunity enhancement with pure Ayurvedic ingredients",
-      features: ["100% Natural", "No Side Effects", "Certified"],
-    },
-    {
-      id: 2,
-      name: "Digestive Wellness",
-      category: "health",
-      description: "Promotes healthy digestion and gut health naturally",
-      features: ["Herbal Formula", "Fast Acting", "Daily Use"],
-    },
-    {
-      id: 3,
-      name: "Vitality Plus",
-      category: "men",
-      description: "Complete wellness solution for men's health and vitality",
-      features: ["Energy Boost", "Stamina Enhancement", "Natural"],
-    },
-    {
-      id: 4,
-      name: "Women's Wellness",
-      category: "women",
-      description: "Specially formulated for women's health and hormonal balance",
-      features: ["Hormonal Support", "Natural Care", "Safe"],
-    },
-    {
-      id: 5,
-      name: "Hair & Skin Care",
-      category: "women",
-      description: "Natural beauty from within with Ayurvedic herbs",
-      features: ["Glowing Skin", "Healthy Hair", "Ayurvedic"],
-    },
-    {
-      id: 6,
-      name: "Kids Growth Formula",
-      category: "kids",
-      description: "Support healthy growth and development naturally",
-      features: ["Growth Support", "Immunity", "Tasty"],
-    },
-    {
-      id: 7,
-      name: "Joint Care",
-      category: "health",
-      description: "Natural relief and support for healthy joints",
-      features: ["Pain Relief", "Mobility", "Herbal"],
-    },
-    {
-      id: 8,
-      name: "Energy Boost",
-      category: "men",
-      description: "Natural energy and performance enhancement",
-      features: ["Stamina", "Focus", "Natural"],
-    },
-    {
-      id: 9,
-      name: "Prenatal Care",
-      category: "women",
-      description: "Essential nutrition for expecting mothers",
-      features: ["Complete Nutrition", "Safe", "Doctor Recommended"],
-    },
-    {
-      id: 10,
-      name: "Kids Immunity",
-      category: "kids",
-      description: "Strengthen your child's natural defenses",
-      features: ["Strong Immunity", "Natural", "Delicious"],
-    },
-    {
-      id: 11,
-      name: "Stress Relief",
-      category: "health",
-      description: "Natural stress management and mental wellness",
-      features: ["Calming", "Mind Balance", "Herbal"],
-    },
-    {
-      id: 12,
-      name: "Weight Management",
-      category: "health",
-      description: "Natural support for healthy weight management",
-      features: ["Metabolism Boost", "Natural", "Effective"],
-    },
-  ];
+  useEffect(() => {
+    fetchProducts();
+    fetchCategories();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await productsAPI.getProducts();
+      if (response.success) {
+        setProducts(response.data);
+      }
+    } catch (error: any) {
+      toast.error("Failed to load products");
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await productsAPI.getCategories();
+      if (response.success) {
+        const dynamicCategories = response.data.map((cat: string) => ({
+          id: cat.toLowerCase(),
+          name: cat.charAt(0).toUpperCase() + cat.slice(1) + " Care",
+          icon: cat === "health" ? Heart : cat === "men" ? Zap : cat === "women" ? Heart : Baby
+        }));
+        setCategories([
+          { id: "all", name: "All Products", icon: Heart },
+          ...dynamicCategories
+        ]);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const handleAddToCart = (product: Product) => {
+    addItem({
+      productId: product._id,
+      name: product.name,
+      price: product.price,
+      discountPrice: product.discountPrice,
+      image: product.images && product.images.length > 0 ? product.images[0] : undefined,
+      pv: product.pv,
+      inStock: product.inStock,
+    });
+  };
 
   const filteredProducts =
     activeCategory === "all"
       ? products
-      : products.filter((p) => p.category === activeCategory);
+      : products.filter((p) => p.category.toLowerCase() === activeCategory);
 
   return (
     <div className="min-h-screen">
@@ -161,54 +131,130 @@ const Products = () => {
       {/* Products Grid */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {filteredProducts.map((product, index) => (
-              <Card
-                key={product.id}
-                className="border-none shadow-soft hover:shadow-gold transition-all duration-300 hover:-translate-y-2 animate-fade-in"
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
-                <CardContent className="pt-6">
-                  {/* Product Image Placeholder */}
-                  <div className="mb-4 h-48 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
-                    <Heart className="h-16 w-16 text-primary/30" />
-                  </div>
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {[...Array(8)].map((_, i) => (
+                <Card key={i} className="border-none shadow-soft animate-pulse">
+                  <CardContent className="pt-6">
+                    <div className="mb-4 h-48 rounded-lg bg-muted"></div>
+                    <div className="mb-2 h-6 bg-muted rounded w-20"></div>
+                    <div className="mb-2 h-6 bg-muted rounded w-3/4"></div>
+                    <div className="mb-4 h-4 bg-muted rounded w-full"></div>
+                    <div className="mb-4 flex gap-2">
+                      <div className="h-6 bg-muted rounded w-16"></div>
+                      <div className="h-6 bg-muted rounded w-12"></div>
+                    </div>
+                    <div className="h-10 bg-muted rounded w-full"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {filteredProducts.map((product, index) => (
+                <Card
+                  key={product._id}
+                  className="border-none shadow-soft hover:shadow-gold transition-all duration-300 hover:-translate-y-2 animate-fade-in"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  <CardContent className="pt-6">
+                    {/* Product Image */}
+                    <div className="mb-4 h-48 rounded-lg bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center">
+                      {product.images && product.images.length > 0 ? (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="h-full w-full object-cover rounded-lg"
+                        />
+                      ) : (
+                        <Heart className="h-16 w-16 text-primary/30" />
+                      )}
+                    </div>
 
-                  {/* Category Badge */}
-                  <div className="mb-2">
-                    <span className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary">
-                      {categories.find((c) => c.id === product.category)?.name}
-                    </span>
-                  </div>
-
-                  {/* Product Info */}
-                  <h3 className="text-xl font-bold mb-2">{product.name}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {product.description}
-                  </p>
-
-                  {/* Features */}
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {product.features.map((feature, idx) => (
-                      <span
-                        key={idx}
-                        className="text-xs px-2 py-1 rounded bg-muted text-foreground"
-                      >
-                        {feature}
+                    {/* Category Badge */}
+                    <div className="mb-2">
+                      <span className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary">
+                        {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
                       </span>
-                    ))}
-                  </div>
+                    </div>
 
-                  {/* CTA */}
-                  <Button variant="hero" className="w-full">
-                    Learn More
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    {/* Product Info */}
+                    <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {product.description}
+                    </p>
 
-          {filteredProducts.length === 0 && (
+                    {/* Price */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="text-lg font-bold text-primary">
+                        ₹{product.discountPrice || product.price}
+                      </span>
+                      {product.discountPrice && (
+                        <span className="text-sm text-muted-foreground line-through">
+                          ₹{product.price}
+                        </span>
+                      )}
+                      {product.pv && (
+                        <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                          {product.pv} PV
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Features */}
+                    {product.features && product.features.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {product.features.slice(0, 3).map((feature, idx) => (
+                          <span
+                            key={idx}
+                            className="text-xs px-2 py-1 rounded bg-muted text-foreground"
+                          >
+                            {feature}
+                          </span>
+                        ))}
+                        {product.features.length > 3 && (
+                          <span className="text-xs px-2 py-1 rounded bg-muted text-foreground">
+                            +{product.features.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Stock Status */}
+                    <div className="mb-4">
+                      <span className={`text-xs px-2 py-1 rounded ${
+                        product.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                      }`}>
+                        {product.inStock ? 'In Stock' : 'Out of Stock'}
+                      </span>
+                    </div>
+
+                    {/* CTAs */}
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        className="flex-1"
+                        disabled={!product.inStock}
+                      >
+                        View Details
+                      </Button>
+                      <Button 
+                        variant="hero" 
+                        className="flex-1"
+                        onClick={() => handleAddToCart(product)}
+                        disabled={!product.inStock}
+                      >
+                        <ShoppingCart className="h-4 w-4 mr-1" />
+                        Add to Cart
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          {!loading && filteredProducts.length === 0 && (
             <div className="text-center py-12">
               <p className="text-xl text-muted-foreground">
                 No products found in this category.

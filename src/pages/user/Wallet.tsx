@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { authAPI } from '@/api/auth';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Wallet, DollarSign, TrendingUp, ArrowUpRight, ArrowDownRight, RefreshCw, Download, Upload, CreditCard, Building, QrCode, Copy, Plus, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import { Wallet, CreditCard, ArrowUpRight, ArrowDownLeft, History, TrendingUp } from 'lucide-react';
+import { authAPI } from '@/api/auth';
+import { walletAPI, WalletTopupRequest } from '@/api/wallet';
+import { paymentSettingsAPI, PaymentSettings } from '@/api/payment-settings';
 
 interface WalletData {
   purchaseWallet: number;
@@ -22,29 +31,28 @@ interface Transaction {
 
 const UserWallet = () => {
   const [walletData, setWalletData] = useState<WalletData | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [topupRequests, setTopupRequests] = useState<WalletTopupRequest[]>([]);
+  const [paymentSettings, setPaymentSettings] = useState<PaymentSettings | null>(null);
   const [loading, setLoading] = useState(true);
-  const [transactions] = useState<Transaction[]>([
-    {
-      id: '1',
-      type: 'credit',
-      amount: 500,
-      description: 'Referral Commission',
-      date: '2024-01-15',
-      wallet: 'commission'
-    },
-    {
-      id: '2', 
-      type: 'credit',
-      amount: 250,
-      description: 'Level Income',
-      date: '2024-01-14',
-      wallet: 'referral'
-    },
-    // Add more sample transactions as needed
-  ]);
+  const [transactionsLoading, setTransactionsLoading] = useState(true);
+  const [topupRequestsLoading, setTopupRequestsLoading] = useState(true);
+  
+  // Top-up dialog state
+  const [isTopupDialogOpen, setIsTopupDialogOpen] = useState(false);
+  const [topupForm, setTopupForm] = useState({
+    amount: '',
+    transactionId: '',
+    screenshot: '',
+    paymentMethod: 'bank' as 'bank' | 'upi'
+  });
+  const [isSubmittingTopup, setIsSubmittingTopup] = useState(false);
 
   useEffect(() => {
     fetchWalletData();
+    fetchTransactions();
+    fetchTopupRequests();
+    fetchPaymentSettings();
   }, []);
 
   const fetchWalletData = async () => {
@@ -56,6 +64,113 @@ const UserWallet = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchTransactions = async () => {
+    try {
+      setTransactionsLoading(true);
+      const response = await authAPI.getTransactions();
+      
+      if (response.success && response.data) {
+        setTransactions(response.data || []);
+      } else {
+        setTransactions([]);
+      }
+    } catch (error: any) {
+      console.error('Failed to load transactions:', error);
+      setTransactions([]);
+    } finally {
+      setTransactionsLoading(false);
+    }
+  };
+
+  const fetchTopupRequests = async () => {
+    try {
+      const response = await walletAPI.getUserTopupRequests();
+      if (response.success && Array.isArray(response.data)) {
+        setTopupRequests(response.data);
+      }
+    } catch (error: any) {
+      console.error('Failed to load top-up requests:', error);
+    } finally {
+      setTopupRequestsLoading(false);
+    }
+  };
+
+  const fetchPaymentSettings = async () => {
+    try {
+      const response = await paymentSettingsAPI.getPaymentSettings();
+      if (response.success) {
+        setPaymentSettings(response.data);
+      }
+    } catch (error: any) {
+      console.error('Failed to load payment settings:', error);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target?.result as string;
+        setTopupForm(prev => ({
+          ...prev,
+          screenshot: base64String
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleTopupSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmittingTopup(true);
+
+    try {
+      const amount = parseFloat(topupForm.amount);
+      if (amount <= 0) {
+        toast.error('Please enter a valid amount');
+        return;
+      }
+
+      if (!topupForm.transactionId) {
+        toast.error('Please enter transaction ID');
+        return;
+      }
+
+      if (!topupForm.screenshot) {
+        toast.error('Please upload payment screenshot');
+        return;
+      }
+
+      const response = await walletAPI.createTopupRequest({
+        amount,
+        transactionId: topupForm.transactionId,
+        screenshot: topupForm.screenshot
+      });
+
+      if (response.success) {
+        toast.success('Top-up request submitted successfully!');
+        setIsTopupDialogOpen(false);
+        setTopupForm({
+          amount: '',
+          transactionId: '',
+          screenshot: '',
+          paymentMethod: 'bank'
+        });
+        fetchTopupRequests(); // Refresh the requests list
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to submit top-up request');
+    } finally {
+      setIsSubmittingTopup(false);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Copied to clipboard!');
   };
 
   if (loading) {
@@ -70,135 +185,377 @@ const UserWallet = () => {
     ? walletData.purchaseWallet + walletData.commissionWallet + walletData.referralWallet
     : 0;
 
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case 'rejected':
+        return <XCircle className="h-4 w-4 text-red-600" />;
+      default:
+        return <Clock className="h-4 w-4 text-yellow-600" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-yellow-100 text-yellow-800';
+    }
+  };
+
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-6">
+    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
+      {/* Header */}
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">My Wallet</h1>
-        <div className="flex gap-2">
-          <Button className="flex items-center gap-2">
-            <ArrowDownLeft className="h-4 w-4" />
-            Withdraw
-          </Button>
-          <Button variant="outline" className="flex items-center gap-2">
-            <ArrowUpRight className="h-4 w-4" />
-            Add Money
-          </Button>
+        <div className="space-y-1">
+          <h1 className="text-3xl font-bold text-gray-900">E-Wallet</h1>
+          <p className="text-gray-600">Manage your wallet balance and transactions</p>
         </div>
-      </div>
+        
+        <Dialog open={isTopupDialogOpen} onOpenChange={setIsTopupDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-green-600 hover:bg-green-700">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Funds
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Add Funds to Wallet</DialogTitle>
+              <DialogDescription>
+                Follow the steps below to add funds to your purchase wallet
+              </DialogDescription>
+            </DialogHeader>
+            
+            <form onSubmit={handleTopupSubmit} className="space-y-6">
+              {/* Payment Method Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="paymentMethod">Payment Method</Label>
+                <Select
+                  value={topupForm.paymentMethod}
+                  onValueChange={(value: 'bank' | 'upi') => 
+                    setTopupForm(prev => ({ ...prev, paymentMethod: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select payment method" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="bank">Bank Transfer</SelectItem>
+                    <SelectItem value="upi">UPI Payment</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-      {/* Total Balance */}
-      <Card className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Wallet className="h-6 w-6" />
-            Total Balance
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-4xl font-bold">₹{totalBalance.toLocaleString()}</div>
-          <p className="text-green-100 mt-2">Available for withdrawal and purchases</p>
-        </CardContent>
-      </Card>
-
-      {/* Individual Wallets */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-blue-600">
-              <CreditCard className="h-5 w-5" />
-              Purchase Wallet
-            </CardTitle>
-            <CardDescription>Available for product purchases</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-blue-600">
-              ₹{walletData?.purchaseWallet.toLocaleString() || 0}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-green-600">
-              <TrendingUp className="h-5 w-5" />
-              Commission Wallet
-            </CardTitle>
-            <CardDescription>Earnings from commissions</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-green-600">
-              ₹{walletData?.commissionWallet.toLocaleString() || 0}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-purple-600">
-              <ArrowUpRight className="h-5 w-5" />
-              Referral Wallet
-            </CardTitle>
-            <CardDescription>Earnings from referrals</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold text-purple-600">
-              ₹{walletData?.referralWallet.toLocaleString() || 0}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Recent Transactions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <History className="h-5 w-5" />
-            Recent Transactions
-          </CardTitle>
-          <CardDescription>Your latest wallet activity</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {transactions.length > 0 ? (
-            <div className="space-y-4">
-              {transactions.map((transaction) => (
-                <div key={transaction.id} className="flex justify-between items-center p-4 border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-full ${
-                      transaction.type === 'credit' 
-                        ? 'bg-green-100 text-green-600' 
-                        : 'bg-red-100 text-red-600'
-                    }`}>
-                      {transaction.type === 'credit' ? (
-                        <ArrowDownLeft className="h-4 w-4" />
-                      ) : (
-                        <ArrowUpRight className="h-4 w-4" />
+              {/* Payment Details */}
+              {paymentSettings && (
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <h3 className="font-semibold text-blue-900 mb-3">
+                    {topupForm.paymentMethod === 'bank' ? 'Bank Details' : 'UPI Details'}
+                  </h3>
+                  
+                  {topupForm.paymentMethod === 'bank' ? (
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Bank Name:</span>
+                        <span className="font-medium">{paymentSettings.bankName}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Account Number:</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{paymentSettings.accountNumber}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyToClipboard(paymentSettings.accountNumber || '')}
+                          >
+                            <Copy className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">IFSC Code:</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{paymentSettings.ifscCode}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyToClipboard(paymentSettings.ifscCode || '')}
+                          >
+                            <Copy className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Account Holder:</span>
+                        <span className="font-medium">{paymentSettings.accountHolderName}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">UPI ID:</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{paymentSettings.upiId}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyToClipboard(paymentSettings.upiId || '')}
+                          >
+                            <Copy className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                      {paymentSettings.upiQrCode && (
+                        <div className="text-center">
+                          <img 
+                            src={paymentSettings.upiQrCode} 
+                            alt="UPI QR Code" 
+                            className="mx-auto max-w-[200px] h-auto border rounded-lg"
+                          />
+                        </div>
                       )}
                     </div>
-                    <div>
-                      <p className="font-medium">{transaction.description}</p>
-                      <p className="text-sm text-gray-500 capitalize">{transaction.wallet} Wallet</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className={`font-bold ${
-                      transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {transaction.type === 'credit' ? '+' : '-'}₹{transaction.amount}
-                    </p>
-                    <p className="text-sm text-gray-500">{transaction.date}</p>
-                  </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-500">
-              <Wallet className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No transactions yet</p>
-              <p className="text-sm">Your wallet activity will appear here</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+              )}
+
+              {/* Amount Input */}
+              <div className="space-y-2">
+                <Label htmlFor="amount">Amount (₹)</Label>
+                <Input
+                  id="amount"
+                  type="number"
+                  placeholder="Enter amount"
+                  value={topupForm.amount}
+                  onChange={(e) => setTopupForm(prev => ({ ...prev, amount: e.target.value }))}
+                  required
+                />
+              </div>
+
+              {/* Transaction ID */}
+              <div className="space-y-2">
+                <Label htmlFor="transactionId">Transaction ID / Reference Number</Label>
+                <Input
+                  id="transactionId"
+                  type="text"
+                  placeholder="Enter transaction ID from your payment"
+                  value={topupForm.transactionId}
+                  onChange={(e) => setTopupForm(prev => ({ ...prev, transactionId: e.target.value }))}
+                  required
+                />
+              </div>
+
+              {/* Screenshot Upload */}
+              <div className="space-y-2">
+                <Label htmlFor="screenshot">Payment Screenshot</Label>
+                <Input
+                  id="screenshot"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  required
+                />
+                <p className="text-xs text-gray-500">
+                  Upload a clear screenshot of your payment confirmation
+                </p>
+              </div>
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsTopupDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isSubmittingTopup}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  {isSubmittingTopup ? 'Submitting...' : 'Submit Request'}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Wallet Balance Cards */}
+      <div className="grid md:grid-cols-4 gap-6">
+        <Card className="border-green-200 bg-gradient-to-br from-green-50 to-green-100">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-green-800">Total Balance</CardTitle>
+            <Wallet className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-900">₹{totalBalance.toLocaleString()}</div>
+            <p className="text-xs text-green-600">Combined wallet balance</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-blue-800">Purchase Wallet</CardTitle>
+            <CreditCard className="h-4 w-4 text-blue-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-900">₹{walletData?.purchaseWallet?.toLocaleString() || 0}</div>
+            <p className="text-xs text-blue-600">Available for purchases</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-purple-100">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-purple-800">Commission Wallet</CardTitle>
+            <DollarSign className="h-4 w-4 text-purple-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-900">₹{walletData?.commissionWallet?.toLocaleString() || 0}</div>
+            <p className="text-xs text-purple-600">Earned commissions</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-orange-200 bg-gradient-to-br from-orange-50 to-orange-100">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-orange-800">Referral Wallet</CardTitle>
+            <TrendingUp className="h-4 w-4 text-orange-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-900">₹{walletData?.referralWallet?.toLocaleString() || 0}</div>
+            <p className="text-xs text-orange-600">Referral earnings</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tabs for different sections */}
+      <Tabs defaultValue="transactions" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="transactions">Transaction History</TabsTrigger>
+          <TabsTrigger value="topup-requests">Top-up Requests</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="transactions" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <RefreshCw className="h-5 w-5" />
+                Recent Transactions
+              </CardTitle>
+              <CardDescription>
+                Your latest wallet transactions and activities
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {transactionsLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                </div>
+              ) : transactions.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <RefreshCw className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                  <p>No transactions found</p>
+                  <p className="text-sm">Your transaction history will appear here</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {transactions.map((transaction) => (
+                    <div key={transaction.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        {transaction.type === 'credit' ? (
+                          <ArrowUpRight className="h-5 w-5 text-green-600" />
+                        ) : (
+                          <ArrowDownRight className="h-5 w-5 text-red-600" />
+                        )}
+                        <div>
+                          <p className="font-medium">{transaction.description}</p>
+                          <p className="text-sm text-gray-500">
+                            {new Date(transaction.date).toLocaleDateString()} • {transaction.wallet} wallet
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className={`font-semibold ${
+                          transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'
+                        }`}>
+                          {transaction.type === 'credit' ? '+' : '-'}₹{transaction.amount.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="topup-requests" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Upload className="h-5 w-5" />
+                Top-up Requests
+              </CardTitle>
+              <CardDescription>
+                Track your wallet top-up requests and their status
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {topupRequestsLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                </div>
+              ) : topupRequests.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <Upload className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+                  <p>No top-up requests found</p>
+                  <p className="text-sm">Your top-up requests will appear here</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {topupRequests.map((request) => (
+                    <div key={request._id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        {getStatusIcon(request.status)}
+                        <div>
+                          <p className="font-medium">₹{request.amount.toLocaleString()}</p>
+                          <p className="text-sm text-gray-500">
+                            {new Date(request.createdAt || '').toLocaleDateString()} • 
+                            Transaction ID: {request.transactionId}
+                          </p>
+                          {request.rejectionReason && (
+                            <p className="text-sm text-red-600 mt-1">
+                              Reason: {request.rejectionReason}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <Badge className={getStatusColor(request.status)}>
+                          {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                        </Badge>
+                        {request.reviewDate && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            Reviewed: {new Date(request.reviewDate).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

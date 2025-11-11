@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Cart from "./Cart";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -58,6 +59,7 @@ const Header = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
+            <Cart />
             <Button variant="outline" size="sm" asChild>
               <Link to="/user/login">User Login</Link>
             </Button>
@@ -95,6 +97,9 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
+              <div className="flex justify-center mb-2">
+                <Cart />
+              </div>
               <Button variant="outline" size="sm" asChild className="w-full mb-2">
                 <Link to="/user/login" onClick={() => setIsMenuOpen(false)}>User Login</Link>
               </Button>

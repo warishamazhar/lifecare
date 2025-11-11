@@ -111,6 +111,12 @@ const navigation = [
     ]
   },
   {
+    name: 'My Products',
+    href: '/user/products',
+    icon: Package,
+    current: false
+  },
+  {
     name: 'My Payouts',
     href: '/user/income',
     icon: DollarSign,

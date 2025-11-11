@@ -7,32 +7,28 @@ import { Badge } from '@/components/ui/badge';
 import { Award, Plus, MessageCircle, AlertCircle, CheckCircle } from 'lucide-react';
 
 const GenerateTickets: React.FC = () => {
-  const tickets = [
-    {
-      id: 'TKT001',
-      subject: 'Payment Issue',
-      status: 'Open',
-      priority: 'High',
-      created: '2024-11-20',
-      updated: '2024-11-21'
-    },
-    {
-      id: 'TKT002',
-      subject: 'Account Verification',
-      status: 'In Progress',
-      priority: 'Medium',
-      created: '2024-11-18',
-      updated: '2024-11-20'
-    },
-    {
-      id: 'TKT003',
-      subject: 'Commission Query',
-      status: 'Resolved',
-      priority: 'Low',
-      created: '2024-11-15',
-      updated: '2024-11-17'
+  const [tickets, setTickets] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    fetchTickets();
+  }, []);
+
+  const fetchTickets = async () => {
+    try {
+      // For now, we'll use empty data until backend API is ready
+      setTickets([]);
+      
+      // TODO: Replace with real API call when backend endpoint is ready
+      // const response = await authAPI.getTickets();
+      // setTickets(response.data);
+    } catch (error: any) {
+      console.error('Failed to load tickets:', error);
+      setTickets([]);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   return (
     <div className="p-6 space-y-6 bg-white min-h-screen">

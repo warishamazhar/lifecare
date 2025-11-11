@@ -24,63 +24,56 @@ interface IncomeStats {
 
 const IncomeHistory = () => {
   const [loading, setLoading] = useState(true);
-  const [incomeStats] = useState<IncomeStats>({
-    totalIncome: 12500,
-    thisMonth: 3200,
-    thisWeek: 850,
-    today: 150
+  const [incomeStats, setIncomeStats] = useState<IncomeStats>({
+    totalIncome: 0,
+    thisMonth: 0,
+    thisWeek: 0,
+    today: 0
   });
   
-  const [incomeHistory] = useState<IncomeRecord[]>([
-    {
-      id: '1',
-      type: 'referral',
-      amount: 500,
-      description: 'Direct Referral Commission',
-      date: '2024-01-15',
-      from: 'John Doe',
-      status: 'paid'
-    },
-    {
-      id: '2',
-      type: 'level',
-      amount: 250,
-      description: 'Level 2 Income',
-      date: '2024-01-14',
-      from: 'Jane Smith',
-      status: 'paid'
-    },
-    {
-      id: '3',
-      type: 'matching',
-      amount: 750,
-      description: 'Binary Matching Bonus',
-      date: '2024-01-13',
-      status: 'paid'
-    },
-    {
-      id: '4',
-      type: 'roi',
-      amount: 100,
-      description: 'Daily ROI',
-      date: '2024-01-12',
-      status: 'pending'
-    },
-    {
-      id: '5',
-      type: 'level',
-      amount: 125,
-      description: 'Level 3 Income',
-      date: '2024-01-11',
-      from: 'Mike Johnson',
-      status: 'paid'
-    }
-  ]);
+  const [incomeHistory, setIncomeHistory] = useState<IncomeRecord[]>([]);
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => setLoading(false), 1000);
+    fetchIncomeData();
   }, []);
+
+  const fetchIncomeData = async () => {
+    try {
+      setLoading(true);
+      const { authAPI } = await import('@/api/auth');
+      const response = await authAPI.getIncomeHistory();
+      
+      if (response.success && response.data) {
+        setIncomeStats(response.data.stats || {
+          totalIncome: 0,
+          thisMonth: 0,
+          thisWeek: 0,
+          today: 0
+        });
+        setIncomeHistory(response.data.history || []);
+      } else {
+        setIncomeStats({
+          totalIncome: 0,
+          thisMonth: 0,
+          thisWeek: 0,
+          today: 0
+        });
+        setIncomeHistory([]);
+      }
+    } catch (error: any) {
+      console.error('Failed to load income data:', error);
+      toast.error('Failed to load income data');
+      setIncomeStats({
+        totalIncome: 0,
+        thisMonth: 0,
+        thisWeek: 0,
+        today: 0
+      });
+      setIncomeHistory([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getIncomeTypeColor = (type: string) => {
     switch (type) {

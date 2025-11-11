@@ -1,16 +1,87 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ArrowDownRight, CreditCard, Banknote } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ArrowDownRight, CreditCard, Banknote, RefreshCw } from 'lucide-react';
+import { authAPI } from '@/api/auth';
+import { toast } from 'sonner';
 
 const Withdraw: React.FC = () => {
+  const [walletData, setWalletData] = useState({
+    purchaseWallet: 0,
+    commissionWallet: 0,
+    referralWallet: 0
+  });
+  const [loading, setLoading] = useState(true);
+  const [selectedWallet, setSelectedWallet] = useState<'commissionWallet' | 'referralWallet'>('commissionWallet');
+  const [amount, setAmount] = useState('');
+  const [withdrawMethod, setWithdrawMethod] = useState('bank');
+  const [accountDetails, setAccountDetails] = useState('');
+
+  useEffect(() => {
+    fetchWalletData();
+  }, []);
+
+  const fetchWalletData = async () => {
+    try {
+      setLoading(true);
+      const response = await authAPI.getProfile();
+      
+      if (response.success && response.data && response.data.wallets) {
+        setWalletData(response.data.wallets);
+      }
+    } catch (error: any) {
+      console.error('Failed to load wallet data:', error);
+      toast.error('Failed to load wallet balance');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAvailableBalance = () => {
+    return selectedWallet === 'commissionWallet' 
+      ? walletData.commissionWallet 
+      : walletData.referralWallet;
+  };
+
+  const handleWithdraw = () => {
+    const withdrawAmount = parseFloat(amount);
+    const available = getAvailableBalance();
+    
+    if (!amount || withdrawAmount <= 0) {
+      toast.error('Please enter a valid amount');
+      return;
+    }
+    
+    if (withdrawAmount > available) {
+      toast.error('Insufficient balance');
+      return;
+    }
+    
+    if (!accountDetails) {
+      toast.error('Please enter account details');
+      return;
+    }
+    
+    // TODO: Implement withdrawal API call
+    toast.success('Withdrawal request submitted successfully!');
+    setAmount('');
+    setAccountDetails('');
+  };
+
   return (
     <div className="p-6 space-y-6 bg-white min-h-screen">
-      <div className="flex items-center space-x-3">
-        <ArrowDownRight className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold text-primary">Withdraw Funds</h1>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <ArrowDownRight className="h-8 w-8 text-primary" />
+          <h1 className="text-3xl font-bold text-primary">Withdraw Funds</h1>
+        </div>
+        <Button variant="outline" onClick={fetchWalletData} disabled={loading}>
+          <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -21,32 +92,68 @@ const Withdraw: React.FC = () => {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="wallet">Select Wallet</Label>
-              <select className="w-full p-2 border border-gray-300 rounded-md">
-                <option value="commission">Commission Wallet (₹2,500)</option>
-                <option value="referral">Referral Wallet (₹1,500)</option>
-              </select>
+              <Select value={selectedWallet} onValueChange={(value: 'commissionWallet' | 'referralWallet') => setSelectedWallet(value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="commissionWallet">
+                    Commission Wallet (₹{walletData.commissionWallet.toLocaleString()})
+                  </SelectItem>
+                  <SelectItem value="referralWallet">
+                    Referral Wallet (₹{walletData.referralWallet.toLocaleString()})
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-gray-500">
+                Available: ₹{getAvailableBalance().toLocaleString()}
+              </p>
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="amount">Withdrawal Amount</Label>
-              <Input id="amount" type="number" placeholder="Enter amount" />
+              <Input 
+                id="amount" 
+                type="number" 
+                placeholder="Enter amount" 
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                max={getAvailableBalance()}
+              />
+              <p className="text-xs text-gray-500">
+                Maximum: ₹{getAvailableBalance().toLocaleString()}
+              </p>
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="method">Withdrawal Method</Label>
-              <select className="w-full p-2 border border-gray-300 rounded-md">
-                <option value="bank">Bank Transfer</option>
-                <option value="upi">UPI</option>
-                <option value="wallet">Digital Wallet</option>
-              </select>
+              <Select value={withdrawMethod} onValueChange={setWithdrawMethod}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="bank">Bank Transfer</SelectItem>
+                  <SelectItem value="upi">UPI</SelectItem>
+                  <SelectItem value="wallet">Digital Wallet</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="account">Account Details</Label>
-              <Input id="account" placeholder="Account number or UPI ID" />
+              <Input 
+                id="account" 
+                placeholder="Account number or UPI ID" 
+                value={accountDetails}
+                onChange={(e) => setAccountDetails(e.target.value)}
+              />
             </div>
             
-            <Button className="w-full bg-primary hover:bg-primary-dark">
+            <Button 
+              className="w-full bg-primary hover:bg-primary-dark"
+              onClick={handleWithdraw}
+              disabled={loading || !amount || !accountDetails}
+            >
               <ArrowDownRight className="h-4 w-4 mr-2" />
               Request Withdrawal
             </Button>
@@ -59,7 +166,13 @@ const Withdraw: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-green-700">Available Balance</p>
-                  <p className="text-2xl font-bold text-green-600">₹4,000</p>
+                  {loading ? (
+                    <div className="h-8 w-32 bg-gray-200 rounded animate-pulse mt-2"></div>
+                  ) : (
+                    <p className="text-2xl font-bold text-green-600">
+                      ₹{getAvailableBalance().toLocaleString()}
+                    </p>
+                  )}
                 </div>
                 <Banknote className="h-8 w-8 text-green-600" />
               </div>
@@ -71,21 +184,10 @@ const Withdraw: React.FC = () => {
               <CardTitle>Withdrawal History</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                {Array.from({length: 4}).map((_, i) => (
-                  <div key={i} className="flex justify-between items-center p-3 border rounded-lg">
-                    <div>
-                      <p className="font-medium">₹{(1000 + i * 500).toLocaleString()}</p>
-                      <p className="text-sm text-gray-600">Nov {15 + i}, 2024</p>
-                    </div>
-                    <span className={`text-sm px-2 py-1 rounded ${
-                      i % 3 === 0 ? 'bg-green-100 text-green-800' :
-                      i % 3 === 1 ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'
-                    }`}>
-                      {i % 3 === 0 ? 'Completed' : i % 3 === 1 ? 'Processing' : 'Pending'}
-                    </span>
-                  </div>
-                ))}
+              <div className="text-center py-8 text-gray-500">
+                <CreditCard className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-sm">No withdrawal history yet</p>
+                <p className="text-xs mt-1">Your withdrawal requests will appear here</p>
               </div>
             </CardContent>
           </Card>

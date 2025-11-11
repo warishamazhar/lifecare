@@ -70,11 +70,20 @@ const NewMember: React.FC = () => {
                 <Label className="text-green-700">Left Position Link</Label>
                 <div className="flex items-center space-x-2 mt-1">
                   <Input 
-                    value="https://byoliva.com/register?ref=YOUR_CODE&pos=LEFT" 
+                    value={`${window.location.origin}/user/register?ref=YOUR_CODE&pos=LEFT`}
                     readOnly 
                     className="flex-1"
                   />
-                  <Button size="sm" variant="outline">Copy</Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/user/register?ref=YOUR_CODE&pos=LEFT`);
+                      // You can add toast here if needed
+                    }}
+                  >
+                    Copy
+                  </Button>
                 </div>
               </div>
               
@@ -82,11 +91,20 @@ const NewMember: React.FC = () => {
                 <Label className="text-green-700">Right Position Link</Label>
                 <div className="flex items-center space-x-2 mt-1">
                   <Input 
-                    value="https://byoliva.com/register?ref=YOUR_CODE&pos=RIGHT" 
+                    value={`${window.location.origin}/user/register?ref=YOUR_CODE&pos=RIGHT`}
                     readOnly 
                     className="flex-1"
                   />
-                  <Button size="sm" variant="outline">Copy</Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/user/register?ref=YOUR_CODE&pos=RIGHT`);
+                      // You can add toast here if needed
+                    }}
+                  >
+                    Copy
+                  </Button>
                 </div>
               </div>
             </CardContent>

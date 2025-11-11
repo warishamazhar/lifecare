@@ -25,30 +25,12 @@ interface Referral {
 const MyReferrals = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [referrals] = useState<Referral[]>([
-    {
-      id: '1',
-      name: 'John Doe',
-      username: 'johndoe',
-      email: 'john@example.com',
-      joinDate: '2024-01-15',
-      status: 'active',
-      level: 1
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      username: 'janesmith',
-      email: 'jane@example.com',
-      joinDate: '2024-01-10',
-      status: 'inactive',
-      level: 1
-    }
-    // Add more sample referrals as needed
-  ]);
+  const [referrals, setReferrals] = useState<Referral[]>([]);
+  const [referralsLoading, setReferralsLoading] = useState(true);
 
   useEffect(() => {
     fetchProfile();
+    fetchReferrals();
   }, []);
 
   const fetchProfile = async () => {
@@ -59,6 +41,33 @@ const MyReferrals = () => {
       toast.error('Failed to load profile data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchReferrals = async () => {
+    try {
+      setReferralsLoading(true);
+      const response = await authAPI.getDirectReferrals();
+      
+      if (response.success && response.data) {
+        const referralsData = response.data.map((ref: any) => ({
+          id: ref.id,
+          name: ref.name,
+          username: ref.username,
+          email: ref.email,
+          joinDate: ref.createdAt,
+          status: ref.isActive ? 'active' as const : 'inactive' as const,
+          level: 1 // Direct referrals are level 1
+        }));
+        setReferrals(referralsData);
+      } else {
+        setReferrals([]);
+      }
+    } catch (error: any) {
+      console.error('Failed to load referrals:', error);
+      setReferrals([]);
+    } finally {
+      setReferralsLoading(false);
     }
   };
 
