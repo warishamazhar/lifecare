@@ -7,17 +7,23 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Package, Edit, Trash2, Image as ImageIcon, DollarSign, ShoppingCart, Eye } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, Package, Edit, Trash2, Image as ImageIcon, DollarSign, ShoppingCart, Eye, Store } from 'lucide-react';
 import { toast } from 'sonner';
 import productsAPI, { Product } from '@/api/products';
+import { useCart } from '@/contexts/CartContext';
 
 const UserProducts = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [userProducts, setUserProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [allProductsLoading, setAllProductsLoading] = useState(true);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState('my-products');
+  const { addItem } = useCart();
   
   const [productForm, setProductForm] = useState({
     name: '',
@@ -30,7 +36,7 @@ const UserProducts = () => {
     stock: '',
     pv: '',
     dp: '',
-    sp: '',
+    bv: '',
     mrp: ''
   });
 
@@ -47,6 +53,7 @@ const UserProducts = () => {
 
   useEffect(() => {
     fetchUserProducts();
+    fetchAllProducts();
   }, []);
 
   const fetchUserProducts = async () => {
@@ -54,14 +61,45 @@ const UserProducts = () => {
       setLoading(true);
       const response = await productsAPI.getUserProducts();
       if (response.success) {
-        setProducts(response.data);
+        setUserProducts(response.data);
       }
     } catch (error: any) {
-      toast.error('Failed to load products');
-      console.error('Error fetching products:', error);
+      toast.error('Failed to load your products');
+      console.error('Error fetching user products:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchAllProducts = async () => {
+    try {
+      setAllProductsLoading(true);
+      const response = await productsAPI.getProducts();
+      if (response.success) {
+        setAllProducts(response.data);
+      }
+    } catch (error: any) {
+      toast.error('Failed to load all products');
+      console.error('Error fetching all products:', error);
+    } finally {
+      setAllProductsLoading(false);
+    }
+  };
+
+  const handleAddToCart = (product: Product) => {
+    if (!product.inStock) {
+      toast.error('Product is out of stock');
+      return;
+    }
+    addItem({
+      productId: product._id,
+      name: product.name,
+      price: product.price,
+      discountPrice: product.discountPrice,
+      image: product.images && product.images.length > 0 ? product.images[0] : undefined,
+      pv: product.pv,
+      inStock: product.inStock,
+    });
   };
 
   const resetForm = () => {
@@ -76,7 +114,7 @@ const UserProducts = () => {
       stock: '',
       pv: '',
       dp: '',
-      sp: '',
+      bv: '',
       mrp: ''
     });
   };
@@ -100,7 +138,7 @@ const UserProducts = () => {
         stock: parseInt(productForm.stock),
         pv: productForm.pv ? parseFloat(productForm.pv) : undefined,
         dp: productForm.dp ? parseFloat(productForm.dp) : undefined,
-        sp: productForm.sp ? parseFloat(productForm.sp) : undefined,
+        bv: productForm.bv ? parseFloat(productForm.bv) : undefined,
         mrp: productForm.mrp ? parseFloat(productForm.mrp) : undefined,
       };
 
@@ -111,6 +149,7 @@ const UserProducts = () => {
         setIsCreateDialogOpen(false);
         resetForm();
         fetchUserProducts();
+        fetchAllProducts(); // Refresh all products list
       }
     } catch (error: any) {
       toast.error(error.message || 'Failed to create product');
@@ -140,7 +179,7 @@ const UserProducts = () => {
         stock: parseInt(productForm.stock),
         pv: productForm.pv ? parseFloat(productForm.pv) : undefined,
         dp: productForm.dp ? parseFloat(productForm.dp) : undefined,
-        sp: productForm.sp ? parseFloat(productForm.sp) : undefined,
+        bv: productForm.bv ? parseFloat(productForm.bv) : undefined,
         mrp: productForm.mrp ? parseFloat(productForm.mrp) : undefined,
       };
 
@@ -152,6 +191,7 @@ const UserProducts = () => {
         setEditingProduct(null);
         resetForm();
         fetchUserProducts();
+        fetchAllProducts(); // Refresh all products list
       }
     } catch (error: any) {
       toast.error(error.message || 'Failed to update product');
@@ -171,6 +211,7 @@ const UserProducts = () => {
       if (response.success) {
         toast.success('Product deleted successfully!');
         fetchUserProducts();
+        fetchAllProducts(); // Refresh all products list
       }
     } catch (error: any) {
       toast.error(error.message || 'Failed to delete product');
@@ -190,7 +231,7 @@ const UserProducts = () => {
       stock: product.stock?.toString() || '0',
       pv: product.pv?.toString() || '',
       dp: product.dp?.toString() || '',
-      sp: product.sp?.toString() || '',
+      bv: product.bv?.toString() || '',
       mrp: product.mrp?.toString() || ''
     });
     setIsEditDialogOpen(true);
@@ -201,30 +242,24 @@ const UserProducts = () => {
     setIsCreateDialogOpen(true);
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold text-gray-900">My Products</h1>
-          <p className="text-gray-600">Manage your product listings</p>
+          <h1 className="text-3xl font-bold text-gray-900">Products</h1>
+          <p className="text-gray-600">Manage your products and browse all available products</p>
         </div>
         
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={openCreateDialog} className="bg-green-600 hover:bg-green-700">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Product
-            </Button>
-          </DialogTrigger>
+        {activeTab === 'my-products' && (
+          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={openCreateDialog} className="bg-green-600 hover:bg-green-700">
+                <Plus className="mr-2 h-4 w-4" />
+                Add Product
+              </Button>
+            </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Create New Product</DialogTitle>
@@ -330,12 +365,12 @@ const UserProducts = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="sp">Sale Price (SP)</Label>
+                  <Label htmlFor="bv">Business Volume (BV)</Label>
                   <Input
-                    id="sp"
+                    id="bv"
                     type="number"
-                    value={productForm.sp}
-                    onChange={(e) => setProductForm(prev => ({ ...prev, sp: e.target.value }))}
+                    value={productForm.bv}
+                    onChange={(e) => setProductForm(prev => ({ ...prev, bv: e.target.value }))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -390,140 +425,263 @@ const UserProducts = () => {
             </form>
           </DialogContent>
         </Dialog>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{products.length}</div>
-            <p className="text-xs text-muted-foreground">Products listed</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">In Stock</CardTitle>
-            <ShoppingCart className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {products.filter(p => p.inStock).length}
-            </div>
-            <p className="text-xs text-muted-foreground">Available products</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Value</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              ₹{products.reduce((total, product) => total + product.price, 0).toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground">Combined product value</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Products Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.length === 0 ? (
-          <div className="col-span-full text-center py-12 text-gray-500">
-            <Package className="mx-auto h-16 w-16 text-gray-300 mb-4" />
-            <p className="text-lg font-medium">No products yet</p>
-            <p className="text-sm mb-4">Start by adding your first product</p>
-            <Button onClick={openCreateDialog} className="bg-green-600 hover:bg-green-700">
-              <Plus className="mr-2 h-4 w-4" />
-              Add Your First Product
-            </Button>
-          </div>
-        ) : (
-          products.map((product) => (
-            <Card key={product._id} className="overflow-hidden">
-              <div className="aspect-video bg-gray-100 relative">
-                {product.images && product.images.length > 0 ? (
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <ImageIcon className="h-12 w-12 text-gray-400" />
-                  </div>
-                )}
-                <div className="absolute top-2 right-2">
-                  <Badge variant={product.inStock ? "default" : "destructive"}>
-                    {product.inStock ? "In Stock" : "Out of Stock"}
-                  </Badge>
-                </div>
-              </div>
-              
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg leading-tight">{product.name}</CardTitle>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl font-bold text-green-600">₹{product.price.toLocaleString()}</span>
-                  {product.discountPrice && (
-                    <span className="text-sm text-gray-500 line-through">₹{product.discountPrice.toLocaleString()}</span>
-                  )}
-                </div>
-              </CardHeader>
-
-              <CardContent className="pt-0">
-                <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.description}</p>
-                
-                <div className="space-y-2 text-xs text-gray-500 mb-4">
-                  <div className="flex justify-between">
-                    <span>Category:</span>
-                    <Badge variant="outline" className="text-xs">{product.category}</Badge>
-                  </div>
-                  {product.stock !== undefined && (
-                    <div className="flex justify-between">
-                      <span>Stock:</span>
-                      <span className="font-medium">{product.stock} units</span>
-                    </div>
-                  )}
-                  {product.pv && (
-                    <div className="flex justify-between">
-                      <span>PV:</span>
-                      <span className="font-medium">{product.pv}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => openEditDialog(product)}
-                    className="flex-1"
-                  >
-                    <Edit className="h-3 w-3 mr-1" />
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleDeleteProduct(product._id)}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))
         )}
       </div>
+
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="my-products">
+            <Package className="mr-2 h-4 w-4" />
+            My Products ({userProducts.length})
+          </TabsTrigger>
+          <TabsTrigger value="all-products">
+            <Store className="mr-2 h-4 w-4" />
+            All Products ({allProducts.length})
+          </TabsTrigger>
+        </TabsList>
+
+        {/* My Products Tab */}
+        <TabsContent value="my-products" className="space-y-6">
+          {/* Stats Cards */}
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+                <Package className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{userProducts.length}</div>
+                <p className="text-xs text-muted-foreground">Products listed</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">In Stock</CardTitle>
+                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-green-600">
+                  {userProducts.filter(p => p.inStock).length}
+                </div>
+                <p className="text-xs text-muted-foreground">Available products</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Value</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  ₹{userProducts.reduce((total, product) => total + product.price, 0).toLocaleString()}
+                </div>
+                <p className="text-xs text-muted-foreground">Combined product value</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* My Products Grid */}
+          {loading ? (
+            <div className="flex items-center justify-center min-h-[400px]">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {userProducts.length === 0 ? (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  <Package className="mx-auto h-16 w-16 text-gray-300 mb-4" />
+                  <p className="text-lg font-medium">No products yet</p>
+                  <p className="text-sm mb-4">Start by adding your first product</p>
+                  <Button onClick={openCreateDialog} className="bg-green-600 hover:bg-green-700">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Your First Product
+                  </Button>
+                </div>
+              ) : (
+                userProducts.map((product) => (
+                  <Card key={product._id} className="overflow-hidden">
+                    <div className="aspect-video bg-gray-100 relative">
+                      {product.images && product.images.length > 0 ? (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full">
+                          <ImageIcon className="h-12 w-12 text-gray-400" />
+                        </div>
+                      )}
+                      <div className="absolute top-2 right-2">
+                        <Badge variant={product.inStock ? "default" : "destructive"}>
+                          {product.inStock ? "In Stock" : "Out of Stock"}
+                        </Badge>
+                      </div>
+                    </div>
+                    
+                    <CardHeader className="pb-2">
+                      <div className="flex justify-between items-start">
+                        <CardTitle className="text-lg leading-tight">{product.name}</CardTitle>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold text-green-600">₹{product.price.toLocaleString()}</span>
+                        {product.discountPrice && (
+                          <span className="text-sm text-gray-500 line-through">₹{product.discountPrice.toLocaleString()}</span>
+                        )}
+                      </div>
+                    </CardHeader>
+
+                    <CardContent className="pt-0">
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.description}</p>
+                      
+                      <div className="space-y-2 text-xs text-gray-500 mb-4">
+                        <div className="flex justify-between">
+                          <span>Category:</span>
+                          <Badge variant="outline" className="text-xs">{product.category}</Badge>
+                        </div>
+                        {product.stock !== undefined && (
+                          <div className="flex justify-between">
+                            <span>Stock:</span>
+                            <span className="font-medium">{product.stock} units</span>
+                          </div>
+                        )}
+                        {product.pv && (
+                          <div className="flex justify-between">
+                            <span>PV:</span>
+                            <span className="font-medium">{product.pv}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openEditDialog(product)}
+                          className="flex-1"
+                        >
+                          <Edit className="h-3 w-3 mr-1" />
+                          Edit
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleDeleteProduct(product._id)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          )}
+        </TabsContent>
+
+        {/* All Products Tab */}
+        <TabsContent value="all-products" className="space-y-6">
+          {allProductsLoading ? (
+            <div className="flex items-center justify-center min-h-[400px]">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {allProducts.length === 0 ? (
+                <div className="col-span-full text-center py-12 text-gray-500">
+                  <Store className="mx-auto h-16 w-16 text-gray-300 mb-4" />
+                  <p className="text-lg font-medium">No products available</p>
+                  <p className="text-sm">Check back later for new products</p>
+                </div>
+              ) : (
+                allProducts.map((product) => (
+                  <Card key={product._id} className="overflow-hidden">
+                    <div className="aspect-video bg-gray-100 relative">
+                      {product.images && product.images.length > 0 ? (
+                        <img
+                          src={product.images[0]}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full">
+                          <ImageIcon className="h-12 w-12 text-gray-400" />
+                        </div>
+                      )}
+                      <div className="absolute top-2 right-2">
+                        <Badge variant={product.inStock ? "default" : "destructive"}>
+                          {product.inStock ? "In Stock" : "Out of Stock"}
+                        </Badge>
+                      </div>
+                    </div>
+                    
+                    <CardHeader className="pb-2">
+                      <div className="flex justify-between items-start">
+                        <CardTitle className="text-lg leading-tight">{product.name}</CardTitle>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold text-green-600">
+                          ₹{(product.discountPrice || product.price).toLocaleString()}
+                        </span>
+                        {product.discountPrice && (
+                          <span className="text-sm text-gray-500 line-through">₹{product.price.toLocaleString()}</span>
+                        )}
+                        {product.pv && (
+                          <Badge variant="outline" className="text-xs">
+                            {product.pv} PV
+                          </Badge>
+                        )}
+                      </div>
+                    </CardHeader>
+
+                    <CardContent className="pt-0">
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.description}</p>
+                      
+                      <div className="space-y-2 text-xs text-gray-500 mb-4">
+                        <div className="flex justify-between">
+                          <span>Category:</span>
+                          <Badge variant="outline" className="text-xs">{product.category}</Badge>
+                        </div>
+                        {product.stock !== undefined && (
+                          <div className="flex justify-between">
+                            <span>Stock:</span>
+                            <span className="font-medium">{product.stock} units</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => window.open(`/products/${product._id}`, '_blank')}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="flex-1 bg-green-600 hover:bg-green-700"
+                          onClick={() => handleAddToCart(product)}
+                          disabled={!product.inStock}
+                        >
+                          <ShoppingCart className="h-3 w-3 mr-1" />
+                          Add to Cart
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
 
       {/* Edit Product Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -632,12 +790,12 @@ const UserProducts = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="edit-sp">Sale Price (SP)</Label>
+                <Label htmlFor="edit-bv">Business Volume (BV)</Label>
                 <Input
-                  id="edit-sp"
+                  id="edit-bv"
                   type="number"
-                  value={productForm.sp}
-                  onChange={(e) => setProductForm(prev => ({ ...prev, sp: e.target.value }))}
+                  value={productForm.bv}
+                  onChange={(e) => setProductForm(prev => ({ ...prev, bv: e.target.value }))}
                 />
               </div>
               <div className="space-y-2">

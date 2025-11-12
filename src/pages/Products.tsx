@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Shield, Heart, Zap, Baby, ShoppingCart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import productsAPI, { Product } from "@/api/products";
 import { useCart } from "@/contexts/CartContext";
 
 const Products = () => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("all");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -104,7 +106,7 @@ const Products = () => {
       </section>
 
       {/* Category Filter */}
-      <section className="py-12 bg-background sticky top-16 z-40 border-b border-border">
+      <section className="py-12 bg-background border-b border-border">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-3">
             {categories.map((category) => {
@@ -154,8 +156,9 @@ const Products = () => {
               {filteredProducts.map((product, index) => (
                 <Card
                   key={product._id}
-                  className="border-none shadow-soft hover:shadow-gold transition-all duration-300 hover:-translate-y-2 animate-fade-in"
+                  className="border-none shadow-soft hover:shadow-gold transition-all duration-300 hover:-translate-y-2 animate-fade-in cursor-pointer"
                   style={{ animationDelay: `${index * 0.05}s` }}
+                  onClick={() => navigate(`/products/${product._id}`)}
                 >
                   <CardContent className="pt-6">
                     {/* Product Image */}
@@ -185,20 +188,24 @@ const Products = () => {
                     </p>
 
                     {/* Price */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <span className="text-lg font-bold text-primary">
-                        ₹{product.discountPrice || product.price}
-                      </span>
-                      {product.discountPrice && (
-                        <span className="text-sm text-muted-foreground line-through">
-                          ₹{product.price}
+                    <div className="mb-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-lg font-bold text-primary">
+                          ₹{product.discountPrice && product.discountPrice > 0 ? product.discountPrice : product.price}
                         </span>
-                      )}
-                      {product.pv && (
-                        <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                          {product.pv} PV
-                        </span>
-                      )}
+                        {product.discountPrice && product.discountPrice > 0 && product.discountPrice < product.price && (
+                          <span className="text-sm text-muted-foreground line-through">
+                            ₹{product.price}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {product.pv && product.pv > 0 && (
+                          <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                            {product.pv} PV
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     {/* Features */}
@@ -221,20 +228,20 @@ const Products = () => {
                     )}
 
                     {/* Stock Status */}
-                    <div className="mb-4">
+                    {/* <div className="mb-4">
                       <span className={`text-xs px-2 py-1 rounded ${
                         product.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                       }`}>
                         {product.inStock ? 'In Stock' : 'Out of Stock'}
                       </span>
-                    </div>
+                    </div> */}
 
                     {/* CTAs */}
-                    <div className="flex gap-2">
+                    <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                       <Button 
                         variant="outline" 
                         className="flex-1"
-                        disabled={!product.inStock}
+                        onClick={() => navigate(`/products/${product._id}`)}
                       >
                         View Details
                       </Button>
@@ -242,7 +249,6 @@ const Products = () => {
                         variant="hero" 
                         className="flex-1"
                         onClick={() => handleAddToCart(product)}
-                        disabled={!product.inStock}
                       >
                         <ShoppingCart className="h-4 w-4 mr-1" />
                         Add to Cart

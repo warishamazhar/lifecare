@@ -125,10 +125,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [state.items]);
 
   const addItem = (item: Omit<CartItem, 'quantity'> & { quantity?: number }) => {
-    if (!item.inStock) {
-      toast.error('Product is out of stock');
-      return;
-    }
+    // Stock check commented out temporarily
+    // if (!item.inStock) {
+    //   toast.error('Product is out of stock');
+    //   return;
+    // }
 
     const cartItem: CartItem = {
       ...item,

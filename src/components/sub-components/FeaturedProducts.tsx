@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Star,
@@ -12,66 +12,58 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
+import productsAPI, { Product } from "@/api/products";
+import { useCart } from "@/contexts/CartContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const FeaturedProducts = () => {
-  const featuredProducts = [
-    {
-      id: 1,
-      name: "Ayurvedic Immunity Pro",
-      category: "Best Seller",
-      description: "Advanced immunity booster with 15+ Ayurvedic herbs for complete protection",
-      price: "₹1,499",
-      originalPrice: "₹1,999",
-      rating: 4.9,
-      reviews: 342,
-      image: "https://images.unsplash.com/photo-1585435557343-3b092031d5ad?w=400&h=300&fit=crop",
-      features: ["100% Natural", "Doctor Recommended", "Fast Acting"],
-      badge: "BEST SELLER",
-      badgeColor: "from-emerald-500 to-teal-500",
-    },
-    {
-      id: 2,
-      name: "Premium Digestive Care",
-      category: "Editor's Choice",
-      description: "Complete digestive wellness with natural enzymes and herbs",
-      price: "₹1,299",
-      originalPrice: "₹1,599",
-      rating: 4.8,
-      reviews: 278,
-      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
-      features: ["Gut Health", "Natural Enzymes", "Daily Use"],
-      badge: "EDITOR'S CHOICE",
-      badgeColor: "from-green-500 to-emerald-500",
-    },
-    {
-      id: 3,
-      name: "Radiant Skin Elixir",
-      category: "Trending",
-      description: "Transform your skin with ancient Ayurvedic beauty secrets",
-      price: "₹1,799",
-      originalPrice: "₹2,199",
-      rating: 4.7,
-      reviews: 189,
-      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=300&fit=crop",
-      features: ["Glowing Skin", "Anti-Aging", "Natural Glow"],
-      badge: "TRENDING",
-      badgeColor: "from-teal-500 to-cyan-500",
-    },
-    {
-      id: 4,
-      name: "Joint Care Formula",
-      category: "Most Trusted",
-      description: "Advanced joint support with proven Ayurvedic ingredients",
-      price: "₹1,899",
-      originalPrice: "₹2,299",
-      rating: 4.6,
-      reviews: 156,
-      image: "https://images.unsplash.com/photo-1594736797933-d0ea3ff8db41?w=400&h=300&fit=crop",
-      features: ["Pain Relief", "Mobility", "Natural Formula"],
-      badge: "MOST TRUSTED",
-      badgeColor: "from-lime-500 to-green-500",
-    },
-  ];
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { addItem } = useCart();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchFeaturedProducts();
+  }, []);
+
+  const fetchFeaturedProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await productsAPI.getProducts();
+      if (response.success) {
+        // Get first 4 products as featured products
+        setFeaturedProducts(response.data.slice(0, 4));
+      }
+    } catch (error: any) {
+      console.error("Error fetching featured products:", error);
+      toast.error("Failed to load featured products");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddToCart = (product: Product) => {
+    addItem({
+      productId: product._id,
+      name: product.name,
+      price: product.price,
+      discountPrice: product.discountPrice,
+      image: product.images && product.images.length > 0 ? product.images[0] : undefined,
+      pv: product.pv,
+      inStock: product.inStock,
+    });
+  };
+
+  const getBadgeInfo = (index: number) => {
+    const badges = [
+      { badge: "BEST SELLER", color: "from-emerald-500 to-teal-500" },
+      { badge: "EDITOR'S CHOICE", color: "from-green-500 to-emerald-500" },
+      { badge: "TRENDING", color: "from-teal-500 to-cyan-500" },
+      { badge: "MOST TRUSTED", color: "from-lime-500 to-green-500" },
+    ];
+    return badges[index % badges.length];
+  };
 
   const benefits = [
     { icon: Shield, text: "100% Ayurvedic & Natural" },
@@ -117,109 +109,141 @@ const FeaturedProducts = () => {
         </div>
 
         {/* Featured Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {featuredProducts.map((product, index) => (
-            <Card
-              key={product.id}
-              className="group relative bg-white/90 backdrop-blur-sm border border-emerald-200/50 rounded-2xl shadow-soft hover:shadow-xl transition-all duration-500 hover:-translate-y-2 overflow-hidden"
-            >
-              {/* Product Badge */}
-              <div className="absolute top-4 left-4 z-20">
-                <div className={`bg-gradient-to-r ${product.badgeColor} text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg`}>
-                  {product.badge}
-                </div>
-              </div>
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[...Array(4)].map((_, i) => (
+              <Card key={i} className="border-none shadow-soft animate-pulse">
+                <CardContent className="pt-6">
+                  <div className="mb-4 h-48 rounded-lg bg-muted"></div>
+                  <div className="mb-2 h-6 bg-muted rounded w-20"></div>
+                  <div className="mb-2 h-6 bg-muted rounded w-3/4"></div>
+                  <div className="mb-4 h-4 bg-muted rounded w-full"></div>
+                  <div className="mb-4 flex gap-2">
+                    <div className="h-6 bg-muted rounded w-16"></div>
+                    <div className="h-6 bg-muted rounded w-12"></div>
+                  </div>
+                  <div className="h-10 bg-muted rounded w-full"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : featuredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {featuredProducts.map((product, index) => {
+              const badgeInfo = getBadgeInfo(index);
+              const discountPercent = product.discountPrice 
+                ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
+                : 0;
+              
+              return (
+                <Card
+                  key={product._id}
+                  className="group relative bg-white/90 backdrop-blur-sm border border-emerald-200/50 rounded-2xl shadow-soft hover:shadow-xl transition-all duration-500 hover:-translate-y-2 overflow-hidden"
+                >
+                  {/* Product Badge */}
+                  <div className="absolute top-4 left-4 z-20">
+                    <div className={`bg-gradient-to-r ${badgeInfo.color} text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg`}>
+                      {badgeInfo.badge}
+                    </div>
+                  </div>
 
-              {/* Product Image */}
-              <div className="relative h-48 bg-gradient-to-br from-emerald-50 to-teal-50 overflow-hidden">
-                <img 
-                  src={product.image} 
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                
-                {/* Discount Badge */}
-                <div className="absolute top-4 right-4 bg-emerald-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-                  25% OFF
-                </div>
-              </div>
-
-              <CardContent className="pt-6 pb-4">
-                {/* Category */}
-                <div className="text-xs font-semibold text-emerald-600 mb-2">
-                  {product.category}
-                </div>
-
-                {/* Product Name */}
-                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors duration-300">
-                  {product.name}
-                </h3>
-
-                {/* Description */}
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                  {product.description}
-                </p>
-
-                {/* Rating */}
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-4 w-4 ${
-                          i < Math.floor(product.rating)
-                            ? "fill-amber-500 text-amber-500"
-                            : "fill-gray-300 text-gray-300"
-                        }`}
+                  {/* Product Image */}
+                  <div className="relative h-48 bg-gradient-to-br from-emerald-50 to-teal-50 overflow-hidden">
+                    {product.images && product.images.length > 0 ? (
+                      <img 
+                        src={product.images[0]} 
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
-                    ))}
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-50">
+                        <Leaf className="h-16 w-16 text-emerald-300" />
+                      </div>
+                    )}
+                    
+                    {/* Discount Badge */}
+                    {discountPercent > 0 && (
+                      <div className="absolute top-4 right-4 bg-emerald-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                        {discountPercent}% OFF
+                      </div>
+                    )}
                   </div>
-                  <span className="text-sm font-bold text-gray-700">{product.rating}</span>
-                  <span className="text-sm text-gray-500">({product.reviews})</span>
-                </div>
 
-                {/* Features */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {product.features.map((feature, idx) => (
-                    <span
-                      key={idx}
-                      className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium flex items-center gap-1"
-                    >
-                      <CheckCircle className="h-3 w-3" />
-                      {feature}
-                    </span>
-                  ))}
-                </div>
+                  <CardContent className="pt-6 pb-4">
+                    {/* Category */}
+                    <div className="text-xs font-semibold text-emerald-600 mb-2">
+                      {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+                    </div>
 
-                {/* Price & CTA */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-gray-900">{product.price}</span>
-                    <span className="text-sm text-gray-500 line-through">{product.originalPrice}</span>
+                    {/* Product Name */}
+                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors duration-300">
+                      {product.name}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                      {product.description}
+                    </p>
+
+                    {/* Features */}
+                    {product.features && product.features.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-4">
+                        {product.features.slice(0, 3).map((feature, idx) => (
+                          <span
+                            key={idx}
+                            className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium flex items-center gap-1"
+                          >
+                            <CheckCircle className="h-3 w-3" />
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Price & CTA */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl font-bold text-gray-900">
+                          ₹{product.discountPrice || product.price}
+                        </span>
+                        {product.discountPrice && (
+                          <span className="text-sm text-gray-500 line-through">
+                            ₹{product.price}
+                          </span>
+                        )}
+                      </div>
+                      <Button 
+                        size="sm" 
+                        className="rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 group/btn border-0"
+                        onClick={() => handleAddToCart(product)}
+                        disabled={!product.inStock}
+                      >
+                        <ShoppingBag className="h-4 w-4 mr-1 group-hover/btn:scale-110 transition-transform duration-300" />
+                        Add
+                      </Button>
+                    </div>
+                  </CardContent>
+
+                  {/* Hover Effect */}
+                  <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10">
+                    <div className="absolute inset-[2px] bg-white rounded-2xl"></div>
                   </div>
-                  <Button 
-                    size="sm" 
-                    className="rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 group/btn border-0"
-                  >
-                    <ShoppingBag className="h-4 w-4 mr-1 group-hover/btn:scale-110 transition-transform duration-300" />
-                    Add
-                  </Button>
-                </div>
-              </CardContent>
-
-              {/* Hover Effect */}
-              <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10">
-                <div className="absolute inset-[2px] bg-white rounded-2xl"></div>
-              </div>
-            </Card>
-          ))}
-        </div>
+                </Card>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-xl text-muted-foreground">No featured products available</p>
+          </div>
+        )}
 
         {/* CTA Section */}
         <div className="text-center mt-12">
           <Button 
             size="lg" 
             className="rounded-full px-8 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 text-white border-0"
+            onClick={() => navigate("/products")}
           >
             <Leaf className="h-5 w-5 mr-2" />
             Explore All Featured Products

@@ -1,4 +1,5 @@
-const API_BASE_URL = 'http://localhost:5049';
+// const API_BASE_URL = 'http://localhost:5049';
+const API_BASE_URL = 'https://api.mybyoliva.com';
 
 export interface Product {
   _id: string;
@@ -12,7 +13,7 @@ export interface Product {
   inStock: boolean;
   pv?: number; // Product Value for MLM
   dp?: number; // Direct Price
-  sp?: number; // Sale Price
+  bv?: number; // Business Volume
   mrp?: number; // Maximum Retail Price
   createdBy?: string; // User ID who created the product
   createdByType?: 'admin' | 'user'; // Track if created by admin or user
@@ -153,7 +154,7 @@ export const productsAPI = {
     stock: number;
     pv?: number;
     dp?: number;
-    sp?: number;
+    bv?: number;
     mrp?: number;
   }) => {
     const token = localStorage.getItem('token');

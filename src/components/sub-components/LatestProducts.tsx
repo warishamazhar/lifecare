@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
@@ -10,27 +10,16 @@ import {
   Eye,
   Leaf,
   Sparkles,
+  CheckCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "../ui/card";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import productsAPI, { Product } from "@/api/products";
+import { useCart } from "@/contexts/CartContext";
 
 // Types
-interface Product {
-  id: number;
-  name: string;
-  category: string;
-  description: string;
-  features: string[];
-  rating: number;
-  reviews: number;
-  image: string;
-  popular?: boolean;
-  price?: number;
-  originalPrice?: number;
-}
-
 interface Category {
   id: string;
   name: string;
@@ -41,9 +30,11 @@ interface Category {
 const LatestProducts = () => {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("all");
-  const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
-  const [loadingStates, setLoadingStates] = useState<{ [key: number]: boolean }>({});
-  const [cartItems, setCartItems] = useState<number[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
+  const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+  const { addItem } = useCart();
 
   const categories: Category[] = [
     { id: "all", name: "All Products", icon: Sparkles, color: "from-emerald-500 to-teal-500" },
@@ -53,112 +44,31 @@ const LatestProducts = () => {
     { id: "kids", name: "Kids Care", icon: Baby, color: "from-lime-500 to-green-500" },
   ];
 
-  const Latestproducts: Product[] = [
-    {
-      id: 1,
-      name: "Immunity Booster Pro",
-      category: "health",
-      description: "Advanced natural immunity enhancement with pure Ayurvedic ingredients",
-      features: ["100% Natural", "No Side Effects", "Certified Organic"],
-      rating: 4.8,
-      reviews: 124,
-      image: "https://images.unsplash.com/photo-1585435557343-3b092031d5ad?w=400&h=300&fit=crop",
-      popular: true,
-      price: 1499,
-      originalPrice: 1999,
-    },
-    {
-      id: 2,
-      name: "Digestive Wellness Plus",
-      category: "health",
-      description: "Promotes healthy digestion and gut health naturally",
-      features: ["Herbal Formula", "Fast Acting", "Daily Use"],
-      rating: 4.6,
-      reviews: 89,
-      image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
-      price: 1299,
-      originalPrice: 1599,
-    },
-    {
-      id: 3,
-      name: "Vitality Max",
-      category: "men",
-      description: "Complete wellness solution for men's health and vitality",
-      features: ["Energy Boost", "Stamina Enhancement", "Natural"],
-      rating: 4.9,
-      reviews: 156,
-      image: "https://images.unsplash.com/photo-1540555700478-4be289636be9?w=400&h=300&fit=crop",
-      popular: true,
-      price: 1799,
-      originalPrice: 2199,
-    },
-    {
-      id: 4,
-      name: "Women's Harmony",
-      category: "women",
-      description: "Specially formulated for women's health and hormonal balance",
-      features: ["Hormonal Support", "Natural Care", "Safe"],
-      rating: 4.7,
-      reviews: 203,
-      image: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=300&fit=crop",
-      price: 1599,
-      originalPrice: 1999,
-    },
-    {
-      id: 5,
-      name: "Radiant Skin Elixir",
-      category: "women",
-      description: "Natural beauty from within with Ayurvedic herbs",
-      features: ["Glowing Skin", "Healthy Hair", "Ayurvedic"],
-      rating: 4.5,
-      reviews: 167,
-      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=300&fit=crop",
-      price: 1399,
-      originalPrice: 1799,
-    },
-    {
-      id: 6,
-      name: "Kids Growth Pro",
-      category: "kids",
-      description: "Support healthy growth and development naturally",
-      features: ["Growth Support", "Immunity", "Tasty"],
-      rating: 4.8,
-      reviews: 92,
-      image: "https://images.unsplash.com/photo-1559757149-e4c6607b434f?w=400&h=300&fit=crop",
-      price: 1199,
-      originalPrice: 1499,
-    },
-    {
-      id: 7,
-      name: "Stress Relief Blend",
-      category: "health",
-      description: "Calm your mind and reduce stress naturally",
-      features: ["Relaxation", "Mental Clarity", "Natural"],
-      rating: 4.4,
-      reviews: 78,
-      image: "https://images.unsplash.com/photo-1594736797933-d0ea3ff8db41?w=400&h=300&fit=crop",
-      price: 999,
-      originalPrice: 1299,
-    },
-    {
-      id: 8,
-      name: "Joint Care Formula",
-      category: "health",
-      description: "Support joint health and mobility with Ayurvedic herbs",
-      features: ["Pain Relief", "Mobility", "Natural"],
-      rating: 4.6,
-      reviews: 134,
-      image: "https://images.unsplash.com/photo-1594736797933-d0ea3ff8db41?w=400&h=300&fit=crop",
-      price: 1699,
-      originalPrice: 2099,
-    },
-  ];
+  useEffect(() => {
+    fetchLatestProducts();
+  }, []);
+
+  const fetchLatestProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await productsAPI.getProducts();
+      if (response.success) {
+        // Get latest 8 products (or all if less than 8)
+        setProducts(response.data.slice(0, 8));
+      }
+    } catch (error: any) {
+      console.error("Error fetching latest products:", error);
+      toast.error("Failed to load products");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Filter products based on active category
   const filteredLatestProducts =
     activeCategory === "all"
-      ? Latestproducts
-      : Latestproducts.filter((p) => p.category === activeCategory);
+      ? products
+      : products.filter((p) => p.category.toLowerCase() === activeCategory);
 
   // Handle category filter click
   const handleCategoryClick = (categoryId: string) => {
@@ -169,11 +79,11 @@ const LatestProducts = () => {
   // Handle product quick view
   const handleQuickView = (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
-    setLoadingStates(prev => ({ ...prev, [product.id]: true }));
+    setLoadingStates(prev => ({ ...prev, [product._id]: true }));
     
     // Simulate API call
     setTimeout(() => {
-      setLoadingStates(prev => ({ ...prev, [product.id]: false }));
+      setLoadingStates(prev => ({ ...prev, [product._id]: false }));
       toast.info(`Quick view: ${product.name}`, {
         description: "Product details would open in a modal",
         action: {
@@ -187,25 +97,31 @@ const LatestProducts = () => {
   // Handle add to cart
   const handleAddToCart = (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
-    setLoadingStates(prev => ({ ...prev, [product.id]: true }));
+    if (!product.inStock) {
+      toast.error("Product is out of stock");
+      return;
+    }
     
-    // Simulate API call
+    setLoadingStates(prev => ({ ...prev, [product._id]: true }));
+    
+    addItem({
+      productId: product._id,
+      name: product.name,
+      price: product.price,
+      discountPrice: product.discountPrice,
+      image: product.images && product.images.length > 0 ? product.images[0] : undefined,
+      pv: product.pv,
+      inStock: product.inStock,
+    });
+    
     setTimeout(() => {
-      setLoadingStates(prev => ({ ...prev, [product.id]: false }));
-      setCartItems(prev => [...prev, product.id]);
-      toast.success("Added to cart", {
-        description: `${product.name} has been added to your cart`,
-        action: {
-          label: "View Cart",
-          onClick: () => navigate("/cart")
-        },
-      });
-    }, 800);
+      setLoadingStates(prev => ({ ...prev, [product._id]: false }));
+    }, 500);
   };
 
   // Handle product click (navigate to product detail)
   const handleProductClick = (product: Product) => {
-    navigate(`/products/${product.id}`, {
+    navigate(`/products/${product._id}`, {
       state: { product }
     });
   };
@@ -270,143 +186,174 @@ const LatestProducts = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {filteredLatestProducts.map((product, index) => (
-            <Card
-              key={product.id}
-              className="group relative bg-white/80 backdrop-blur-sm border border-emerald-200/50 rounded-2xl shadow-soft hover:shadow-xl transition-all duration-500 hover:-translate-y-2 overflow-hidden cursor-pointer"
-              onMouseEnter={() => setHoveredProduct(product.id)}
-              onMouseLeave={() => setHoveredProduct(null)}
-              onClick={() => handleProductClick(product)}
-            >
-              {/* Popular Badge */}
-              {product.popular && (
-                <div className="absolute top-4 left-4 z-20">
-                  <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
-                    <Star className="h-3 w-3 fill-current" />
-                    Popular
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {[...Array(8)].map((_, i) => (
+              <Card key={i} className="border-none shadow-soft animate-pulse">
+                <CardContent className="pt-6">
+                  <div className="mb-4 h-48 rounded-lg bg-muted"></div>
+                  <div className="mb-2 h-6 bg-muted rounded w-20"></div>
+                  <div className="mb-2 h-6 bg-muted rounded w-3/4"></div>
+                  <div className="mb-4 h-4 bg-muted rounded w-full"></div>
+                  <div className="mb-4 flex gap-2">
+                    <div className="h-6 bg-muted rounded w-16"></div>
+                    <div className="h-6 bg-muted rounded w-12"></div>
                   </div>
-                </div>
-              )}
-
-              {/* Product Image */}
-              <div className="relative h-48 bg-gradient-to-br from-emerald-50 to-teal-50 overflow-hidden">
-                <img 
-                  src={product.image} 
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                
-                {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
-                  <div className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 flex gap-2">
-                    <Button 
-                      size="sm" 
-                      className="rounded-full bg-white/90 backdrop-blur-sm text-gray-800 hover:bg-white border-0"
-                      onClick={(e) => handleQuickView(product, e)}
-                      disabled={loadingStates[product.id]}
-                    >
-                      {loadingStates[product.id] ? (
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-800 border-t-transparent" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      className="rounded-full bg-emerald-500 hover:bg-emerald-600 text-white border-0"
-                      onClick={(e) => handleAddToCart(product, e)}
-                      disabled={loadingStates[product.id] || cartItems.includes(product.id)}
-                    >
-                      {loadingStates[product.id] ? (
-                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      ) : cartItems.includes(product.id) ? (
-                        <CheckCircle className="h-4 w-4" />
-                      ) : (
-                        <ShoppingBag className="h-4 w-4" />
-                      )}
-                    </Button>
+                  <div className="h-10 bg-muted rounded w-full"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {filteredLatestProducts.map((product, index) => (
+              <Card
+                key={product._id}
+                className="group relative bg-white/80 backdrop-blur-sm border border-emerald-200/50 rounded-2xl shadow-soft hover:shadow-xl transition-all duration-500 hover:-translate-y-2 overflow-hidden cursor-pointer"
+                onMouseEnter={() => setHoveredProduct(product._id)}
+                onMouseLeave={() => setHoveredProduct(null)}
+                onClick={() => handleProductClick(product)}
+              >
+                {/* Popular Badge - Show for first few products */}
+                {index < 3 && (
+                  <div className="absolute top-4 left-4 z-20">
+                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
+                      <Star className="h-3 w-3 fill-current" />
+                      Popular
+                    </div>
                   </div>
-                </div>
-              </div>
+                )}
 
-              <CardContent className="pt-6 pb-4">
-                {/* Category */}
-                <div className="mb-3">
-                  <span className={cn(
-                    "inline-block px-3 py-1 text-xs font-medium rounded-full border",
-                    product.category === "health" && "bg-emerald-50 text-emerald-700 border-emerald-200",
-                    product.category === "men" && "bg-blue-50 text-blue-700 border-blue-200",
-                    product.category === "women" && "bg-pink-50 text-pink-700 border-pink-200",
-                    product.category === "kids" && "bg-lime-50 text-lime-700 border-lime-200"
-                  )}>
-                    {categories.find((c) => c.id === product.category)?.name}
-                  </span>
-                </div>
-
-                {/* Product Name & Rating */}
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-700 transition-colors duration-300">
-                    {product.name}
-                  </h3>
-                  <div className="flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-full">
-                    <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-                    <span className="text-xs font-bold text-amber-700">{product.rating}</span>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                  {product.description}
-                </p>
-
-                {/* Features */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {product.features.map((feature, idx) => (
-                    <span
-                      key={idx}
-                      className="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200 font-medium"
-                    >
-                      {feature}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Price & Reviews */}
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    {product.price && (
-                      <>
-                        <span className="text-lg font-bold text-emerald-700">₹{product.price}</span>
-                        {product.originalPrice && (
-                          <span className="text-sm text-gray-500 line-through">₹{product.originalPrice}</span>
+                {/* Product Image */}
+                <div className="relative h-48 bg-gradient-to-br from-emerald-50 to-teal-50 overflow-hidden">
+                  {product.images && product.images.length > 0 ? (
+                    <img 
+                      src={product.images[0]} 
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-50">
+                      <Leaf className="h-16 w-16 text-emerald-300" />
+                    </div>
+                  )}
+                  
+                  {/* Hover Overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
+                    <div className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 flex gap-2">
+                      <Button 
+                        size="sm" 
+                        className="rounded-full bg-white/90 backdrop-blur-sm text-gray-800 hover:bg-white border-0"
+                        onClick={(e) => handleQuickView(product, e)}
+                        disabled={loadingStates[product._id]}
+                      >
+                        {loadingStates[product._id] ? (
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-800 border-t-transparent" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
                         )}
-                      </>
-                    )}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {product.reviews} reviews
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        className="rounded-full bg-emerald-500 hover:bg-emerald-600 text-white border-0"
+                        onClick={(e) => handleAddToCart(product, e)}
+                        disabled={loadingStates[product._id] || !product.inStock}
+                      >
+                        {loadingStates[product._id] ? (
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        ) : (
+                          <ShoppingBag className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
-                {/* CTA Button */}
-                <Button 
-                  size="sm" 
-                  className="w-full rounded-full bg-emerald-500 hover:bg-emerald-600 text-white border-0 group/btn"
-                  onClick={(e) => handleExploreProduct(product, e)}
-                >
-                  <span>Explore Product</span>
-                  <ArrowRight className="h-4 w-4 ml-1 group-hover/btn:translate-x-1 transition-transform duration-300" />
-                </Button>
-              </CardContent>
+                <CardContent className="pt-6 pb-4">
+                  {/* Category */}
+                  <div className="mb-3">
+                    <span className={cn(
+                      "inline-block px-3 py-1 text-xs font-medium rounded-full border",
+                      product.category.toLowerCase() === "health" && "bg-emerald-50 text-emerald-700 border-emerald-200",
+                      product.category.toLowerCase() === "men" && "bg-blue-50 text-blue-700 border-blue-200",
+                      product.category.toLowerCase() === "women" && "bg-pink-50 text-pink-700 border-pink-200",
+                      product.category.toLowerCase() === "kids" && "bg-lime-50 text-lime-700 border-lime-200",
+                      "bg-gray-50 text-gray-700 border-gray-200"
+                    )}>
+                      {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+                    </span>
+                  </div>
 
-              {/* Hover Border Effect */}
-              <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10">
-                <div className="absolute inset-[2px] bg-white rounded-2xl"></div>
-              </div>
-            </Card>
-          ))}
-        </div>
+                  {/* Product Name */}
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-700 transition-colors duration-300">
+                      {product.name}
+                    </h3>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                    {product.description}
+                  </p>
+
+                  {/* Features */}
+                  {product.features && product.features.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {product.features.slice(0, 3).map((feature, idx) => (
+                        <span
+                          key={idx}
+                          className="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200 font-medium"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Price */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-bold text-emerald-700">
+                        ₹{product.discountPrice || product.price}
+                      </span>
+                      {product.discountPrice && (
+                        <span className="text-sm text-gray-500 line-through">
+                          ₹{product.price}
+                        </span>
+                      )}
+                      {product.pv && (
+                        <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
+                          {product.pv} PV
+                        </span>
+                      )}
+                    </div>
+                    {/* Stock Status - Commented out */}
+                    {/* <div className={`text-xs px-2 py-1 rounded ${
+                      product.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {product.inStock ? 'In Stock' : 'Out of Stock'}
+                    </div> */}
+                  </div>
+
+                  {/* CTA Button */}
+                  <Button 
+                    size="sm" 
+                    className="w-full rounded-full bg-emerald-500 hover:bg-emerald-600 text-white border-0 group/btn"
+                    onClick={(e) => handleExploreProduct(product, e)}
+                  >
+                    <span>Explore Product</span>
+                    <ArrowRight className="h-4 w-4 ml-1 group-hover/btn:translate-x-1 transition-transform duration-300" />
+                  </Button>
+                </CardContent>
+
+                {/* Hover Border Effect */}
+                <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10">
+                  <div className="absolute inset-[2px] bg-white rounded-2xl"></div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
 
         {/* Empty State */}
         {filteredLatestProducts.length === 0 && (

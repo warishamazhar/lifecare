@@ -1,4 +1,5 @@
-const API_BASE_URL = 'http://localhost:5049';
+// const API_BASE_URL = 'http://localhost:5049';
+const API_BASE_URL = 'https://api.mybyoliva.com';
 
 export interface LoginData {
   username: string;

@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
 import Join from "./pages/Join";
 import CompensationPlan from "./pages/CompensationPlan";
 import Brand from "./pages/Brand";
@@ -75,6 +76,7 @@ const App = () => (
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
               <Route path="/products" element={<Products />} />
+              <Route path="/products/:id" element={<ProductDetail />} />
               <Route path="/compensation-plan" element={<CompensationPlan />} />
               <Route path="/brand" element={<Brand />} />
               <Route path="/join" element={<Join />} />
