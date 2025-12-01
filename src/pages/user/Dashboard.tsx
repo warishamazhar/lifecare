@@ -64,13 +64,13 @@ const UserDashboard = () => {
       color: "bg-gradient-to-r from-purple-400 via-pink-400 to-red-400",
     },
     {
-      title: "Purchase Wallet",
+      title: "Shopping Wallet",
       value: `₹${stats?.wallets?.purchaseWallet ?? 0}`,
       icon: Wallet,
       color: "bg-gradient-to-r from-green-400 to-green-600",
     },
     {
-      title: "Commission Wallet",
+      title: "Earned Wallet",
       value: `₹${stats?.wallets?.commissionWallet ?? 0}`,
       icon: DollarSign,
       color: "bg-gradient-to-r from-blue-400 to-blue-600",

@@ -17,7 +17,13 @@ import {
   Settings,
   LogOut,
   ChevronDown,
-  Sparkles
+  Sparkles,
+  BarChart3,
+  List,
+  Handshake,
+  Gift,
+  Trophy,
+  Star
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -72,31 +78,27 @@ const navigation = [
     current: false,
     submenu: true,
     children: [
-      { name: 'Purchase History', href: '/user/purchase-history' },
-      { name: 'Pending Orders', href: '/user/pending-orders' },
+      { name: 'My Online Order(s)', href: '/user/online-orders', icon: Globe },
+      { name: 'Self Total Repurchase', href: '/user/self-repurchase', icon: RotateCcw },
     ]
   },
   {
-    name: 'My Online Order(s)',
-    href: '/user/online-orders',
-    icon: Globe,
-    current: false
-  },
-  {
-    name: 'Self Total Repurchase',
-    href: '/user/self-repurchase',
-    icon: RotateCcw,
-    current: false
-  },
-  {
     name: 'Team Members',
-    href: '/user/referrals',
+    href: '/user/team-members',
     icon: Users,
     current: false,
     submenu: true,
     children: [
-      { name: 'Direct Referrals', href: '/user/direct-referrals' },
-      { name: 'Team Structure', href: '/user/team-structure' },
+      { name: 'My Team', href: '/user/my-team', icon: Users },
+      { name: 'Direct Team', href: '/user/direct-team', icon: UserPlus },
+      { name: 'Team Structure', href: '/user/team-structure', icon: List },
+      { name: 'Team Report', href: '/user/team-report', icon: BarChart3 },
+      { name: 'Team Performance', href: '/user/team-performance', icon: Trophy },
+      { name: 'Team Sales', href: '/user/team-sales', icon: TrendingUp },
+      { name: 'Team Income', href: '/user/team-income', icon: DollarSign },
+      { name: 'Team Bonus', href: '/user/team-bonus', icon: Gift },
+      { name: 'Team Rank', href: '/user/team-rank', icon: Star },
+      { name: 'Team Status', href: '/user/team-status', icon: Award },
     ]
   },
   {
@@ -107,6 +109,7 @@ const navigation = [
     submenu: true,
     children: [
       { name: 'Wallet Balance', href: '/user/wallet-balance' },
+      { name: 'Wallet Request', href: '/user/wallet-request' },
       { name: 'Transactions', href: '/user/transactions' },
       { name: 'Withdraw', href: '/user/withdraw' },
     ]
@@ -124,8 +127,15 @@ const navigation = [
     current: false,
     submenu: true,
     children: [
-      { name: 'Income History', href: '/user/income-history' },
-      { name: 'Bonus Details', href: '/user/bonus-details' },
+      { name: 'Matching Bonus', href: '/user/matching-bonus', icon: BarChart3 },
+      { name: 'Welcome Bonus', href: '/user/welcome-bonus', icon: List },
+      { name: 'Additional Bonus', href: '/user/additional-bonus', icon: List },
+      { name: 'Royalty Bonus', href: '/user/royalty-bonus', icon: Handshake },
+      { name: 'Mentorship Bonus', href: '/user/mentorship-bonus', icon: Handshake },
+      { name: 'Cashback', href: '/user/cashback', icon: List },
+      { name: 'Rewards', href: '/user/rewards', icon: BarChart3 },
+      { name: 'Monthly Purchase Bonus', href: '/user/monthly-purchase-bonus', icon: BarChart3 },
+      { name: 'Rank Summary', href: '/user/rank-summary', icon: BarChart3 },
     ]
   },
   {
@@ -136,6 +146,7 @@ const navigation = [
     submenu: true,
     children: [
       { name: 'Edit Profile', href: '/user/edit-profile' },
+      { name: 'Update KYC', href: '/user/update-kyc' },
       { name: 'Change Password', href: '/user/change-password' },
     ]
   },
@@ -244,6 +255,7 @@ export const AdvancedSidebar: React.FC<AdvancedSidebarProps> = ({ onLogout }) =>
                     <div className="ml-6 mt-2 space-y-1 border-l-2 border-emerald-500/30 pl-4">
                       {item.children?.map((child) => {
                         const isChildActive = location.pathname === child.href;
+                        const ChildIcon = (child as any).icon;
                         return (
                           <Link
                             key={child.name}
@@ -256,7 +268,14 @@ export const AdvancedSidebar: React.FC<AdvancedSidebarProps> = ({ onLogout }) =>
                             )}
                           >
                             <span className="flex items-center">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-3 shadow-sm"></span>
+                              {ChildIcon ? (
+                                <ChildIcon className={cn(
+                                  "h-4 w-4 mr-3",
+                                  isChildActive ? "text-white" : "text-emerald-200/70"
+                                )} />
+                              ) : (
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-3 shadow-sm"></span>
+                              )}
                               {child.name}
                             </span>
                           </Link>

@@ -53,9 +53,21 @@ const UserProfile = () => {
   };
 
   const handleSave = async () => {
-    // In a real app, you'd have an update profile API
-    toast.success('Profile updated successfully!');
-    setEditing(false);
+    try {
+      const response = await authAPI.updateProfile({
+        name: formData.name,
+        email: formData.email,
+        mobileNo: formData.mobileNo
+      });
+      
+      if (response.success) {
+        toast.success('Profile updated successfully!');
+        setEditing(false);
+        fetchProfile();
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update profile');
+    }
   };
 
   const handleCancel = () => {
@@ -197,11 +209,11 @@ const UserProfile = () => {
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between py-2 border-b border-emerald-200/50">
-                  <span className="text-emerald-700/70">Purchase Wallet:</span>
+                  <span className="text-emerald-700/70">Shopping Wallet:</span>
                   <span className="font-bold text-emerald-800">₹{profile.wallets.purchaseWallet}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-emerald-200/50">
-                  <span className="text-emerald-700/70">Commission Wallet:</span>
+                  <span className="text-emerald-700/70">Earned Wallet:</span>
                   <span className="font-bold text-emerald-800">₹{profile.wallets.commissionWallet}</span>
                 </div>
                 <div className="flex justify-between py-2">

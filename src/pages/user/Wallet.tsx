@@ -227,7 +227,7 @@ const UserWallet = () => {
             <DialogHeader>
               <DialogTitle>Add Funds to Wallet</DialogTitle>
               <DialogDescription>
-                Follow the steps below to add funds to your purchase wallet
+                Follow the steps below to add funds to your shopping wallet
               </DialogDescription>
             </DialogHeader>
             
@@ -406,7 +406,7 @@ const UserWallet = () => {
 
         <Card className="border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-300 ring-1 ring-amber-400/10 border-l-4 border-emerald-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-emerald-800">Purchase Wallet</CardTitle>
+            <CardTitle className="text-sm font-medium text-emerald-800">Shopping Wallet</CardTitle>
             <div className="p-2 bg-gradient-to-br from-emerald-100/50 to-amber-100/40 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20">
               <CreditCard className="h-4 w-4 text-emerald-600" />
             </div>
@@ -419,7 +419,7 @@ const UserWallet = () => {
 
         <Card className="border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-300 ring-1 ring-amber-400/10 border-l-4 border-emerald-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-emerald-800">Commission Wallet</CardTitle>
+            <CardTitle className="text-sm font-medium text-emerald-800">Earned Wallet</CardTitle>
             <div className="p-2 bg-gradient-to-br from-emerald-100/50 to-amber-100/40 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20">
               <DollarSign className="h-4 w-4 text-emerald-600" />
             </div>

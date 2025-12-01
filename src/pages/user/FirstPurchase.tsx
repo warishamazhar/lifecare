@@ -139,7 +139,7 @@ const FirstPurchase: React.FC = () => {
                     size="sm" 
                     variant="secondary"
                     className="bg-white/20 hover:bg-white/30 text-white border-amber-400/30 backdrop-blur-sm ring-1 ring-amber-400/20"
-                    onClick={() => navigate('/user/wallet')}
+                    onClick={() => navigate('/user/wallet-request')}
                   >
                     Add Funds
                   </Button>

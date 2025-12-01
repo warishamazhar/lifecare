@@ -51,7 +51,7 @@ export const walletAPI = {
   // Get user's own top-up requests
   getUserTopupRequests: async (): Promise<WalletTopupResponse> => {
     const token = localStorage.getItem('token');
-    const response = await fetch(`${API_BASE_URL}/wallet/user-topup-requests`, {
+    const response = await fetch(`${API_BASE_URL}/wallet/topup/requests`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -65,5 +65,14 @@ export const walletAPI = {
     return response.json();
   },
 };
+
+export interface WalletRequestData {
+  walletType: 'purchaseWallet' | 'commissionWallet' | 'referralWallet';
+  amount: number;
+  requestDetails?: string;
+  paymentMethod: 'bank' | 'upi';
+  transactionId?: string;
+  screenshot: File | string;
+}
 
 export default walletAPI;

@@ -6,9 +6,15 @@ export interface CartItem {
   name: string;
   price: number;
   discountPrice?: number;
+  sellingPrice?: number;
   quantity: number;
   image?: string;
   pv?: number;
+  bv?: number;
+  rp?: number;
+  firstPurchaseBV?: number;
+  firstPurchaseRP?: number;
+  repurchaseSellingPrice?: number;
   inStock: boolean;
 }
 

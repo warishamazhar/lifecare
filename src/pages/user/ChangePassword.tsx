@@ -1,15 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Lock, Eye, EyeOff, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { authAPI } from '@/api/auth';
+import { toast } from 'sonner';
 
 const ChangePassword: React.FC = () => {
-  const [showCurrentPassword, setShowCurrentPassword] = React.useState(false);
-  const [showNewPassword, setShowNewPassword] = React.useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+
+  const handleChangePassword = async () => {
+    if (formData.newPassword !== formData.confirmPassword) {
+      toast.error('New passwords do not match');
+      return;
+    }
+    
+    if (formData.newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters long');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await authAPI.changePassword({
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword
+      });
+      
+      if (response.success) {
+        toast.success('Password changed successfully!');
+        setFormData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to change password');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="p-6 space-y-6 bg-gradient-to-br from-emerald-50/30 via-white to-emerald-50/20 min-h-screen">
@@ -45,6 +86,8 @@ const ChangePassword: React.FC = () => {
                     id="currentPassword" 
                     type={showCurrentPassword ? "text" : "password"}
                     placeholder="Enter current password"
+                    value={formData.currentPassword}
+                    onChange={(e) => setFormData(prev => ({ ...prev, currentPassword: e.target.value }))}
                     className="border-emerald-200/50 bg-white/80 backdrop-blur-sm ring-1 ring-amber-400/10"
                   />
                   <button
@@ -67,6 +110,8 @@ const ChangePassword: React.FC = () => {
                     id="newPassword" 
                     type={showNewPassword ? "text" : "password"}
                     placeholder="Enter new password"
+                    value={formData.newPassword}
+                    onChange={(e) => setFormData(prev => ({ ...prev, newPassword: e.target.value }))}
                     className="border-emerald-200/50 bg-white/80 backdrop-blur-sm ring-1 ring-amber-400/10"
                   />
                   <button
@@ -89,6 +134,8 @@ const ChangePassword: React.FC = () => {
                     id="confirmPassword" 
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm new password"
+                    value={formData.confirmPassword}
+                    onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                     className="border-emerald-200/50 bg-white/80 backdrop-blur-sm ring-1 ring-amber-400/10"
                   />
                   <button
@@ -118,9 +165,13 @@ const ChangePassword: React.FC = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Button className="w-full bg-gradient-to-r from-emerald-600 to-amber-500 hover:from-emerald-700 hover:to-amber-600 text-white shadow-lg ring-1 ring-amber-300/30">
+                <Button 
+                  onClick={handleChangePassword}
+                  disabled={loading || !formData.currentPassword || !formData.newPassword || !formData.confirmPassword}
+                  className="w-full bg-gradient-to-r from-emerald-600 to-amber-500 hover:from-emerald-700 hover:to-amber-600 text-white shadow-lg ring-1 ring-amber-300/30"
+                >
                   <Lock className="h-4 w-4 mr-2" />
-                  Update Password
+                  {loading ? 'Updating...' : 'Update Password'}
                 </Button>
               </motion.div>
             </CardContent>

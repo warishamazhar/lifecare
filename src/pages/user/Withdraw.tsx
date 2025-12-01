@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowDownRight, CreditCard, Banknote, RefreshCw } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ArrowDownRight, CreditCard, Banknote, RefreshCw, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { authAPI } from '@/api/auth';
+import { financeAPI } from '@/api/finance';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
@@ -16,13 +18,17 @@ const Withdraw: React.FC = () => {
     referralWallet: 0
   });
   const [loading, setLoading] = useState(true);
+  const [withdrawalsLoading, setWithdrawalsLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [selectedWallet, setSelectedWallet] = useState<'commissionWallet' | 'referralWallet'>('commissionWallet');
   const [amount, setAmount] = useState('');
   const [withdrawMethod, setWithdrawMethod] = useState('bank');
   const [accountDetails, setAccountDetails] = useState('');
+  const [withdrawals, setWithdrawals] = useState<any[]>([]);
 
   useEffect(() => {
     fetchWalletData();
+    fetchWithdrawals();
   }, []);
 
   const fetchWalletData = async () => {
@@ -47,7 +53,21 @@ const Withdraw: React.FC = () => {
       : walletData.referralWallet;
   };
 
-  const handleWithdraw = () => {
+  const fetchWithdrawals = async () => {
+    try {
+      setWithdrawalsLoading(true);
+      const response = await financeAPI.getUserWithdrawals();
+      if (response.success && response.data) {
+        setWithdrawals(response.data);
+      }
+    } catch (error: any) {
+      console.error('Failed to load withdrawals:', error);
+    } finally {
+      setWithdrawalsLoading(false);
+    }
+  };
+
+  const handleWithdraw = async () => {
     const withdrawAmount = parseFloat(amount);
     const available = getAvailableBalance();
     
@@ -66,9 +86,49 @@ const Withdraw: React.FC = () => {
       return;
     }
     
-    toast.success('Withdrawal request submitted successfully!');
-    setAmount('');
-    setAccountDetails('');
+    setSubmitting(true);
+    try {
+      const response = await financeAPI.createWithdrawal({
+        amount: withdrawAmount,
+        walletType: selectedWallet,
+        withdrawalMethod: withdrawMethod as 'bank' | 'upi' | 'wallet',
+        accountDetails: accountDetails
+      });
+      
+      if (response.success) {
+        toast.success('Withdrawal request submitted successfully!');
+        setAmount('');
+        setAccountDetails('');
+        fetchWalletData();
+        fetchWithdrawals();
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to submit withdrawal request');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case 'rejected':
+        return <XCircle className="h-4 w-4 text-red-600" />;
+      default:
+        return <Clock className="h-4 w-4 text-yellow-600" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-yellow-100 text-yellow-800';
+    }
   };
 
   const formatCurrency = (amount: number) => {
@@ -187,10 +247,10 @@ const Withdraw: React.FC = () => {
                 <Button 
                   className="w-full bg-gradient-to-r from-emerald-600 to-amber-500 hover:from-emerald-700 hover:to-amber-600 text-white shadow-lg ring-1 ring-amber-300/30"
                   onClick={handleWithdraw}
-                  disabled={loading || !amount || !accountDetails}
+                  disabled={loading || submitting || !amount || !accountDetails}
                 >
                   <ArrowDownRight className="h-4 w-4 mr-2" />
-                  Request Withdrawal
+                  {submitting ? 'Submitting...' : 'Request Withdrawal'}
                 </Button>
               </motion.div>
             </CardContent>
@@ -249,11 +309,48 @@ const Withdraw: React.FC = () => {
                 <CardTitle className="text-emerald-800">Withdrawal History</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-8 text-emerald-700/70">
-                  <CreditCard className="h-12 w-12 text-emerald-300 mx-auto mb-4" />
-                  <p className="text-sm">No withdrawal history yet</p>
-                  <p className="text-xs mt-1">Your withdrawal requests will appear here</p>
-                </div>
+                {withdrawalsLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
+                  </div>
+                ) : withdrawals.length === 0 ? (
+                  <div className="text-center py-8 text-emerald-700/70">
+                    <CreditCard className="h-12 w-12 text-emerald-300 mx-auto mb-4" />
+                    <p className="text-sm">No withdrawal history yet</p>
+                    <p className="text-xs mt-1">Your withdrawal requests will appear here</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {withdrawals.map((withdrawal) => (
+                      <div key={withdrawal._id} className="flex items-center justify-between p-4 border border-emerald-200/50 bg-white/60 backdrop-blur-sm rounded-lg hover:shadow-md transition-all duration-200 ring-1 ring-amber-400/5">
+                        <div className="flex items-center gap-3">
+                          {getStatusIcon(withdrawal.status)}
+                          <div>
+                            <p className="font-medium">₹{withdrawal.amount.toLocaleString()}</p>
+                            <p className="text-sm text-gray-500">
+                              {new Date(withdrawal.createdAt).toLocaleDateString()} • {withdrawal.withdrawalMethod}
+                            </p>
+                            {withdrawal.rejectionReason && (
+                              <p className="text-sm text-red-600 mt-1">
+                                Reason: {withdrawal.rejectionReason}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <Badge className={getStatusColor(withdrawal.status)}>
+                            {withdrawal.status.charAt(0).toUpperCase() + withdrawal.status.slice(1)}
+                          </Badge>
+                          {withdrawal.reviewedAt && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              Reviewed: {new Date(withdrawal.reviewedAt).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </motion.div>

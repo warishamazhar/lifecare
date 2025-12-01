@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ShoppingCart, CreditCard, MapPin, User, Wallet, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { ArrowLeft, ShoppingCart, CreditCard, MapPin, User, Wallet, RefreshCw, Plus, Minus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,11 +13,38 @@ import productsAPI from '@/api/products';
 import { authAPI } from '@/api/auth';
 
 const Checkout: React.FC = () => {
-  const { items, totalAmount, totalPV, clearCart } = useCart();
+  const { items, clearCart, addItem, removeItem, updateQuantity } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [walletLoading, setWalletLoading] = useState(true);
   const [paymentMethod, setPaymentMethod] = useState<'cod' | 'wallet'>('cod');
+  const [isFirstPurchase, setIsFirstPurchase] = useState(false);
+  
+  // Calculate totals based on first purchase or repurchase
+  const { totalAmount, totalPV, totalBV, totalRP } = useMemo(() => {
+    let totalAmount = 0;
+    let totalPV = 0;
+    let totalBV = 0;
+    let totalRP = 0;
+
+    items.forEach(item => {
+      const unitPrice = isFirstPurchase 
+        ? (item.sellingPrice || item.discountPrice || item.price)
+        : (item.repurchaseSellingPrice || item.sellingPrice || item.discountPrice || item.price);
+      
+      totalAmount += unitPrice * item.quantity;
+      totalPV += (item.pv || 0) * item.quantity;
+      
+      const bv = isFirstPurchase ? (item.firstPurchaseBV || item.bv || 0) : (item.bv || 0);
+      const rp = isFirstPurchase ? (item.firstPurchaseRP || item.rp || 0) : (item.rp || 0);
+      
+      totalBV += bv * item.quantity;
+      totalRP += rp * item.quantity;
+    });
+
+    return { totalAmount, totalPV, totalBV, totalRP };
+  }, [items, isFirstPurchase]);
   const [walletData, setWalletData] = useState<{
     purchaseWallet: number;
     commissionWallet: number;
@@ -34,8 +61,56 @@ const Checkout: React.FC = () => {
   });
 
   useEffect(() => {
-    // Redirect if cart is empty
-    if (items.length === 0) {
+    // Check if this is first purchase from location state
+    const state = location.state as any;
+    if (state?.isFirstPurchase) {
+      setIsFirstPurchase(true);
+      setPaymentMethod('wallet'); // Force wallet payment for first purchase
+    }
+
+    // Check first purchase status from API
+    const checkFirstPurchaseStatus = async () => {
+      try {
+        const response = await productsAPI.checkFirstPurchase();
+        if (response.success && !response.data.hasMadeFirstPurchase) {
+          setIsFirstPurchase(true);
+          setPaymentMethod('wallet');
+        }
+      } catch (error) {
+        console.error('Failed to check first purchase status:', error);
+      }
+    };
+
+    checkFirstPurchaseStatus();
+
+    // If products are passed from FirstPurchase page, add them to cart
+    if (state?.products && Array.isArray(state.products)) {
+      state.products.forEach((product: any) => {
+        // Add to cart if not already present
+        const exists = items.find(item => item.productId === product._id);
+        if (!exists) {
+          addItem({
+            productId: product._id,
+            name: product.name,
+            price: product.price,
+            discountPrice: product.discountPrice,
+            sellingPrice: product.sellingPrice,
+            quantity: product.quantity || 1,
+            image: product.images?.[0],
+            pv: product.pv,
+            bv: product.bv,
+            rp: product.rp,
+            firstPurchaseBV: product.firstPurchaseBV,
+            firstPurchaseRP: product.firstPurchaseRP,
+            repurchaseSellingPrice: product.repurchaseSellingPrice,
+            inStock: product.inStock !== false
+          });
+        }
+      });
+    }
+
+    // Redirect if cart is empty and no products in state
+    if (items.length === 0 && !state?.products) {
       navigate('/products');
       return;
     }
@@ -49,7 +124,7 @@ const Checkout: React.FC = () => {
 
     // Fetch wallet data
     fetchWalletData();
-  }, [items, navigate]);
+  }, [items, navigate, location, addItem]);
 
   const fetchWalletData = async () => {
     try {
@@ -127,18 +202,34 @@ const Checkout: React.FC = () => {
 
       let response;
       if (paymentMethod === 'wallet') {
-        response = await productsAPI.createWalletOrder(orderData);
+        response = await productsAPI.createWalletOrder({
+          ...orderData,
+          isFirstPurchase: isFirstPurchase
+        });
       } else {
         response = await productsAPI.createOrder({
           ...orderData,
-          paymentMethod: 'COD'
+          paymentMethod: 'COD',
+          isFirstPurchase: isFirstPurchase
         });
       }
       
       if (response.success) {
         clearCart();
-        toast.success(`Order placed successfully! ${paymentMethod === 'wallet' ? 'Payment deducted from wallet.' : 'You will pay on delivery.'}`);
-        navigate('/user/online-orders');
+        const successMessage = isFirstPurchase && response.isFirstPurchase
+          ? 'Order placed successfully! Your account has been activated. Payment deducted from wallet.'
+          : `Order placed successfully! ${paymentMethod === 'wallet' ? 'Payment deducted from wallet.' : 'You will pay on delivery.'}`;
+        
+        toast.success(successMessage);
+        
+        if (isFirstPurchase && response.isFirstPurchase) {
+          // Redirect to dashboard after first purchase
+          setTimeout(() => {
+            navigate('/user/dashboard');
+          }, 2000);
+        } else {
+          navigate('/user/online-orders');
+        }
         
         // Refresh wallet data if wallet payment was used
         if (paymentMethod === 'wallet') {
@@ -180,40 +271,103 @@ const Checkout: React.FC = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {items.map((item) => (
-                  <div key={item.productId} className="flex items-center gap-4 p-4 border rounded-lg">
-                    <div className="w-16 h-16 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
-                      {item.image ? (
-                        <img 
-                          src={item.image} 
-                          alt={item.name}
-                          className="w-full h-full object-cover rounded-md"
-                        />
-                      ) : (
-                        <ShoppingCart className="h-6 w-6 text-muted-foreground" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium">{item.name}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-primary font-semibold">
-                          ₹{item.discountPrice || item.price}
-                        </span>
-                        {item.pv && (
-                          <Badge variant="secondary" className="text-xs">
-                            {item.pv} PV
-                          </Badge>
+                {items.map((item) => {
+                  const unitPrice = isFirstPurchase 
+                    ? (item.sellingPrice || item.discountPrice || item.price)
+                    : (item.repurchaseSellingPrice || item.sellingPrice || item.discountPrice || item.price);
+                  const bv = isFirstPurchase ? (item.firstPurchaseBV || item.bv || 0) : (item.bv || 0);
+                  const rp = isFirstPurchase ? (item.firstPurchaseRP || item.rp || 0) : (item.rp || 0);
+                  
+                  return (
+                    <div key={item.productId} className="flex items-center gap-4 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
+                      <div className="w-16 h-16 rounded-md bg-muted flex items-center justify-center flex-shrink-0">
+                        {item.image ? (
+                          <img 
+                            src={item.image} 
+                            alt={item.name}
+                            className="w-full h-full object-cover rounded-md"
+                          />
+                        ) : (
+                          <ShoppingCart className="h-6 w-6 text-muted-foreground" />
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-medium truncate">{item.name}</h4>
+                        <div className="flex items-center gap-2 mt-1 flex-wrap">
+                          <span className="text-primary font-semibold">
+                            ₹{unitPrice.toFixed(2)}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            {item.pv && (
+                              <Badge variant="secondary" className="text-xs">
+                                {item.pv} PV
+                              </Badge>
+                            )}
+                            {bv > 0 && (
+                              <Badge variant="outline" className="text-xs">
+                                {bv} BV
+                              </Badge>
+                            )}
+                            {rp > 0 && (
+                              <Badge variant="outline" className="text-xs">
+                                {rp} RP
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                        {/* Quantity Controls */}
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center gap-1 border rounded-md">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 w-7 p-0"
+                              onClick={() => {
+                                if (item.quantity > 1) {
+                                  updateQuantity(item.productId, item.quantity - 1);
+                                } else {
+                                  removeItem(item.productId);
+                                }
+                              }}
+                            >
+                              <Minus className="h-3 w-3" />
+                            </Button>
+                            <span className="px-2 py-1 text-sm font-medium min-w-[2rem] text-center">
+                              {item.quantity}
+                            </span>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 w-7 p-0"
+                              onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                            >
+                              <Plus className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            onClick={() => removeItem(item.productId)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Remove
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="font-semibold text-lg">
+                          ₹{(unitPrice * item.quantity).toFixed(2)}
+                        </p>
+                        {item.quantity > 1 && (
+                          <p className="text-xs text-muted-foreground">
+                            {item.quantity} × ₹{unitPrice.toFixed(2)}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-semibold">
-                        ₹{((item.discountPrice || item.price) * item.quantity).toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </CardContent>
             </Card>
 
@@ -299,10 +453,28 @@ const Checkout: React.FC = () => {
                 <CardTitle className="flex items-center gap-2">
                   <CreditCard className="h-5 w-5" />
                   Payment Method
+                  {isFirstPurchase && (
+                    <Badge className="bg-amber-500 text-white ml-2">First Purchase</Badge>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <RadioGroup value={paymentMethod} onValueChange={(value) => setPaymentMethod(value as 'cod' | 'wallet')}>
+                {isFirstPurchase && (
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg mb-4">
+                    <p className="text-sm text-amber-800">
+                      <strong>First Purchase:</strong> This purchase will activate your account. Payment must be made using wallet balance.
+                    </p>
+                  </div>
+                )}
+                <RadioGroup 
+                  value={paymentMethod} 
+                  onValueChange={(value) => {
+                    if (!isFirstPurchase) {
+                      setPaymentMethod(value as 'cod' | 'wallet');
+                    }
+                  }}
+                  disabled={isFirstPurchase}
+                >
                   {/* Cash on Delivery Option */}
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="cod" id="cod" />
@@ -394,6 +566,18 @@ const Checkout: React.FC = () => {
                     <span>Total PV</span>
                     <span>{totalPV} PV</span>
                   </div>
+                  {totalBV > 0 && (
+                    <div className="flex justify-between">
+                      <span>Total BV</span>
+                      <span>{totalBV} BV</span>
+                    </div>
+                  )}
+                  {totalRP > 0 && (
+                    <div className="flex justify-between">
+                      <span>Total RP</span>
+                      <span>{totalRP} RP</span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span>Shipping</span>
                     <span className="text-green-600">Free</span>

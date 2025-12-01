@@ -19,6 +19,7 @@ interface UserSettings {
 
 const UserSettings = () => {
   const [loading, setLoading] = useState(false);
+  const [settingsLoading, setSettingsLoading] = useState(true);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   
@@ -36,6 +37,24 @@ const UserSettings = () => {
     confirmPassword: ''
   });
 
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      setSettingsLoading(true);
+      const response = await authAPI.getUserSettings();
+      if (response.success && response.data) {
+        setSettings(response.data);
+      }
+    } catch (error: any) {
+      console.error('Failed to load settings:', error);
+    } finally {
+      setSettingsLoading(false);
+    }
+  };
+
   const handleSettingsChange = (key: keyof UserSettings, value: boolean | string) => {
     setSettings(prev => ({
       ...prev,
@@ -46,10 +65,12 @@ const UserSettings = () => {
   const saveSettings = async () => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success('Settings saved successfully!');
-    } catch (error) {
-      toast.error('Failed to save settings');
+      const response = await authAPI.updateUserSettings(settings);
+      if (response.success) {
+        toast.success('Settings saved successfully!');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to save settings');
     } finally {
       setLoading(false);
     }
@@ -68,15 +89,21 @@ const UserSettings = () => {
 
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success('Password changed successfully!');
-      setPasswordForm({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
+      const response = await authAPI.changePassword({
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword
       });
-    } catch (error) {
-      toast.error('Failed to change password');
+      
+      if (response.success) {
+        toast.success('Password changed successfully!');
+        setPasswordForm({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to change password');
     } finally {
       setLoading(false);
     }
@@ -236,6 +263,7 @@ const UserSettings = () => {
                       onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
                       placeholder="Enter current password"
                       className="border-emerald-200/50 bg-white/80 backdrop-blur-sm ring-1 ring-amber-400/10"
+                      disabled={loading}
                     />
                     <Button
                       type="button"
@@ -292,10 +320,10 @@ const UserSettings = () => {
               >
                 <Button
                   onClick={changePassword}
-                  disabled={loading || !passwordForm.currentPassword || !passwordForm.newPassword}
+                  disabled={loading || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
                   className="bg-gradient-to-r from-emerald-600 to-amber-500 hover:from-emerald-700 hover:to-amber-600 text-white shadow-lg ring-1 ring-amber-300/30"
                 >
-                  Update Password
+                  {loading ? 'Updating...' : 'Update Password'}
                 </Button>
               </motion.div>
             </CardContent>

@@ -18,6 +18,20 @@ export interface Product {
   createdBy?: string; // User ID who created the product
   createdByType?: 'admin' | 'user'; // Track if created by admin or user
   stock?: number; // Product stock
+  // New fields
+  sellingPrice?: number;
+  firstPurchaseBV?: number;
+  firstPurchaseRP?: number;
+  rp?: number;
+  repurchaseRate?: number;
+  repurchaseSellingPrice?: number;
+  repurchaseTaxPercentage?: number;
+  repurchaseTax?: number;
+  repurchaseMRP?: number;
+  repurchaseDiscountPercentage?: number;
+  repurchaseDiscountAmount?: number;
+  taxPercentage?: number;
+  discountPercentage?: number;
 }
 
 export interface ProductsResponse {
@@ -106,9 +120,14 @@ export const productsAPI = {
       pincode: string;
       phone: string;
     };
+    isFirstPurchase?: boolean;
   }) => {
     const token = localStorage.getItem('token');
-    const response = await fetch(`${API_BASE_URL}/orders/wallet`, {
+    const endpoint = orderData.isFirstPurchase 
+      ? `${API_BASE_URL}/orders/first-purchase`
+      : `${API_BASE_URL}/orders/wallet`;
+    
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -120,6 +139,23 @@ export const productsAPI = {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to create wallet order');
+    }
+    
+    return response.json();
+  },
+
+  // Check if user has made first purchase
+  checkFirstPurchase: async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_BASE_URL}/orders/check-first-purchase`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to check first purchase status');
     }
     
     return response.json();
@@ -137,6 +173,40 @@ export const productsAPI = {
     
     if (!response.ok) {
       throw new Error('Failed to fetch orders');
+    }
+    
+    return response.json();
+  },
+
+  // Get online orders with stats
+  getOnlineOrders: async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_BASE_URL}/orders/user/online-orders`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch online orders');
+    }
+    
+    return response.json();
+  },
+
+  // Get self repurchase data
+  getSelfRepurchase: async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_BASE_URL}/orders/user/self-repurchase`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch self repurchase data');
     }
     
     return response.json();

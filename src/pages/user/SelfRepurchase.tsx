@@ -1,222 +1,298 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { RotateCcw, TrendingUp, Calendar, Target } from 'lucide-react';
+import { RotateCcw, TrendingUp, Calendar, Target, DollarSign, Package, RefreshCw } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
+import productsAPI from '@/api/products';
+
+interface RepurchaseData {
+  totalRepurchaseAmount: number;
+  totalRepurchaseVolume: number;
+  totalRepurchasePV: number;
+  totalOrders: number;
+  monthlyHistory: Array<{
+    month: string;
+    amount: number;
+    volume: number;
+    orders: number;
+  }>;
+  orders: Array<{
+    _id: string;
+    orderNumber: string;
+    totalAmount: number;
+    totalBV: number;
+    totalPV: number;
+    createdAt: string;
+    status: string;
+  }>;
+}
 
 const SelfRepurchase: React.FC = () => {
-  const repurchaseHistory = [
-    {
-      date: '2024-11-01',
-      amount: 2500,
-      volume: 2500,
-      status: 'Completed'
-    },
-    {
-      date: '2024-10-01',
-      amount: 2000,
-      volume: 2000,
-      status: 'Completed'
-    },
-    {
-      date: '2024-09-01',
-      amount: 1500,
-      volume: 1500,
-      status: 'Completed'
-    }
-  ];
+  const [data, setData] = useState<RepurchaseData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const totalRepurchase = repurchaseHistory.reduce((sum, item) => sum + item.amount, 0);
-  const totalVolume = repurchaseHistory.reduce((sum, item) => sum + item.volume, 0);
+  useEffect(() => {
+    fetchRepurchaseData();
+  }, []);
+
+  const fetchRepurchaseData = async () => {
+    try {
+      setLoading(true);
+      const response = await productsAPI.getSelfRepurchase();
+      
+      if (response.success && response.data) {
+        setData(response.data);
+      } else {
+        // Set default data
+        setData({
+          totalRepurchaseAmount: 0,
+          totalRepurchaseVolume: 0,
+          totalRepurchasePV: 0,
+          totalOrders: 0,
+          monthlyHistory: [],
+          orders: []
+        });
+      }
+    } catch (error: any) {
+      console.error('Failed to load repurchase data:', error);
+      toast.error('Failed to load repurchase data');
+      // Set default data on error
+      setData({
+        totalRepurchaseAmount: 0,
+        totalRepurchaseVolume: 0,
+        totalRepurchasePV: 0,
+        totalOrders: 0,
+        monthlyHistory: [],
+        orders: []
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 2
+    }).format(amount);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const formatMonth = (monthString: string) => {
+    const [year, month] = monthString.split('-');
+    const date = new Date(parseInt(year), parseInt(month) - 1);
+    return date.toLocaleDateString('en-IN', { year: 'numeric', month: 'long' });
+  };
 
   return (
     <div className="p-6 space-y-6 bg-gradient-to-br from-emerald-50/30 via-white to-emerald-50/20 min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center space-x-3"
+        className="flex items-center justify-between"
       >
-        <div className="p-2 bg-gradient-to-br from-emerald-500/20 to-amber-500/20 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20">
-          <RotateCcw className="h-8 w-8 text-emerald-600" />
+        <div className="flex items-center space-x-3">
+          <div className="p-2 bg-gradient-to-br from-emerald-500/20 to-amber-500/20 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20">
+            <RotateCcw className="h-8 w-8 text-emerald-600" />
+          </div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">
+            Self Total Repurchase
+          </h1>
         </div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">
-          Self Total Repurchase
-        </h1>
+        <button
+          onClick={fetchRepurchaseData}
+          className="p-2 hover:bg-emerald-100 rounded-lg transition-colors"
+        >
+          <RefreshCw className={`h-5 w-5 text-emerald-600 ${loading ? 'animate-spin' : ''}`} />
+        </button>
       </motion.div>
       
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          whileHover={{ scale: 1.02, y: -5 }}
-        >
-          <Card className="border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-300 ring-1 ring-amber-400/10 hover:ring-amber-400/30">
-            <CardContent className="p-6 text-center">
-              <motion.div
-                className="p-3 bg-gradient-to-br from-emerald-500/20 to-amber-500/20 rounded-xl backdrop-blur-sm ring-1 ring-amber-300/30 w-fit mx-auto mb-4"
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
-              >
-                <TrendingUp className="h-8 w-8 text-emerald-600" />
-              </motion.div>
-              <p className="text-2xl font-bold text-emerald-700">₹{totalRepurchase.toLocaleString()}</p>
-              <p className="text-sm text-emerald-800 font-medium">Total Repurchase</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          whileHover={{ scale: 1.02, y: -5 }}
-        >
-          <Card className="border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-300 ring-1 ring-amber-400/10 hover:ring-amber-400/30">
-            <CardContent className="p-6 text-center">
-              <motion.div
-                className="p-3 bg-gradient-to-br from-emerald-500/20 to-amber-500/20 rounded-xl backdrop-blur-sm ring-1 ring-amber-300/30 w-fit mx-auto mb-4"
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
-              >
-                <Target className="h-8 w-8 text-emerald-600" />
-              </motion.div>
-              <p className="text-2xl font-bold text-emerald-700">{totalVolume.toLocaleString()}</p>
-              <p className="text-sm text-emerald-800 font-medium">Total Volume</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          whileHover={{ scale: 1.02, y: -5 }}
-        >
-          <Card className="border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-300 ring-1 ring-amber-400/10 hover:ring-amber-400/30">
-            <CardContent className="p-6 text-center">
-              <motion.div
-                className="p-3 bg-gradient-to-br from-emerald-500/20 to-amber-500/20 rounded-xl backdrop-blur-sm ring-1 ring-amber-300/30 w-fit mx-auto mb-4"
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
-              >
-                <Calendar className="h-8 w-8 text-emerald-600" />
-              </motion.div>
-              <p className="text-2xl font-bold text-emerald-700">{repurchaseHistory.length}</p>
-              <p className="text-sm text-emerald-800 font-medium">Total Months</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          whileHover={{ scale: 1.02, y: -5 }}
-        >
-          <Card className="border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-300 ring-1 ring-amber-400/10 hover:ring-amber-400/30">
-            <CardContent className="p-6 text-center">
-              <motion.div
-                className="p-3 bg-gradient-to-br from-emerald-500/20 to-amber-500/20 rounded-xl backdrop-blur-sm ring-1 ring-amber-300/30 w-fit mx-auto mb-4"
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
-              >
-                <RotateCcw className="h-8 w-8 text-emerald-600" />
-              </motion.div>
-              <p className="text-2xl font-bold text-emerald-700">₹2,500</p>
-              <p className="text-sm text-emerald-800 font-medium">Last Repurchase</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
-      
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-      >
-        <Card className="border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg ring-1 ring-amber-400/10">
-          <CardHeader>
-            <CardTitle className="text-xl text-emerald-900">Repurchase History</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {repurchaseHistory.map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 + index * 0.1 }}
-                >
-                  <Card className="border-emerald-200/50 bg-white/60 backdrop-blur-md shadow-md ring-1 ring-amber-400/10 hover:shadow-lg transition-all duration-300">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="p-2 bg-gradient-to-br from-emerald-500/20 to-amber-500/20 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/30">
-                            <RotateCcw className="h-6 w-6 text-emerald-600" />
-                          </div>
-                          <div>
-                            <h3 className="font-bold text-emerald-900">Monthly Repurchase</h3>
-                            <div className="flex items-center space-x-2 mt-1">
-                              <Calendar className="h-4 w-4 text-emerald-600" />
-                              <span className="text-sm text-emerald-700">{item.date}</span>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center space-x-6">
-                          <div className="text-center">
-                            <p className="font-bold text-emerald-700">₹{item.amount.toLocaleString()}</p>
-                            <p className="text-sm text-emerald-700/70">Amount</p>
-                          </div>
-                          <div className="text-center">
-                            <p className="font-bold text-emerald-700">{item.volume.toLocaleString()}</p>
-                            <p className="text-sm text-emerald-700/70">Volume</p>
-                          </div>
-                          <Badge className="bg-gradient-to-r from-emerald-600 to-amber-500 text-white ring-1 ring-amber-300/30 backdrop-blur-sm">
-                            {item.status}
+      {loading ? (
+        <div className="text-center py-8">Loading...</div>
+      ) : data ? (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total Repurchase</CardTitle>
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-emerald-600">
+                    {formatCurrency(data.totalRepurchaseAmount)}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {data.totalOrders} orders
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total Volume (BV)</CardTitle>
+                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {data.totalRepurchaseVolume.toLocaleString('en-IN')}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Business Volume
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total PV</CardTitle>
+                  <Package className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-purple-600">
+                    {data.totalRepurchasePV.toLocaleString('en-IN')}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Product Value
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+                  <Target className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-orange-600">
+                    {data.totalOrders}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Repurchase orders
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+
+          {/* Monthly History */}
+          {data.monthlyHistory && data.monthlyHistory.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Calendar className="h-5 w-5 mr-2" />
+                  Monthly Repurchase History
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {data.monthlyHistory.map((month, index) => (
+                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div>
+                        <p className="font-medium">{formatMonth(month.month)}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {month.orders} order{month.orders !== 1 ? 's' : ''}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-emerald-600">
+                          {formatCurrency(month.amount)}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          BV: {month.volume.toLocaleString('en-IN')}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Recent Orders */}
+          {data.orders && data.orders.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Repurchase Orders</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {data.orders.slice(0, 10).map((order) => (
+                    <div key={order._id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div>
+                        <p className="font-medium">Order #{order.orderNumber}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {formatDate(order.createdAt)}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-emerald-600">
+                          {formatCurrency(order.totalAmount)}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge className="bg-blue-100 text-blue-800">
+                            BV: {order.totalBV?.toLocaleString('en-IN') || 0}
+                          </Badge>
+                          <Badge className="bg-purple-100 text-purple-800">
+                            PV: {order.totalPV?.toLocaleString('en-IN') || 0}
                           </Badge>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {(!data.monthlyHistory || data.monthlyHistory.length === 0) && 
+           (!data.orders || data.orders.length === 0) && (
+            <Card>
+              <CardContent className="text-center py-8 text-muted-foreground">
+                No repurchase data available
+              </CardContent>
+            </Card>
+          )}
+        </>
+      ) : (
+        <Card>
+          <CardContent className="text-center py-8 text-muted-foreground">
+            Failed to load repurchase data
           </CardContent>
         </Card>
-      </motion.div>
-      
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-      >
-        <Card className="border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg ring-1 ring-amber-400/10">
-          <CardContent className="p-6">
-            <h3 className="font-bold text-emerald-900 mb-4">Repurchase Benefits</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <h4 className="font-bold text-emerald-800 mb-2">Volume Benefits:</h4>
-                <ul className="text-emerald-800 text-sm space-y-1">
-                  <li>• Maintain active status</li>
-                  <li>• Qualify for bonuses</li>
-                  <li>• Team volume contribution</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-bold text-emerald-800 mb-2">Earning Benefits:</h4>
-                <ul className="text-emerald-800 text-sm space-y-1">
-                  <li>• Continue commission earnings</li>
-                  <li>• Rank maintenance</li>
-                  <li>• Leadership bonuses</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+      )}
     </div>
   );
 };

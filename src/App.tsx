@@ -45,10 +45,17 @@ import SelfRepurchase from "./pages/user/SelfRepurchase";
 import GenerateTickets from "./pages/user/GenerateTickets";
 
 // Submenu Pages
-import PurchaseHistory from "./pages/user/PurchaseHistory";
-import PendingOrders from "./pages/user/PendingOrders";
 import DirectReferrals from "./pages/user/DirectReferrals";
 import TeamStructure from "./pages/user/TeamStructure";
+import MyTeam from "./pages/user/MyTeam";
+import DirectTeam from "./pages/user/DirectTeam";
+import TeamReport from "./pages/user/TeamReport";
+import TeamPerformance from "./pages/user/TeamPerformance";
+import TeamSales from "./pages/user/TeamSales";
+import TeamIncome from "./pages/user/TeamIncome";
+import TeamBonus from "./pages/user/TeamBonus";
+import TeamRank from "./pages/user/TeamRank";
+import TeamStatus from "./pages/user/TeamStatus";
 import WalletBalance from "./pages/user/WalletBalance";
 import Transactions from "./pages/user/Transactions";
 import Withdraw from "./pages/user/Withdraw";
@@ -58,6 +65,17 @@ import EditProfile from "./pages/user/EditProfile";
 import ChangePassword from "./pages/user/ChangePassword";
 import UserProducts from "./pages/user/UserProducts";
 import Checkout from "./pages/Checkout";
+import MatchingBonus from "./pages/user/MatchingBonus";
+import WelcomeBonus from "./pages/user/WelcomeBonus";
+import AdditionalBonus from "./pages/user/AdditionalBonus";
+import RoyaltyBonus from "./pages/user/RoyaltyBonus";
+import MentorshipBonus from "./pages/user/MentorshipBonus";
+import Cashback from "./pages/user/Cashback";
+import Rewards from "./pages/user/Rewards";
+import MonthlyPurchaseBonus from "./pages/user/MonthlyPurchaseBonus";
+import RankSummary from "./pages/user/RankSummary";
+import UpdateKyc from "./pages/user/UpdateKyc";
+import WalletRequest from "./pages/user/WalletRequest";
 
 const queryClient = new QueryClient();
 
@@ -123,16 +141,33 @@ const App = () => (
               <Route path="settings" element={<UserSettings />} />
               
               {/* Submenu Pages */}
-              <Route path="purchase-history" element={<PurchaseHistory />} />
-              <Route path="pending-orders" element={<PendingOrders />} />
-              <Route path="direct-referrals" element={<DirectReferrals />} />
+              <Route path="my-team" element={<MyTeam />} />
+              <Route path="direct-team" element={<DirectTeam />} />
               <Route path="team-structure" element={<TeamStructure />} />
+              <Route path="team-report" element={<TeamReport />} />
+              <Route path="team-performance" element={<TeamPerformance />} />
+              <Route path="team-sales" element={<TeamSales />} />
+              <Route path="team-income" element={<TeamIncome />} />
+              <Route path="team-bonus" element={<TeamBonus />} />
+              <Route path="team-rank" element={<TeamRank />} />
+              <Route path="team-status" element={<TeamStatus />} />
               <Route path="wallet-balance" element={<WalletBalance />} />
+              <Route path="wallet-request" element={<WalletRequest />} />
               <Route path="transactions" element={<Transactions />} />
               <Route path="withdraw" element={<Withdraw />} />
               <Route path="income-history" element={<IncomeHistoryDetails />} />
               <Route path="bonus-details" element={<BonusDetails />} />
+              <Route path="matching-bonus" element={<MatchingBonus />} />
+              <Route path="welcome-bonus" element={<WelcomeBonus />} />
+              <Route path="additional-bonus" element={<AdditionalBonus />} />
+              <Route path="royalty-bonus" element={<RoyaltyBonus />} />
+              <Route path="mentorship-bonus" element={<MentorshipBonus />} />
+              <Route path="cashback" element={<Cashback />} />
+              <Route path="rewards" element={<Rewards />} />
+              <Route path="monthly-purchase-bonus" element={<MonthlyPurchaseBonus />} />
+              <Route path="rank-summary" element={<RankSummary />} />
               <Route path="edit-profile" element={<EditProfile />} />
+              <Route path="update-kyc" element={<UpdateKyc />} />
               <Route path="change-password" element={<ChangePassword />} />
             </Route>
 

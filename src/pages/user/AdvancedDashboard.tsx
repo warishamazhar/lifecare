@@ -18,6 +18,7 @@ interface DashboardStats {
     registrationDate?: string;
     rank?: string;
     status?: string;
+    profileImage?: string;
   };
   wallets: {
     purchaseWallet: number;
@@ -35,6 +36,28 @@ interface DashboardStats {
     target: number;
     achieved: number;
   };
+  // Comprehensive stats
+  myDirects?: number;
+  myTeam?: number;
+  leftBV?: number;
+  rightBV?: number;
+  leftBVCurrent?: number;
+  rightBVCurrent?: number;
+  leftBVMonth?: number;
+  rightBVMonth?: number;
+  leftRP?: number;
+  rightRP?: number;
+  matchingBonus?: number;
+  additionalBonus?: number;
+  welcomeBonus?: number;
+  mentorshipBonus?: number;
+  royaltyBonus?: number;
+  monthlyPurchaseBonus?: number;
+  totalIncome?: number;
+  cashbackWallet?: number;
+  shoppingWallet?: number;
+  earningWallet?: number;
+  repurchaseWallet?: number;
 }
 
 // Animation variants removed - using direct motion props instead
@@ -90,8 +113,11 @@ const AdvancedDashboard: React.FC = () => {
     }).format(amount);
   };
 
-  const formatNumber = (num: number) => {
-    return new Intl.NumberFormat('en-IN').format(num);
+  const formatNumber = (num: number, decimals: number = 0) => {
+    return new Intl.NumberFormat('en-IN', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    }).format(num);
   };
 
   if (loading) {
@@ -213,7 +239,7 @@ const AdvancedDashboard: React.FC = () => {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <Avatar className="h-20 w-20 ring-4 ring-amber-600/50 shadow-xl bg-white/20 backdrop-blur-sm border-2 border-amber-500/40">
-                    <AvatarImage src="/api/placeholder/80/80" />
+                    <AvatarImage src={stats?.user?.profileImage || undefined} />
                     <AvatarFallback className="bg-gradient-to-br from-amber-600/60 to-yellow-600/60 text-white text-2xl font-bold backdrop-blur-sm">
                       {stats?.user?.name?.charAt(0) || 'U'}
                     </AvatarFallback>
@@ -390,7 +416,7 @@ const AdvancedDashboard: React.FC = () => {
                   </motion.div>
                   <ArrowRight className="h-5 w-5 opacity-50 text-amber-200" />
                 </div>
-                <p className="text-white/90 text-sm font-medium mb-1">Purchase Wallet</p>
+                <p className="text-white/90 text-sm font-medium mb-1">Shopping Wallet</p>
                 <motion.p 
                   className="text-3xl font-bold"
                   initial={{ opacity: 0, scale: 0.5 }}
@@ -420,7 +446,7 @@ const AdvancedDashboard: React.FC = () => {
                   </motion.div>
                   <ArrowRight className="h-5 w-5 opacity-50 text-amber-200" />
                 </div>
-                <p className="text-white/90 text-sm font-medium mb-1">Commission Wallet</p>
+                <p className="text-white/90 text-sm font-medium mb-1">Earned Wallet</p>
                 <motion.p 
                   className="text-3xl font-bold"
                   initial={{ opacity: 0, scale: 0.5 }}
@@ -465,22 +491,20 @@ const AdvancedDashboard: React.FC = () => {
         </div>
       </motion.div>
 
-      {/* Team Statistics - Glass Cards with Animation */}
+      {/* Comprehensive Dashboard Cards */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
+        className="space-y-6"
       >
-        <h3 className="text-xl font-bold text-emerald-800 mb-4 flex items-center">
-          <Users className="h-5 w-5 mr-2 text-emerald-600" />
-          Team Statistics
-        </h3>
+        {/* Row 1: Green Cards - My Directs, My Team, Left BV, Right BV */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'My Directs', value: stats?.team?.directs || 0, icon: Users },
-            { label: 'Total Team', value: formatNumber(stats?.team?.totalTeam || 0), icon: Users },
-            { label: 'Left BV', value: formatNumber(stats?.team?.leftBV || 0), icon: TrendingUp },
-            { label: 'Right BV', value: formatNumber(stats?.team?.rightBV || 0), icon: TrendingUp },
+            { label: 'My Directs', value: stats?.myDirects || stats?.team?.directs || 0, icon: Users, color: 'bg-green-500' },
+            { label: 'My Team', value: formatNumber(stats?.myTeam || stats?.team?.totalTeam || 0), icon: Users, color: 'bg-green-500' },
+            { label: 'Left BV', value: formatNumber(stats?.leftBV || stats?.team?.leftBV || 0, 2), icon: BarChart3, color: 'bg-green-500' },
+            { label: 'Right BV', value: formatNumber(stats?.rightBV || stats?.team?.rightBV || 0, 2), icon: BarChart3, color: 'bg-green-500' },
           ].map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -489,7 +513,7 @@ const AdvancedDashboard: React.FC = () => {
               whileHover={{ scale: 1.02, y: -5 }}
               transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
             >
-              <Card className="border border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-amber-500 ring-1 ring-amber-400/10">
+              <Card className={`border border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-amber-400/10 hover:ring-amber-400/30`}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-3">
                     <motion.div 
@@ -513,6 +537,203 @@ const AdvancedDashboard: React.FC = () => {
               </Card>
             </motion.div>
           ))}
+        </div>
+
+        {/* Row 2: Yellow Cards - Left BV Current, Right BV Current, Left BV Month, Right BV Month */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Left BV Current', value: formatNumber(stats?.leftBVCurrent || 0, 2), icon: BarChart3, color: 'bg-yellow-500' },
+            { label: 'Right BV Current', value: formatNumber(stats?.rightBVCurrent || 0, 2), icon: BarChart3, color: 'bg-yellow-500' },
+            { label: 'Left BV Month', value: formatNumber(stats?.leftBVMonth || 0, 2), icon: BarChart3, color: 'bg-yellow-500' },
+            { label: 'Right BV Month', value: formatNumber(stats?.rightBVMonth || 0, 2), icon: BarChart3, color: 'bg-yellow-500' },
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ scale: 1, y: 0, opacity: 0 }}
+              animate={{ opacity: 1 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+              transition={{ duration: 0.3, delay: 0.6 + index * 0.1 }}
+            >
+              <Card className="border border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-amber-400/10 hover:ring-amber-400/30">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <motion.div 
+                      className="p-2 bg-gradient-to-br from-emerald-100/50 to-amber-100/40 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                    >
+                      <stat.icon className="h-5 w-5 text-emerald-600" />
+                    </motion.div>
+                    <TrendingUp className="h-4 w-4 text-amber-500" />
+                  </div>
+                  <p className="text-emerald-700/70 text-sm font-medium mb-1">{stat.label}</p>
+                  <motion.p 
+                    className="text-3xl font-bold text-emerald-800"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9 + index * 0.1 }}
+                  >
+                    {stat.value}
+                  </motion.p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Row 3: Green and Purple Cards - Left RP, Right RP, Matching Bonus, Additional Bonus */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Left RP', value: formatNumber(stats?.leftRP || 0, 2), icon: BarChart3, borderColor: 'border-emerald-200/50' },
+            { label: 'Right RP', value: formatNumber(stats?.rightRP || 0, 2), icon: BarChart3, borderColor: 'border-emerald-200/50' },
+            { label: 'Matching Bonus', value: formatCurrency(stats?.matchingBonus || 0), icon: Award, borderColor: 'border-purple-200/50' },
+            { label: 'Additional Bonus', value: formatCurrency(stats?.additionalBonus || 0), icon: Award, borderColor: 'border-purple-200/50' },
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ scale: 1, y: 0, opacity: 0 }}
+              animate={{ opacity: 1 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+              transition={{ duration: 0.3, delay: 0.7 + index * 0.1 }}
+            >
+              <Card className={`border ${stat.borderColor} bg-white/70 backdrop-blur-xl shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-amber-400/10 hover:ring-amber-400/30`}>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <motion.div 
+                      className="p-2 bg-gradient-to-br from-emerald-100/50 to-amber-100/40 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                    >
+                      <stat.icon className="h-5 w-5 text-emerald-600" />
+                    </motion.div>
+                    <TrendingUp className="h-4 w-4 text-amber-500" />
+                  </div>
+                  <p className="text-emerald-700/70 text-sm font-medium mb-1">{stat.label}</p>
+                  <motion.p 
+                    className="text-3xl font-bold text-emerald-800"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.0 + index * 0.1 }}
+                  >
+                    {stat.value}
+                  </motion.p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Row 4: Magenta and Purple Cards - Welcome Bonus, Mentorship Bonus, Royalty Bonus, Monthly Purchase Bonus */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Welcome Bonus', value: formatCurrency(stats?.welcomeBonus || 0), icon: Award, borderColor: 'border-pink-200/50' },
+            { label: 'Mentorship Bonus', value: formatCurrency(stats?.mentorshipBonus || 0), icon: Award, borderColor: 'border-pink-200/50' },
+            { label: 'Royalty Bonus', value: formatCurrency(stats?.royaltyBonus || 0), icon: Award, borderColor: 'border-purple-200/50' },
+            { label: 'Monthly Purchase Bonus', value: formatCurrency(stats?.monthlyPurchaseBonus || 0), icon: Award, borderColor: 'border-purple-200/50' },
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ scale: 1, y: 0, opacity: 0 }}
+              animate={{ opacity: 1 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+              transition={{ duration: 0.3, delay: 0.8 + index * 0.1 }}
+            >
+              <Card className={`border ${stat.borderColor} bg-white/70 backdrop-blur-xl shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-amber-400/10 hover:ring-amber-400/30`}>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <motion.div 
+                      className="p-2 bg-gradient-to-br from-emerald-100/50 to-amber-100/40 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                    >
+                      <stat.icon className="h-5 w-5 text-emerald-600" />
+                    </motion.div>
+                    <TrendingUp className="h-4 w-4 text-amber-500" />
+                  </div>
+                  <p className="text-emerald-700/70 text-sm font-medium mb-1">{stat.label}</p>
+                  <motion.p 
+                    className="text-3xl font-bold text-emerald-800"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.1 + index * 0.1 }}
+                  >
+                    {stat.value}
+                  </motion.p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Row 5: Magenta and Yellow Cards - Total Income, Cashback Wallet, Shopping Wallet, Earning Wallet */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'Total Income', value: formatCurrency(stats?.totalIncome || 0), icon: Award, borderColor: 'border-pink-200/50' },
+            { label: 'Cashback Wallet', value: formatCurrency(stats?.cashbackWallet || 0), icon: Wallet, borderColor: 'border-yellow-200/50' },
+            { label: 'Shopping Wallet', value: formatCurrency(stats?.shoppingWallet || stats?.wallets?.purchaseWallet || 0), icon: Wallet, borderColor: 'border-yellow-200/50' },
+            { label: 'Earning Wallet', value: formatCurrency(stats?.earningWallet || stats?.wallets?.commissionWallet || 0), icon: Wallet, borderColor: 'border-yellow-200/50' },
+          ].map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ scale: 1, y: 0, opacity: 0 }}
+              animate={{ opacity: 1 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+              transition={{ duration: 0.3, delay: 0.9 + index * 0.1 }}
+            >
+              <Card className={`border ${stat.borderColor} bg-white/70 backdrop-blur-xl shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-amber-400/10 hover:ring-amber-400/30`}>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <motion.div 
+                      className="p-2 bg-gradient-to-br from-emerald-100/50 to-amber-100/40 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                    >
+                      <stat.icon className="h-5 w-5 text-emerald-600" />
+                    </motion.div>
+                    <TrendingUp className="h-4 w-4 text-amber-500" />
+                  </div>
+                  <p className="text-emerald-700/70 text-sm font-medium mb-1">{stat.label}</p>
+                  <motion.p 
+                    className="text-3xl font-bold text-emerald-800"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2 + index * 0.1 }}
+                  >
+                    {stat.value}
+                  </motion.p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Row 6: Yellow Card - Repurchase Wallet */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <motion.div
+            initial={{ scale: 1, y: 0, opacity: 0 }}
+            animate={{ opacity: 1 }}
+            whileHover={{ scale: 1.02, y: -5 }}
+            transition={{ duration: 0.3, delay: 1.0 }}
+          >
+            <Card className="border border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-md hover:shadow-xl transition-all duration-300 ring-1 ring-amber-400/10 hover:ring-amber-400/30">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <motion.div 
+                    className="p-2 bg-gradient-to-br from-emerald-100/50 to-amber-100/40 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                  >
+                    <Wallet className="h-5 w-5 text-emerald-600" />
+                  </motion.div>
+                  <TrendingUp className="h-4 w-4 text-amber-500" />
+                </div>
+                <p className="text-emerald-700/70 text-sm font-medium mb-1">Repurchase Wallet</p>
+                <motion.p 
+                  className="text-3xl font-bold text-emerald-800"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.3 }}
+                >
+                  {formatCurrency(stats?.repurchaseWallet || 0)}
+                </motion.p>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </motion.div>
 

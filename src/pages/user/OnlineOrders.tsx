@@ -47,30 +47,43 @@ const OnlineOrders: React.FC = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await productsAPI.getUserOrders();
+      const response = await productsAPI.getOnlineOrders();
       
       if (response.success) {
-        const ordersData = response.data;
+        const ordersData = response.data || [];
         setOrders(ordersData);
         
-        // Calculate stats
-        const totalAmount = ordersData.reduce((sum: number, order: Order) => sum + order.totalAmount, 0);
-        const totalOrders = ordersData.length;
-        const deliveredOrders = ordersData.filter((order: Order) => order.status === 'delivered').length;
-        const processingOrders = ordersData.filter((order: Order) => 
-          ['pending', 'confirmed', 'processing', 'shipped'].includes(order.status)
-        ).length;
-        
-        setStats({
-          totalAmount,
-          totalOrders,
-          deliveredOrders,
-          processingOrders
-        });
+        // Use stats from API if available, otherwise calculate
+        if (response.stats) {
+          setStats(response.stats);
+        } else {
+          const totalAmount = ordersData.reduce((sum: number, order: Order) => sum + (order.totalAmount || 0), 0);
+          const totalOrders = ordersData.length;
+          const deliveredOrders = ordersData.filter((order: Order) => 
+            order.status === 'delivered' || order.status === 'completed'
+          ).length;
+          const processingOrders = ordersData.filter((order: Order) => 
+            ['pending', 'confirmed', 'processing', 'shipped', 'ordered', 'packing', 'out for delivery'].includes(order.status?.toLowerCase())
+          ).length;
+          
+          setStats({
+            totalAmount,
+            totalOrders,
+            deliveredOrders,
+            processingOrders
+          });
+        }
       }
     } catch (error: any) {
       console.error('Error fetching orders:', error);
-      toast.error('Failed to load orders');
+      toast.error('Failed to load online orders');
+      // Set default stats on error
+      setStats({
+        totalAmount: 0,
+        totalOrders: 0,
+        deliveredOrders: 0,
+        processingOrders: 0
+      });
     } finally {
       setLoading(false);
     }
