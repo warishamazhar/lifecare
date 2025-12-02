@@ -17,7 +17,7 @@ interface UserProfile {
   isActive: boolean;
   wallets: {
     purchaseWallet: number;
-    commissionWallet: number;
+    earnedWallet: number;
     referralWallet: number;
   };
 }
@@ -214,7 +214,7 @@ const UserProfile = () => {
                 </div>
                 <div className="flex justify-between py-2 border-b border-emerald-200/50">
                   <span className="text-emerald-700/70">Earned Wallet:</span>
-                  <span className="font-bold text-emerald-800">₹{profile.wallets.commissionWallet}</span>
+                  <span className="font-bold text-emerald-800">₹{profile.wallets.earnedWallet}</span>
                 </div>
                 <div className="flex justify-between py-2">
                   <span className="text-emerald-700/70">Referral Wallet:</span>

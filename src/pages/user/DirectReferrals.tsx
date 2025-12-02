@@ -17,7 +17,7 @@ interface Referral {
   createdAt: string;
   wallets: {
     purchaseWallet: number;
-    commissionWallet: number;
+    earnedWallet: number;
     referralWallet: number;
   };
 }
@@ -46,7 +46,7 @@ const DirectReferrals: React.FC = () => {
         setStats({
           totalReferrals: response.stats?.total || referralsData.length || 0,
           activeThisMonth: response.stats?.active || referralsData.filter((r: Referral) => r.isActive).length || 0,
-          totalCommissions: referralsData.reduce((sum: number, r: Referral) => sum + (r.wallets?.commissionWallet || 0), 0)
+          totalCommissions: referralsData.reduce((sum: number, r: Referral) => sum + (r.wallets?.earnedWallet || 0), 0)
         });
       }
     } catch (error: any) {

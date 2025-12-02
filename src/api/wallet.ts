@@ -67,7 +67,7 @@ export const walletAPI = {
 };
 
 export interface WalletRequestData {
-  walletType: 'purchaseWallet' | 'commissionWallet' | 'referralWallet';
+  walletType: 'purchaseWallet' | 'earnedWallet' | 'referralWallet';
   amount: number;
   requestDetails?: string;
   paymentMethod: 'bank' | 'upi';

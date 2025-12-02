@@ -47,7 +47,7 @@ const Checkout: React.FC = () => {
   }, [items, isFirstPurchase]);
   const [walletData, setWalletData] = useState<{
     purchaseWallet: number;
-    commissionWallet: number;
+    earnedWallet: number;
     referralWallet: number;
   } | null>(null);
   const [shippingAddress, setShippingAddress] = useState({

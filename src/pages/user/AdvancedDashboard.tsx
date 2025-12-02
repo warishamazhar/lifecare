@@ -22,8 +22,10 @@ interface DashboardStats {
   };
   wallets: {
     purchaseWallet: number;
-    commissionWallet: number;
+    earnedWallet: number;
     referralWallet: number;
+    repurchaseWallet?: number;
+    cashbackWallet?: number;
   };
   team: {
     directs: number;
@@ -453,7 +455,7 @@ const AdvancedDashboard: React.FC = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.6 }}
                 >
-                  {formatCurrency(stats?.wallets?.commissionWallet || 0)}
+                  {formatCurrency(stats?.wallets?.earnedWallet || 0)}
                 </motion.p>
               </CardContent>
             </Card>
@@ -484,6 +486,66 @@ const AdvancedDashboard: React.FC = () => {
                   transition={{ delay: 0.7 }}
                 >
                   {formatCurrency(stats?.wallets?.referralWallet || 0)}
+                </motion.p>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            initial={{ scale: 1, y: 0 }}
+            whileHover={{ scale: 1.02, y: -5 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="border-0 bg-gradient-to-br from-cyan-600/90 via-teal-700/90 to-emerald-700/80 backdrop-blur-xl text-white shadow-xl hover:shadow-2xl transition-all duration-300 ring-2 ring-amber-400/20">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <motion.div 
+                    className="p-3 bg-gradient-to-br from-white/20 to-amber-400/20 rounded-xl backdrop-blur-sm ring-1 ring-amber-300/30"
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <RefreshCw className="h-6 w-6" />
+                  </motion.div>
+                  <ArrowRight className="h-5 w-5 opacity-50 text-amber-200" />
+                </div>
+                <p className="text-white/90 text-sm font-medium mb-1">Repurchase Wallet</p>
+                <motion.p 
+                  className="text-3xl font-bold"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8 }}
+                >
+                  {formatCurrency(stats?.wallets?.repurchaseWallet || 0)}
+                </motion.p>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            initial={{ scale: 1, y: 0 }}
+            whileHover={{ scale: 1.02, y: -5 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="border-0 bg-gradient-to-br from-pink-600/90 via-rose-700/90 to-red-700/80 backdrop-blur-xl text-white shadow-xl hover:shadow-2xl transition-all duration-300 ring-2 ring-amber-400/20">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <motion.div 
+                    className="p-3 bg-gradient-to-br from-white/20 to-amber-400/20 rounded-xl backdrop-blur-sm ring-1 ring-amber-300/30"
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <Gift className="h-6 w-6" />
+                  </motion.div>
+                  <ArrowRight className="h-5 w-5 opacity-50 text-amber-200" />
+                </div>
+                <p className="text-white/90 text-sm font-medium mb-1">Cashback Wallet</p>
+                <motion.p 
+                  className="text-3xl font-bold"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.9 }}
+                >
+                  {formatCurrency(stats?.wallets?.cashbackWallet || 0)}
                 </motion.p>
               </CardContent>
             </Card>
@@ -662,13 +724,10 @@ const AdvancedDashboard: React.FC = () => {
           ))}
         </div>
 
-        {/* Row 5: Magenta and Yellow Cards - Total Income, Cashback Wallet, Shopping Wallet, Earning Wallet */}
+        {/* Row 5: Total Income Card */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             { label: 'Total Income', value: formatCurrency(stats?.totalIncome || 0), icon: Award, borderColor: 'border-pink-200/50' },
-            { label: 'Cashback Wallet', value: formatCurrency(stats?.cashbackWallet || 0), icon: Wallet, borderColor: 'border-yellow-200/50' },
-            { label: 'Shopping Wallet', value: formatCurrency(stats?.shoppingWallet || stats?.wallets?.purchaseWallet || 0), icon: Wallet, borderColor: 'border-yellow-200/50' },
-            { label: 'Earning Wallet', value: formatCurrency(stats?.earningWallet || stats?.wallets?.commissionWallet || 0), icon: Wallet, borderColor: 'border-yellow-200/50' },
           ].map((stat, index) => (
             <motion.div
               key={stat.label}

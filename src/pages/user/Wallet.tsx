@@ -16,8 +16,10 @@ import { paymentSettingsAPI, PaymentSettings } from '@/api/payment-settings';
 
 interface WalletData {
   purchaseWallet: number;
-  commissionWallet: number;
+  earnedWallet: number;
   referralWallet: number;
+  repurchaseWallet?: number;
+  cashbackWallet?: number;
 }
 
 interface Transaction {
@@ -182,7 +184,11 @@ const UserWallet = () => {
   }
 
   const totalBalance = walletData 
-    ? walletData.purchaseWallet + walletData.commissionWallet + walletData.referralWallet
+    ? walletData.purchaseWallet + 
+      walletData.earnedWallet + 
+      walletData.referralWallet +
+      (walletData.repurchaseWallet || 0) +
+      (walletData.cashbackWallet || 0)
     : 0;
 
   const getStatusIcon = (status: string) => {
@@ -390,7 +396,7 @@ const UserWallet = () => {
       </div>
 
       {/* Wallet Balance Cards with Glass Effect */}
-      <div className="grid md:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
         <Card className="border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-300 ring-1 ring-amber-400/10 border-l-4 border-emerald-500">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-emerald-800">Total Balance</CardTitle>
@@ -425,8 +431,8 @@ const UserWallet = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-emerald-900">₹{walletData?.commissionWallet?.toLocaleString() || 0}</div>
-            <p className="text-xs text-emerald-600/70">Earned commissions</p>
+            <div className="text-2xl font-bold text-emerald-900">₹{walletData?.earnedWallet?.toLocaleString() || 0}</div>
+            <p className="text-xs text-emerald-600/70">BV Commission (50-65%)</p>
           </CardContent>
         </Card>
 
@@ -440,6 +446,32 @@ const UserWallet = () => {
           <CardContent>
             <div className="text-2xl font-bold text-emerald-900">₹{walletData?.referralWallet?.toLocaleString() || 0}</div>
             <p className="text-xs text-emerald-600/70">Referral earnings</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-300 ring-1 ring-amber-400/10 border-l-4 border-emerald-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-emerald-800">Repurchase Wallet</CardTitle>
+            <div className="p-2 bg-gradient-to-br from-emerald-100/50 to-amber-100/40 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20">
+              <RefreshCw className="h-4 w-4 text-emerald-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-emerald-900">₹{walletData?.repurchaseWallet?.toLocaleString() || 0}</div>
+            <p className="text-xs text-emerald-600/70">Repurchase bonuses</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg hover:shadow-xl transition-all duration-300 ring-1 ring-amber-400/10 border-l-4 border-emerald-500">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-emerald-800">Cashback Wallet</CardTitle>
+            <div className="p-2 bg-gradient-to-br from-emerald-100/50 to-amber-100/40 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20">
+              <DollarSign className="h-4 w-4 text-emerald-600" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-emerald-900">₹{walletData?.cashbackWallet?.toLocaleString() || 0}</div>
+            <p className="text-xs text-emerald-600/70">Cashback & package rewards</p>
           </CardContent>
         </Card>
       </div>

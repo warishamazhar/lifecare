@@ -5,7 +5,7 @@ export interface Withdrawal {
   _id: string;
   userId: string;
   amount: number;
-  walletType: 'commissionWallet' | 'referralWallet';
+  walletType: 'earnedWallet' | 'referralWallet';
   withdrawalMethod: 'bank' | 'upi' | 'wallet';
   accountDetails: string;
   status: 'pending' | 'approved' | 'rejected';
@@ -18,7 +18,7 @@ export interface Withdrawal {
 
 export interface CreateWithdrawalDto {
   amount: number;
-  walletType: 'commissionWallet' | 'referralWallet';
+  walletType: 'earnedWallet' | 'referralWallet';
   withdrawalMethod: 'bank' | 'upi' | 'wallet';
   accountDetails: string;
 }

@@ -17,7 +17,7 @@ const FirstPurchase: React.FC = () => {
   const productsPerPage = 6;
   const [walletData, setWalletData] = useState({
     purchaseWallet: 0,
-    commissionWallet: 0,
+    earnedWallet: 0,
     referralWallet: 0
   });
   const navigate = useNavigate();

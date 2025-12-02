@@ -10,7 +10,7 @@ import { motion } from 'framer-motion';
 const WalletBalance: React.FC = () => {
   const [walletData, setWalletData] = useState({
     purchaseWallet: 0,
-    commissionWallet: 0,
+    earnedWallet: 0,
     referralWallet: 0,
     repurchaseWallet: 0,
     cashbackWallet: 0
@@ -33,7 +33,7 @@ const WalletBalance: React.FC = () => {
         // Set default empty wallets if no data
         setWalletData({
           purchaseWallet: 0,
-          commissionWallet: 0,
+          earnedWallet: 0,
           referralWallet: 0,
           repurchaseWallet: 0,
           cashbackWallet: 0
@@ -48,7 +48,7 @@ const WalletBalance: React.FC = () => {
       // Set default empty wallets on error
       setWalletData({
         purchaseWallet: 0,
-        commissionWallet: 0,
+        earnedWallet: 0,
         referralWallet: 0,
         repurchaseWallet: 0,
         cashbackWallet: 0
@@ -104,7 +104,7 @@ const WalletBalance: React.FC = () => {
           },
           { 
             title: 'Earned Wallet', 
-            value: walletData.commissionWallet, 
+            value: walletData.earnedWallet, 
             icon: TrendingUp, 
             action: 'Withdraw',
             onClick: () => navigate('/user/withdraw'),
@@ -202,7 +202,7 @@ const WalletBalance: React.FC = () => {
               <p className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">
                 {formatCurrency(
                   walletData.purchaseWallet + 
-                  walletData.commissionWallet + 
+                  walletData.earnedWallet + 
                   walletData.referralWallet +
                   (walletData.repurchaseWallet || 0) +
                   (walletData.cashbackWallet || 0)

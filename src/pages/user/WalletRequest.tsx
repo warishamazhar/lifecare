@@ -193,7 +193,7 @@ const WalletRequest: React.FC = () => {
     switch (walletType) {
       case 'purchaseWallet':
         return 'Shopping Wallet';
-      case 'commissionWallet':
+      case 'earnedWallet':
         return 'Earned Wallet';
       case 'referralWallet':
         return 'Referral Wallet';

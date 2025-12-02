@@ -14,13 +14,13 @@ import { motion } from 'framer-motion';
 const Withdraw: React.FC = () => {
   const [walletData, setWalletData] = useState({
     purchaseWallet: 0,
-    commissionWallet: 0,
+    earnedWallet: 0,
     referralWallet: 0
   });
   const [loading, setLoading] = useState(true);
   const [withdrawalsLoading, setWithdrawalsLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [selectedWallet, setSelectedWallet] = useState<'commissionWallet' | 'referralWallet'>('commissionWallet');
+  const [selectedWallet, setSelectedWallet] = useState<'earnedWallet' | 'referralWallet'>('earnedWallet');
   const [amount, setAmount] = useState('');
   const [withdrawMethod, setWithdrawMethod] = useState('bank');
   const [accountDetails, setAccountDetails] = useState('');
@@ -48,8 +48,8 @@ const Withdraw: React.FC = () => {
   };
 
   const getAvailableBalance = () => {
-    return selectedWallet === 'commissionWallet' 
-      ? walletData.commissionWallet 
+    return selectedWallet === 'earnedWallet' 
+      ? walletData.earnedWallet 
       : walletData.referralWallet;
   };
 
@@ -181,13 +181,13 @@ const Withdraw: React.FC = () => {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="wallet" className="text-emerald-800">Select Wallet</Label>
-                <Select value={selectedWallet} onValueChange={(value: 'commissionWallet' | 'referralWallet') => setSelectedWallet(value)}>
+                <Select value={selectedWallet} onValueChange={(value: 'earnedWallet' | 'referralWallet') => setSelectedWallet(value)}>
                   <SelectTrigger className="border-emerald-200/50 bg-white/80 backdrop-blur-sm ring-1 ring-amber-400/10">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-white/95 backdrop-blur-xl border-emerald-200/50">
-                    <SelectItem value="commissionWallet">
-                      Commission Wallet ({formatCurrency(walletData.commissionWallet)})
+                    <SelectItem value="earnedWallet">
+                      Earned Wallet ({formatCurrency(walletData.earnedWallet)})
                     </SelectItem>
                     <SelectItem value="referralWallet">
                       Referral Wallet ({formatCurrency(walletData.referralWallet)})

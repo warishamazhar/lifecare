@@ -11,8 +11,10 @@ const UserLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [walletData, setWalletData] = useState({
     purchaseWallet: 0,
-    commissionWallet: 0,
-    referralWallet: 0
+    earnedWallet: 0,
+    referralWallet: 0,
+    repurchaseWallet: 0,
+    cashbackWallet: 0
   });
   const [userProfile, setUserProfile] = useState<any>(null);
   const [walletLoading, setWalletLoading] = useState(true);
@@ -36,8 +38,10 @@ const UserLayout = () => {
         // Set default empty wallets if no data
         setWalletData({
           purchaseWallet: 0,
-          commissionWallet: 0,
-          referralWallet: 0
+          earnedWallet: 0,
+          referralWallet: 0,
+          repurchaseWallet: 0,
+          cashbackWallet: 0
         });
       }
     } catch (error: any) {
@@ -48,8 +52,10 @@ const UserLayout = () => {
       // Set default empty wallets on error
       setWalletData({
         purchaseWallet: 0,
-        commissionWallet: 0,
-        referralWallet: 0
+        earnedWallet: 0,
+        referralWallet: 0,
+        repurchaseWallet: 0,
+        cashbackWallet: 0
       });
     } finally {
       setWalletLoading(false);
@@ -70,7 +76,7 @@ const UserLayout = () => {
     }).format(amount);
   };
 
-  const totalBalance = walletData.purchaseWallet + walletData.commissionWallet + walletData.referralWallet;
+  const totalBalance = walletData.purchaseWallet + walletData.earnedWallet + walletData.referralWallet;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50/30">
@@ -152,7 +158,7 @@ const UserLayout = () => {
                           <div className="h-4 w-16 bg-emerald-200/50 rounded animate-pulse mt-0.5"></div>
                         ) : (
                           <p className="text-sm font-bold text-emerald-700">
-                            {formatCurrency(walletData.commissionWallet)}
+                            {formatCurrency(walletData.earnedWallet)}
                           </p>
                         )}
                       </div>
@@ -254,7 +260,7 @@ const UserLayout = () => {
           
           {/* Mobile Wallet Balance */}
           <div className="px-4 pb-4">
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
               <div className="p-2.5 bg-white/60 backdrop-blur-md border border-emerald-200/50 rounded-lg text-center ring-1 ring-amber-400/10">
                 <p className="text-xs text-emerald-700/70 font-medium mb-1">Shopping</p>
                 {walletLoading ? (
@@ -272,7 +278,7 @@ const UserLayout = () => {
                   <div className="h-3 w-12 bg-emerald-200/50 rounded animate-pulse mx-auto"></div>
                 ) : (
                   <p className="text-xs font-bold text-emerald-700">
-                    {formatCurrency(walletData.commissionWallet)}
+                    {formatCurrency(walletData.earnedWallet)}
                   </p>
                 )}
               </div>
@@ -284,6 +290,28 @@ const UserLayout = () => {
                 ) : (
                   <p className="text-xs font-bold text-emerald-700">
                     {formatCurrency(walletData.referralWallet)}
+                  </p>
+                )}
+              </div>
+
+              <div className="p-2.5 bg-white/60 backdrop-blur-md border border-emerald-200/50 rounded-lg text-center ring-1 ring-amber-400/10">
+                <p className="text-xs text-emerald-700/70 font-medium mb-1">Repurchase</p>
+                {walletLoading ? (
+                  <div className="h-3 w-12 bg-emerald-200/50 rounded animate-pulse mx-auto"></div>
+                ) : (
+                  <p className="text-xs font-bold text-emerald-700">
+                    {formatCurrency(walletData.repurchaseWallet || 0)}
+                  </p>
+                )}
+              </div>
+
+              <div className="p-2.5 bg-white/60 backdrop-blur-md border border-emerald-200/50 rounded-lg text-center ring-1 ring-amber-400/10">
+                <p className="text-xs text-emerald-700/70 font-medium mb-1">Cashback</p>
+                {walletLoading ? (
+                  <div className="h-3 w-12 bg-emerald-200/50 rounded animate-pulse mx-auto"></div>
+                ) : (
+                  <p className="text-xs font-bold text-emerald-700">
+                    {formatCurrency(walletData.cashbackWallet || 0)}
                   </p>
                 )}
               </div>

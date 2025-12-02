@@ -315,6 +315,31 @@ const Products = () => {
                               )}
                             </div>
 
+                            {/* Retail Profit Display (MRP vs DP) */}
+                            {product.mrp && product.dp && product.mrp > 0 && product.dp > 0 && (
+                              <div className="space-y-1 p-2 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-200/50">
+                                <div className="flex justify-between text-xs">
+                                  <span className="text-gray-600">MRP:</span>
+                                  <span className="font-semibold text-gray-800">₹{product.mrp.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between text-xs">
+                                  <span className="text-gray-600">DP:</span>
+                                  <span className="font-semibold text-gray-800">₹{product.dp.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between items-center pt-1 border-t border-blue-200/50">
+                                  <span className="text-xs font-bold text-blue-700">Retail Profit:</span>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm font-bold text-green-600">
+                                      ₹{(product.mrp - product.dp).toLocaleString()}
+                                    </span>
+                                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-2 py-0.5">
+                                      {Math.round(((product.mrp - product.dp) / product.dp) * 100)}%
+                                    </Badge>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
                             {/* PV Badge */}
                             {product.pv && product.pv > 0 && (
                               <div>
