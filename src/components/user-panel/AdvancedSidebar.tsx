@@ -160,18 +160,25 @@ const navigation = [
 
 interface AdvancedSidebarProps {
   onLogout: () => void;
+  onLinkClick?: () => void; // Callback to close mobile sidebar when link is clicked
 }
 
-export const AdvancedSidebar: React.FC<AdvancedSidebarProps> = ({ onLogout }) => {
+export const AdvancedSidebar: React.FC<AdvancedSidebarProps> = ({ onLogout, onLinkClick }) => {
   const location = useLocation();
   const [openSubmenu, setOpenSubmenu] = React.useState<string | null>(null);
+  
+  const handleLinkClick = () => {
+    if (onLinkClick) {
+      onLinkClick();
+    }
+  };
 
   const toggleSubmenu = (name: string) => {
     setOpenSubmenu(openSubmenu === name ? null : name);
   };
 
   return (
-    <aside className="fixed top-0 left-0 z-40 w-72 h-screen transition-transform -translate-x-full lg:translate-x-0">
+    <aside className="fixed top-0 left-0 z-40 w-72 h-screen">
       {/* Glass Background */}
       <div className="h-full bg-gradient-to-b from-emerald-900/95 via-emerald-800/95 to-emerald-900/95 backdrop-blur-xl border-r border-emerald-700/30 shadow-2xl">
         <div className="h-full px-4 py-6 overflow-y-auto">
@@ -226,6 +233,7 @@ export const AdvancedSidebar: React.FC<AdvancedSidebarProps> = ({ onLogout }) =>
                   ) : (
                     <Link
                       to={item.href}
+                      onClick={handleLinkClick}
                       className={cn(
                         'flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-300 group relative',
                         isActive
@@ -260,6 +268,7 @@ export const AdvancedSidebar: React.FC<AdvancedSidebarProps> = ({ onLogout }) =>
                           <Link
                             key={child.name}
                             to={child.href}
+                            onClick={handleLinkClick}
                             className={cn(
                               'block px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-300 backdrop-blur-sm',
                               isChildActive

@@ -24,6 +24,18 @@ const UserLayout = () => {
     fetchWalletData();
   }, []);
 
+  // Close mobile sidebar when window is resized to desktop size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const fetchWalletData = async () => {
     try {
       setWalletLoading(true);
@@ -80,32 +92,35 @@ const UserLayout = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50/30">
-      {/* Desktop Sidebar */}
-      <div className="hidden lg:block fixed left-0 top-0 h-screen">
+      {/* Desktop Sidebar - Always visible on large screens */}
+      <div className="hidden lg:block fixed left-0 top-0 h-screen z-40">
         <AdvancedSidebar onLogout={handleLogout} />
       </div>
 
-      {/* Mobile Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
+      {/* Mobile Sidebar - Controlled by sidebarOpen state */}
+      <div className={`lg:hidden fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        <div className="relative h-full">
-          <AdvancedSidebar onLogout={handleLogout} />
+        <div className="relative h-full w-72">
+          <AdvancedSidebar 
+            onLogout={handleLogout} 
+            onLinkClick={() => setSidebarOpen(false)}
+          />
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setSidebarOpen(false)}
-            className="absolute top-4 right-4 text-white hover:bg-white/10 backdrop-blur-md z-10 border border-white/20"
+            className="absolute top-4 right-4 text-white hover:bg-white/20 backdrop-blur-md z-10 border border-white/30 shadow-lg"
           >
             <X className="h-5 w-5" />
           </Button>
         </div>
       </div>
 
-      {/* Overlay for mobile */}
+      {/* Overlay for mobile - Only show when sidebar is open */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden backdrop-blur-sm"
+          className="lg:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -234,9 +249,10 @@ const UserLayout = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setSidebarOpen(true)}
-                className="text-emerald-700 hover:bg-emerald-50"
+                className="text-emerald-700 hover:bg-emerald-50 p-2"
+                aria-label="Open menu"
               >
-                <Menu className="h-5 w-5" />
+                <Menu className="h-6 w-6" />
               </Button>
               <div>
                 <h1 className="text-lg font-bold bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">

@@ -635,6 +635,23 @@ export const authAPI = {
     }
     return response.json();
   },
+
+  // Get user by referral code (public endpoint for registration)
+  getUserByReferralCode: async (referralCode: string) => {
+    const response = await fetch(`${API_BASE_URL}/users/by-fcid/${referralCode}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Sponsor not found');
+    }
+    
+    return response.json();
+  },
 };
 
 export const { login, register, getDashboard: getDashboardStats, getProfile } = authAPI;

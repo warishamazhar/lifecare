@@ -8,8 +8,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { authAPI } from '@/api/auth';
-import { Loader2, User, Phone, Mail, Calendar, MapPin, CreditCard, Users, UserPlus } from 'lucide-react';
+import { Loader2, User, Phone, Mail, Calendar, MapPin, CreditCard, Users, UserPlus, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
+import { 
+  getCountries, 
+  getStatesByCountry, 
+  getDistrictsByState, 
+  getCitiesByDistrict,
+  type State,
+  type District,
+  type City 
+} from '@/data/locationData';
 
 const UserRegister = () => {
   const [formData, setFormData] = useState({
@@ -61,6 +70,19 @@ const UserRegister = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  // Password visibility states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Sponsor code fetching state
+  const [fetchingSponsor, setFetchingSponsor] = useState(false);
+
+  // Location data states
+  const [availableStates, setAvailableStates] = useState<State[]>([]);
+  const [availableDistricts, setAvailableDistricts] = useState<District[]>([]);
+  const [availableCities, setAvailableCities] = useState<City[]>([]);
+  const countries = getCountries();
+
   // Auto-fill referral code from URL
   useEffect(() => {
     const refCode = searchParams.get('ref');
@@ -73,6 +95,9 @@ const UserRegister = () => {
         position: position || ''
       }));
       
+      // Fetch sponsor name when code is set from URL
+      fetchSponsorName(refCode);
+      
       if (position) {
         toast.success(`Referral code ${refCode} applied for ${position} position!`);
       } else {
@@ -80,6 +105,47 @@ const UserRegister = () => {
       }
     }
   }, [searchParams]);
+
+  // Function to fetch sponsor name by referral code
+  const fetchSponsorName = async (sponsorCode: string) => {
+    if (!sponsorCode || sponsorCode.trim() === '') {
+      setFormData(prev => ({ ...prev, sponsorName: '' }));
+      return;
+    }
+
+    setFetchingSponsor(true);
+    try {
+      const response = await authAPI.getUserByReferralCode(sponsorCode.trim());
+      if (response.success && response.data) {
+        setFormData(prev => ({
+          ...prev,
+          sponsorName: response.data.name || ''
+        }));
+        toast.success('Sponsor found!');
+      } else {
+        setFormData(prev => ({ ...prev, sponsorName: '' }));
+        toast.error('Sponsor not found. Please check the sponsor code.');
+      }
+    } catch (error: any) {
+      setFormData(prev => ({ ...prev, sponsorName: '' }));
+      toast.error(error.message || 'Failed to fetch sponsor details');
+    } finally {
+      setFetchingSponsor(false);
+    }
+  };
+
+  // Debounce function for sponsor code input
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (formData.sponsorCode && formData.sponsorCode.trim() !== '') {
+        fetchSponsorName(formData.sponsorCode);
+      } else {
+        setFormData(prev => ({ ...prev, sponsorName: '' }));
+      }
+    }, 500); // Wait 500ms after user stops typing
+
+    return () => clearTimeout(timeoutId);
+  }, [formData.sponsorCode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,12 +198,139 @@ const UserRegister = () => {
         }
       }));
     } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value,
-      }));
+      // Handle cascading dropdowns - value is ID, we store the name
+      if (name === 'country') {
+        const country = countries.find(c => c.id === value);
+        if (country) {
+          setFormData(prev => ({
+            ...prev,
+            country: country.name,
+            state: '',
+            district: '',
+            city: '',
+          }));
+          const states = getStatesByCountry(value);
+          setAvailableStates(states);
+          setAvailableDistricts([]);
+          setAvailableCities([]);
+        }
+      } else if (name === 'state') {
+        const state = availableStates.find(s => s.id === value);
+        if (state) {
+          setFormData(prev => ({
+            ...prev,
+            state: state.name,
+            district: '',
+            city: '',
+          }));
+          // Find country ID by name
+          const country = countries.find(c => c.name === formData.country);
+          if (country) {
+            const districts = getDistrictsByState(country.id, value);
+            setAvailableDistricts(districts);
+            setAvailableCities([]);
+          }
+        }
+      } else if (name === 'district') {
+        const district = availableDistricts.find(d => d.id === value);
+        if (district) {
+          setFormData(prev => ({
+            ...prev,
+            district: district.name,
+            city: '',
+          }));
+          // Find country and state IDs by name
+          const country = countries.find(c => c.name === formData.country);
+          const state = country?.states.find(s => s.name === formData.state);
+          if (country && state) {
+            const cities = getCitiesByDistrict(country.id, state.id, value);
+            setAvailableCities(cities);
+          }
+        }
+      } else if (name === 'city') {
+        const city = availableCities.find(c => c.id === value);
+        if (city) {
+          setFormData(prev => ({
+            ...prev,
+            city: city.name,
+          }));
+        }
+      } else {
+        // For non-location fields, store value directly
+        setFormData(prev => ({
+          ...prev,
+          [name]: value,
+        }));
+      }
     }
   };
+
+  // Update available states when country is selected (by name)
+  useEffect(() => {
+    if (formData.country) {
+      const country = countries.find(c => c.name === formData.country);
+      if (country) {
+        const states = getStatesByCountry(country.id);
+        setAvailableStates(states);
+      } else {
+        setAvailableStates([]);
+        setAvailableDistricts([]);
+        setAvailableCities([]);
+      }
+    } else {
+      setAvailableStates([]);
+      setAvailableDistricts([]);
+      setAvailableCities([]);
+    }
+  }, [formData.country, countries]);
+
+  // Update available districts when state is selected (by name)
+  useEffect(() => {
+    if (formData.country && formData.state) {
+      const country = countries.find(c => c.name === formData.country);
+      if (country) {
+        const state = country.states.find(s => s.name === formData.state);
+        if (state) {
+          const districts = getDistrictsByState(country.id, state.id);
+          setAvailableDistricts(districts);
+        } else {
+          setAvailableDistricts([]);
+          setAvailableCities([]);
+        }
+      } else {
+        setAvailableDistricts([]);
+        setAvailableCities([]);
+      }
+    } else {
+      setAvailableDistricts([]);
+      setAvailableCities([]);
+    }
+  }, [formData.country, formData.state]);
+
+  // Update available cities when district is selected (by name)
+  useEffect(() => {
+    if (formData.country && formData.state && formData.district) {
+      const country = countries.find(c => c.name === formData.country);
+      if (country) {
+        const state = country.states.find(s => s.name === formData.state);
+        if (state) {
+          const district = state.districts.find(d => d.name === formData.district);
+          if (district) {
+            const cities = getCitiesByDistrict(country.id, state.id, district.id);
+            setAvailableCities(cities);
+          } else {
+            setAvailableCities([]);
+          }
+        } else {
+          setAvailableCities([]);
+        }
+      } else {
+        setAvailableCities([]);
+      }
+    } else {
+      setAvailableCities([]);
+    }
+  }, [formData.country, formData.state, formData.district]);
 
   const validateStep = (step: number) => {
     switch (step) {
@@ -401,32 +594,62 @@ const UserRegister = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="password">Password *</Label>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={(e) => handleChange('password', e.target.value)}
-            required
-            disabled={loading}
-            placeholder="Create a password"
-            minLength={6}
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              value={formData.password}
+              onChange={(e) => handleChange('password', e.target.value)}
+              required
+              disabled={loading}
+              placeholder="Create a password"
+              minLength={6}
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+              disabled={loading}
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
         </div>
         
         <div className="space-y-2">
           <Label htmlFor="confirmPassword">Confirm Password *</Label>
-          <Input
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            value={formData.confirmPassword}
-            onChange={(e) => handleChange('confirmPassword', e.target.value)}
-            required
-            disabled={loading}
-            placeholder="Confirm your password"
-            minLength={6}
-          />
+          <div className="relative">
+            <Input
+              id="confirmPassword"
+              name="confirmPassword"
+              type={showConfirmPassword ? "text" : "password"}
+              value={formData.confirmPassword}
+              onChange={(e) => handleChange('confirmPassword', e.target.value)}
+              required
+              disabled={loading}
+              placeholder="Confirm your password"
+              minLength={6}
+              className="pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+              disabled={loading}
+            >
+              {showConfirmPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -442,16 +665,22 @@ const UserRegister = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Country *</Label>
-          <Select value={formData.country} onValueChange={(value) => handleChange('country', value)}>
+          <Select 
+            value={(() => {
+              const country = countries.find(c => c.name === formData.country);
+              return country?.id || '';
+            })()}
+            onValueChange={(value) => handleChange('country', value)}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select Country" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="india">India</SelectItem>
-              <SelectItem value="usa">United States</SelectItem>
-              <SelectItem value="uk">United Kingdom</SelectItem>
-              <SelectItem value="canada">Canada</SelectItem>
-              <SelectItem value="australia">Australia</SelectItem>
+              {countries.map((country) => (
+                <SelectItem key={country.id} value={country.id}>
+                  {country.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -459,7 +688,10 @@ const UserRegister = () => {
         <div className="space-y-2">
           <Label>State *</Label>
           <Select 
-            value={formData.state} 
+            value={(() => {
+              const state = availableStates.find(s => s.name === formData.state);
+              return state?.id || '';
+            })()}
             onValueChange={(value) => handleChange('state', value)}
             disabled={!formData.country}
           >
@@ -467,55 +699,61 @@ const UserRegister = () => {
               <SelectValue placeholder={formData.country ? "Select State" : "Select Country First"} />
             </SelectTrigger>
             <SelectContent>
-              {formData.country === 'india' && (
-                <>
-                  <SelectItem value="maharashtra">Maharashtra</SelectItem>
-                  <SelectItem value="delhi">Delhi</SelectItem>
-                  <SelectItem value="gujarat">Gujarat</SelectItem>
-                  <SelectItem value="rajasthan">Rajasthan</SelectItem>
-                  <SelectItem value="punjab">Punjab</SelectItem>
-                  <SelectItem value="haryana">Haryana</SelectItem>
-                  <SelectItem value="uttar-pradesh">Uttar Pradesh</SelectItem>
-                  <SelectItem value="bihar">Bihar</SelectItem>
-                  <SelectItem value="west-bengal">West Bengal</SelectItem>
-                  <SelectItem value="tamil-nadu">Tamil Nadu</SelectItem>
-                  <SelectItem value="karnataka">Karnataka</SelectItem>
-                  <SelectItem value="kerala">Kerala</SelectItem>
-                </>
-              )}
+              {availableStates.map((state) => (
+                <SelectItem key={state.id} value={state.id}>
+                  {state.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* District Input */}
-  <div className="space-y-2">
-    <Label htmlFor="district">District *</Label>
-    <Input
-      id="district"
-      name="district"
-      type="text"
-      value={formData.district}
-      onChange={(e) => handleChange("district", e.target.value)}
-      disabled={!formData.state || loading}
-      required
-      placeholder={formData.state ? "Enter District" : "Select State First"}
-    />
-  </div>
+        <div className="space-y-2">
+          <Label>District *</Label>
+          <Select 
+            value={(() => {
+              const district = availableDistricts.find(d => d.name === formData.district);
+              return district?.id || '';
+            })()}
+            onValueChange={(value) => handleChange('district', value)}
+            disabled={!formData.state || loading}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder={formData.state ? "Select District" : "Select State First"} />
+            </SelectTrigger>
+            <SelectContent>
+              {availableDistricts.map((district) => (
+                <SelectItem key={district.id} value={district.id}>
+                  {district.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         
         <div className="space-y-2">
-          <Label htmlFor="city">City *</Label>
-          <Input
-            id="city"
-            name="city"
-            type="text"
-            value={formData.city}
-            onChange={(e) => handleChange('city', e.target.value)}
-            required
-            disabled={loading}
-            placeholder="Enter your city"
-          />
+          <Label>City *</Label>
+          <Select 
+            value={(() => {
+              const city = availableCities.find(c => c.name === formData.city);
+              return city?.id || '';
+            })()}
+            onValueChange={(value) => handleChange('city', value)}
+            disabled={!formData.district || loading}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder={formData.district ? "Select City" : "Select District First"} />
+            </SelectTrigger>
+            <SelectContent>
+              {availableCities.map((city) => (
+                <SelectItem key={city.id} value={city.id}>
+                  {city.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -705,9 +943,16 @@ const UserRegister = () => {
             value={formData.sponsorCode}
             onChange={(e) => handleChange('sponsorCode', e.target.value)}
             required
-            disabled={loading}
+            disabled={loading || fetchingSponsor}
             placeholder="Enter sponsor code"
+            className={fetchingSponsor ? 'opacity-70' : ''}
           />
+          {fetchingSponsor && (
+            <p className="text-xs text-blue-600 flex items-center">
+              <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+              Fetching sponsor details...
+            </p>
+          )}
         </div>
         
         <div className="space-y-2">
@@ -717,10 +962,14 @@ const UserRegister = () => {
             name="sponsorName"
             type="text"
             value={formData.sponsorName}
-            onChange={(e) => handleChange('sponsorName', e.target.value)}
-            disabled={loading}
-            placeholder="Enter sponsor name"
+            readOnly
+            disabled={loading || fetchingSponsor}
+            placeholder={fetchingSponsor ? "Fetching..." : formData.sponsorCode ? "Enter sponsor code to fetch name" : "Enter sponsor code to fetch name"}
+            className="bg-gray-50 cursor-not-allowed"
           />
+          {formData.sponsorName && (
+            <p className="text-xs text-green-600">✓ Sponsor verified</p>
+          )}
         </div>
       </div>
 
