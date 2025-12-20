@@ -46,7 +46,7 @@ const WhyByoteas = () => {
             Why Choose <span className="text-amber-600">Future Life Care?</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Join Jharkhand's premier direct selling company and unlock your 
+            Join Maharastra's premier direct selling company and unlock your 
             potential with our innovative business model
           </p>
         </div>

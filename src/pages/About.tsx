@@ -12,7 +12,7 @@ const About = () => {
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">About Future Life Care</h1>
             <p className="text-xl opacity-90">
-              Jharkhand's First Direct Selling Company
+              Maharastra's First Direct Selling Company
             </p>
           </div>
         </div>
@@ -23,14 +23,14 @@ const About = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-4xl font-bold mb-8 text-center">Our Story</h2>
-            
+
             <div className="prose prose-lg max-w-none space-y-6 text-foreground">
               <p className="text-lg leading-relaxed">
                 Welcome to <span className="font-semibold text-primary">Future Life Care Pvt. Ltd.</span>, where dreams transform into reality through dedication, innovation, and the power of community.
               </p>
 
               <p className="text-lg leading-relaxed">
-                As Jharkhand's pioneering direct selling company, we stand at the intersection of wellness and opportunity. Our mission is simple yet profound: to empower individuals with premium Ayurvedic products while creating sustainable income streams through an equitable business model.
+                As Maharastra's pioneering direct selling company, we stand at the intersection of wellness and opportunity. Our mission is simple yet profound: to empower individuals with premium Ayurvedic products while creating sustainable income streams through an equitable business model.
               </p>
 
               <Card className="my-8 border-primary/20 shadow-soft">
@@ -39,19 +39,19 @@ const About = () => {
                   <ul className="space-y-3">
                     <li className="flex items-start gap-3">
                       <div className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                      <span className="text-foreground">To provide world-class Ayurvedic wellness products that enhance health naturally</span>
+                      <span>To provide world-class Ayurvedic wellness products that enhance health naturally</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                      <span className="text-foreground">To offer an unmatched compensation plan that rewards effort and dedication</span>
+                      <span>To offer an unmatched compensation plan that rewards effort and dedication</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                      <span className="text-foreground">To build a community where success is shared and celebrated together</span>
+                      <span>To build a community where success is shared and celebrated together</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <div className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                      <span className="text-foreground">To champion the timeless wisdom of Ayurveda in modern wellness</span>
+                      <span>To champion the timeless wisdom of Ayurveda in modern wellness</span>
                     </li>
                   </ul>
                 </CardContent>
@@ -65,14 +65,14 @@ const About = () => {
         </div>
       </section>
 
-      {/* Values Grid */}
+      {/* Core Values */}
       <section className="py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-4xl font-bold mb-12 text-center">Our Core Values</h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <Card className="border-none shadow-soft hover:shadow-gold transition-all duration-300">
+              <Card className="border-none shadow-soft">
                 <CardContent className="pt-8 text-center">
                   <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary mx-auto">
                     <Target className="h-8 w-8 text-primary-foreground" />
@@ -82,7 +82,7 @@ const About = () => {
                 </CardContent>
               </Card>
 
-              <Card className="border-none shadow-soft hover:shadow-gold transition-all duration-300">
+              <Card className="border-none shadow-soft">
                 <CardContent className="pt-8 text-center">
                   <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary mx-auto">
                     <Eye className="h-8 w-8 text-primary-foreground" />
@@ -92,7 +92,7 @@ const About = () => {
                 </CardContent>
               </Card>
 
-              <Card className="border-none shadow-soft hover:shadow-gold transition-all duration-300">
+              <Card className="border-none shadow-soft">
                 <CardContent className="pt-8 text-center">
                   <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary mx-auto">
                     <Award className="h-8 w-8 text-primary-foreground" />
@@ -102,7 +102,7 @@ const About = () => {
                 </CardContent>
               </Card>
 
-              <Card className="border-none shadow-soft hover:shadow-gold transition-all duration-300">
+              <Card className="border-none shadow-soft">
                 <CardContent className="pt-8 text-center">
                   <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary mx-auto">
                     <Users className="h-8 w-8 text-primary-foreground" />
@@ -116,134 +116,52 @@ const About = () => {
         </div>
       </section>
 
-      {/* Leadership Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold mb-12 text-center">Leadership Message</h2>
-            
-            <Card className="border-primary/20 shadow-soft">
-              <CardContent className="pt-8">
-                <div className="flex flex-col md:flex-row gap-8 items-start">
-                  <div className="flex-shrink-0">
-                    <div className="w-40 h-40 rounded-full bg-gradient-primary flex items-center justify-center text-6xl font-bold text-primary-foreground">
-                      ZK
-                    </div>
-                  </div>
-                  
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-2">Mr. Zaid Khan</h3>
-                    <p className="text-primary font-semibold mb-6">Managing Director</p>
-                    
-                    <div className="space-y-4 text-foreground">
-                      <p className="leading-relaxed">
-                        "Welcome to Future Life Care! I am honored to lead a company that stands for more than just business—it stands for transformation, empowerment, and shared success."
-                      </p>
-                      
-                      <p className="leading-relaxed">
-                        "Our journey began with a simple belief: that traditional Ayurvedic wisdom combined with modern business practices can create unprecedented opportunities for individuals and families across Jharkhand and beyond."
-                      </p>
-                      
-                      <p className="leading-relaxed">
-                        "What sets us apart is our commitment to you—our partners. We've designed our compensation plan to ensure that your dedication is recognized and rewarded fairly. Remember, success is not a solo journey; it's something we achieve together, as a team."
-                      </p>
-                      
-                      <blockquote className="border-l-4 border-primary pl-4 italic text-lg my-6 text-primary">
-                        "Success is together for you and your teams."
-                      </blockquote>
-                      
-                      <p className="leading-relaxed">
-                        "I invite you to join this movement—not just to build a business, but to build a better future for yourself and your loved ones. Together, we will prove that dreams do come true."
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Management Team Section */}
+      {/* Support Team */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">Our Dedicated Support Team</h2>
-              <p className="text-xl text-muted-foreground">
-                A team of experts committed to your success and satisfaction
-              </p>
-            </div>
+          <div className="max-w-6xl mx-auto text-center mb-16">
+            <h2 className="text-4xl font-bold mb-6">Our Dedicated Support Team</h2>
+            <p className="text-xl text-muted-foreground">
+              A team of experts committed to your success and satisfaction
+            </p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: Users,
-                  title: "Doctor Support",
-                  description: "Professional medical guidance and consultation for product recommendations and wellness advice.",
-                },
-                {
-                  icon: Shield,
-                  title: "Grievance & Redressal",
-                  description: "Dedicated team to address your concerns and ensure timely resolution of any issues.",
-                },
-                {
-                  icon: DollarSign,
-                  title: "Account Department",
-                  description: "Efficient management of transactions, payouts, and financial queries with complete transparency.",
-                },
-                {
-                  icon: TrendingUp,
-                  title: "Marketing Department",
-                  description: "Strategic support and resources to help you grow your business effectively.",
-                },
-                {
-                  icon: Award,
-                  title: "Admin Department",
-                  description: "Comprehensive administrative support for all your operational needs and queries.",
-                },
-                {
-                  icon: Package,
-                  title: "Logistic Department",
-                  description: "Reliable product delivery and tracking to ensure your orders reach you safely and on time.",
-                },
-              ].map((dept, index) => (
-                <Card
-                  key={index}
-                  className="border-none shadow-soft hover:shadow-gold transition-all duration-300 hover:-translate-y-2"
-                >
-                  <CardHeader>
-                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary">
-                      <dept.icon className="h-8 w-8 text-primary-foreground" />
-                    </div>
-                    <CardTitle className="text-xl">{dept.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">{dept.description}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { icon: Users, title: "Doctor Support", description: "Professional medical guidance and consultation." },
+              { icon: Shield, title: "Grievance & Redressal", description: "Dedicated issue resolution team." },
+              { icon: DollarSign, title: "Account Department", description: "Transparent payout and finance handling." },
+              { icon: TrendingUp, title: "Marketing Department", description: "Business growth and promotion support." },
+              { icon: Award, title: "Admin Department", description: "Complete operational assistance." },
+              { icon: Package, title: "Logistic Department", description: "Safe and timely product delivery." },
+            ].map((dept, index) => (
+              <Card key={index} className="border-none shadow-soft">
+                <CardHeader>
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary">
+                    <dept.icon className="h-8 w-8 text-primary-foreground" />
+                  </div>
+                  <CardTitle className="text-xl">{dept.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{dept.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-hero text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Ready to Join Our Mission?
-          </h2>
-          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Be part of a movement that's transforming lives through wellness and opportunity.
-          </p>
-          <Button variant="gold" size="lg" asChild className="shadow-gold">
-            <Link to="/join">
-              Start Your Journey
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-        </div>
+      {/* CTA */}
+      <section className="py-20 bg-gradient-hero text-primary-foreground text-center">
+        <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Join Our Mission?</h2>
+        <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+          Be part of a movement that's transforming lives through wellness and opportunity.
+        </p>
+        <Button variant="gold" size="lg" asChild>
+          <Link to="/join">
+            Start Your Journey <ArrowRight className="ml-2 h-5 w-5" />
+          </Link>
+        </Button>
       </section>
     </div>
   );

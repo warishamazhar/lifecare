@@ -89,7 +89,7 @@ const CTASection = () => {
         {/* Trust Indicator */}
         <p className="text-emerald-200/70 text-sm mt-8 flex items-center justify-center gap-2">
           <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-          Trusted by thousands across Jharkhand
+          Trusted by thousands across Maharastra
         </p>
       </div>
 
