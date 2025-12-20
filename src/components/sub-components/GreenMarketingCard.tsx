@@ -28,7 +28,7 @@ const MarketingCard = () => {
                 Happy Life
               </h1>
               <h2 className="text-3xl md:text-4xl font-semibold text-emerald-100 mb-2 drop-shadow-md">
-                Byooteas Life
+                Future Life Care
               </h2>
               <div className="w-24 h-1 bg-emerald-300 mx-auto mt-6 rounded-full"></div>
             </div>
@@ -146,7 +146,7 @@ const MarketingCard = () => {
                 <div className="relative z-10">
                   <p className="text-gray-600 mb-4">Start your journey today</p>
                   <a 
-                    href="https://www.mybyooteas.co.in" 
+                    href="https://www.myByooteas .co.in" 
                     className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg"
                   >
                     Join Now - Free
@@ -166,10 +166,10 @@ const MarketingCard = () => {
               }}
             ></div>
             <a 
-              href="https://www.mybyooteas.co.in" 
+              href="https://www.myByooteas .co.in" 
               className="relative z-10 text-green-600 hover:text-green-700 font-semibold text-lg underline decoration-2 decoration-green-400 hover:decoration-green-600 transition-all"
             >
-              www.mybyooteas.co.in
+              flcbiotech.com
             </a>
           </div>
         </div>

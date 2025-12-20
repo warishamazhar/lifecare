@@ -4,6 +4,8 @@ import { Menu, X, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Cart from "./Cart";
+import biotechLogo from "../assets/biotech.jpg";
+
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,11 +30,16 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="transition-transform hover:scale-105">
             <div className="relative flex h-full w-40 items-center justify-center rounded-lg bg-transparent">
-              <img className="h-[9vh] w-auto max-sm:h-[7vh]" src="logo.png" alt="logo" />
+              <img
+  className="h-[9vh] w-auto max-sm:h-[7vh]"
+  src={biotechLogo}
+  alt="Biotech Logo"
+/>
+
             </div>
 
             

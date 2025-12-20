@@ -10,7 +10,7 @@ const About = () => {
       <section className="bg-gradient-primary text-primary-foreground py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">About Byooteas Life</h1>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">About Future Life Care</h1>
             <p className="text-xl opacity-90">
               Jharkhand's First Direct Selling Company
             </p>
@@ -26,7 +26,7 @@ const About = () => {
             
             <div className="prose prose-lg max-w-none space-y-6 text-foreground">
               <p className="text-lg leading-relaxed">
-                Welcome to <span className="font-semibold text-primary">Byooteas Life (OPC) Pvt. Ltd.</span>, where dreams transform into reality through dedication, innovation, and the power of community.
+                Welcome to <span className="font-semibold text-primary">Future Life Care Pvt. Ltd.</span>, where dreams transform into reality through dedication, innovation, and the power of community.
               </p>
 
               <p className="text-lg leading-relaxed">
@@ -137,7 +137,7 @@ const About = () => {
                     
                     <div className="space-y-4 text-foreground">
                       <p className="leading-relaxed">
-                        "Welcome to Byooteas Life! I am honored to lead a company that stands for more than just business—it stands for transformation, empowerment, and shared success."
+                        "Welcome to Future Life Care! I am honored to lead a company that stands for more than just business—it stands for transformation, empowerment, and shared success."
                       </p>
                       
                       <p className="leading-relaxed">

@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import biotechLogo from "../assets/biotech.jpg";
+
 import {
   Leaf,
   Mail,
@@ -22,19 +24,20 @@ const Footer = () => {
             <div className="flex items-center gap-2 mb-4">
               <div className="flex h-full w-40 items-center justify-center rounded-lg bg-transparent">
                 <img
-                  className="self-center max-sm:h-[7vh]"
-                  src="logo.png"
-                  alt="logo"
-                />
+  className="self-center h-[8vh] w-auto max-sm:h-[6vh]"
+  src={biotechLogo}
+  alt="Biotech Logo"
+/>
+
               </div>
               {/* <div className="flex flex-col">
-                <span className="text-lg font-bold">Byooteas Life</span>
+                <span className="text-lg font-bold">Byooteas  Life</span>
                 <span className="text-xs opacity-80">(OPC) Pvt. Ltd</span>
               </div> */}
             </div>
-            <p className="text-sm opacity-80 mb-4">
+            {/* <p className="text-sm opacity-80 mb-4">
               Jharkhand's 1st Direct Selling Company
-            </p>
+            </p> */}
             <p className="text-sm opacity-80">
               Committed to providing world-class Ayurvedic wellness products and
               an unmatched compensation plan.
@@ -118,15 +121,15 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start gap-2 text-sm opacity-80">
                 <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span>Jharkhand, India</span>
+                <span>Maharashtra, India</span>
               </li>
               <li className="flex items-center gap-2 text-sm opacity-80 hover:opacity-100 transition-colors">
                 <Phone className="h-4 w-4 flex-shrink-0" />
-                <a href="tel:+911234567890">+91 123 456 7890</a>
+                <a href="tel:+911234567890">+91 91121 68221</a>
               </li>
               <li className="flex items-center gap-2 text-sm opacity-80 hover:opacity-100 transition-colors">
                 <Mail className="h-4 w-4 flex-shrink-0" />
-                <a href="mailto:info@byooteaslife.com">info@byooteaslife.com</a>
+                <a href="mailto:info@Byooteas life.com">flcbiotech@gmail.com</a>
               </li>
             </ul>
           </div>
@@ -171,7 +174,7 @@ const Footer = () => {
         <div className="border-t border-background/20 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm opacity-80">
             <p>
-              © {currentYear} Byooteas Life (OPC) Pvt. Ltd. All rights reserved.
+              © {currentYear} Future Life Care. All Rights Reserved.
             </p>
             <div className="flex gap-4">
               <Link

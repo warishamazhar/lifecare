@@ -3,17 +3,30 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronLeft,
   ChevronRight,
-  Heart,
-  TrendingUp,
-  Star,
-  Sparkles,
-  Users,
-  Award,
   Leaf,
-  Target,
+  Heart,
   Zap,
-  ArrowRight
+  ShieldCheck,
+  Activity,
+  Droplets,
+  Sprout,
+  Apple,
+  Sparkles,
+  ArrowRight,
 } from "lucide-react";
+
+// ✅ Product Images
+import cardiodelight from "../../assets/cardiodelight.png";
+import greengold from "../../assets/greengold.png";
+import GreenVitality from "../../assets/GreenVitality.png";
+import painfree from "../../assets/painfree.png";
+import sugarshield from "../../assets/sugarshield.png";
+import BioActivator from "../../assets/BioActivator.png";
+import FruitingFormulation from "../../assets/FruitingFormulation.png";
+import GreenBioShield from "../../assets/GreenBioShield.png";
+import SoilSolution from "../../assets/SoilSolution.png";
+import Staminex from "../../assets/Staminex.png";
+
 
 interface Slide {
   id: number;
@@ -29,334 +42,213 @@ interface Slide {
 }
 
 const HeroSlider = () => {
-  const [currentSlide, setCurrentSlide] = useState<number>(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState<boolean>(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
   const slides: Slide[] = [
     {
       id: 1,
-      title: "BYOOTEAS LIFE",
-      subtitle: "Jharkhand's 1st Direct Selling Company",
-      content: "Where Dreams Come True",
-      description: "Start your business journey with zero investment and build your empire with natural products.",
-      bgColor: "from-emerald-900 via-green-900 to-emerald-800",
-      accentColor: "text-emerald-300",
-      icon: <TrendingUp className="w-16 h-16" />,
-      features: ["Free Joining", "Daily Income", "Career Growth"],
-      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.1.0&auto=format&fit=crop&w=1200&q=80"
+      title: "Cardio Delight",
+      subtitle: "Heart Health Formula",
+      content: "Strong Heart, Healthy Life",
+      description:
+        "Supports healthy blood circulation and strengthens your heart naturally with Ayurvedic ingredients.",
+      bgColor: "from-red-900 via-rose-800 to-red-700",
+      accentColor: "text-red-300",
+      icon: <Heart className="w-16 h-16" />,
+      features: ["Heart Support", "Blood Circulation", "Ayurvedic Care"],
+      image: cardiodelight,
     },
     {
       id: 2,
-      title: "Natural Products",
-      subtitle: "100% Ayurvedic & Pure",
-      content: "Health is Wealth",
-      description: "Experience the power of pure Ayurveda with our premium range of wellness products.",
-      bgColor: "from-emerald-800 via-green-800 to-emerald-700",
-      accentColor: "text-green-300",
+      title: "Green Gold",
+      subtitle: "Daily Wellness Supplement",
+      content: "Nature’s Power Boost",
+      description:
+        "Enhance immunity and daily energy with a rich blend of green nutrients.",
+      bgColor: "from-green-900 via-emerald-800 to-green-700",
+      accentColor: "text-emerald-300",
       icon: <Leaf className="w-16 h-16" />,
-      features: ["Pure Ingredients", "Lab Tested", "Eco-Friendly"],
-      image: "https://images.pexels.com/photos/302163/pexels-photo-302163.jpeg"
+      features: ["Immunity Boost", "Daily Nutrition", "Herbal Blend"],
+      image: greengold,
     },
     {
       id: 3,
-      title: "Career Growth",
-      subtitle: "Unlimited Opportunities",
-      content: "Your Success Journey",
-      description: "Join India's fastest growing business community with complete training and support.",
-      bgColor: "from-green-900 via-emerald-900 to-green-800",
-      accentColor: "text-cyan-300",
-      icon: <Award className="w-16 h-16" />,
-      features: ["Leadership Program", "Weekly Payouts", "Team Building"],
-      image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.1.0&auto=format&fit=crop&w=1200&q=80"
+      title: "Green Vitality",
+      subtitle: "Complete Body Nutrition",
+      content: "Fuel Your Vitality",
+      description:
+        "Improves stamina, metabolism, and overall wellness for an active lifestyle.",
+      bgColor: "from-emerald-900 via-green-800 to-emerald-700",
+      accentColor: "text-lime-300",
+      icon: <Zap className="w-16 h-16" />,
+      features: ["Energy Boost", "Metabolism", "Full Body Support"],
+      image: GreenVitality,
     },
     {
       id: 4,
-      title: "Community",
-      subtitle: "Growing Together",
-      content: "Strong Support System",
-      description: "Be part of a vibrant community where success is celebrated together.",
-      bgColor: "from-emerald-800 via-green-700 to-emerald-600",
+      title: "Pain Free",
+      subtitle: "Joint & Muscle Care",
+      content: "Move Without Pain",
+      description:
+        "Relieves joint and muscle discomfort naturally and improves mobility.",
+      bgColor: "from-slate-900 via-gray-800 to-slate-700",
+      accentColor: "text-gray-300",
+      icon: <Activity className="w-16 h-16" />,
+      features: ["Joint Relief", "Muscle Support", "Natural Formula"],
+      image: painfree,
+    },
+    {
+      id: 5,
+      title: "Sugar Shield",
+      subtitle: "Blood Sugar Support",
+      content: "Balance Your Sugar",
+      description:
+        "Helps maintain healthy blood sugar levels with trusted Ayurvedic herbs.",
+      bgColor: "from-indigo-900 via-blue-800 to-indigo-700",
+      accentColor: "text-indigo-300",
+      icon: <ShieldCheck className="w-16 h-16" />,
+      features: ["Sugar Control", "Metabolic Health", "Herbal Support"],
+      image: sugarshield,
+    },
+    {
+      id: 6,
+      title: "Bio Activator",
+      subtitle: "Cellular Health Booster",
+      content: "Activate Inner Strength",
+      description:
+        "Improves nutrient absorption and boosts cellular activity naturally.",
+      bgColor: "from-cyan-900 via-teal-800 to-cyan-700",
+      accentColor: "text-cyan-300",
+      icon: <Sparkles className="w-16 h-16" />,
+      features: ["Cell Activation", "Better Absorption", "Vital Energy"],
+      image: BioActivator,
+    },
+    {
+      id: 7,
+      title: "Fruiting Formulation",
+      subtitle: "Plant Growth Enhancer",
+      content: "Boost Natural Yield",
+      description:
+        "Enhances flowering and fruiting for healthier plant growth.",
+      bgColor: "from-lime-900 via-green-800 to-lime-700",
       accentColor: "text-lime-300",
-      icon: <Users className="w-16 h-16" />,
-      features: ["Community Events", "Success Stories", "Networking"],
-      image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.1.0&auto=format&fit=crop&w=1200&q=80"
-    }
+      icon: <Apple className="w-16 h-16" />,
+      features: ["Higher Yield", "Plant Nutrition", "Eco Friendly"],
+      image: FruitingFormulation,
+    },
+    {
+      id: 8,
+      title: "Green Bio Shield",
+      subtitle: "Natural Protection Formula",
+      content: "Protect Naturally",
+      description:
+        "Provides natural defense and protection for plants and soil health.",
+      bgColor: "from-green-900 via-emerald-800 to-green-700",
+      accentColor: "text-green-300",
+      icon: <ShieldCheck className="w-16 h-16" />,
+      features: ["Plant Protection", "Bio Formula", "Safe & Natural"],
+      image: GreenBioShield,
+    },
+    {
+      id: 9,
+      title: "Soil Solution",
+      subtitle: "Soil Health Booster",
+      content: "Revive Your Soil",
+      description:
+        "Improves soil fertility and enhances crop productivity naturally.",
+      bgColor: "from-amber-900 via-yellow-800 to-amber-700",
+      accentColor: "text-yellow-300",
+      icon: <Sprout className="w-16 h-16" />,
+      features: ["Soil Nutrition", "Better Roots", "Organic Growth"],
+      image: SoilSolution,
+    },
+    {
+      id: 10,
+      title: "Staminex",
+      subtitle: "Energy & Strength Formula",
+      content: "Power Your Performance",
+      description:
+        "Boosts stamina, strength, and endurance for daily performance.",
+      bgColor: "from-orange-900 via-amber-800 to-orange-700",
+      accentColor: "text-orange-300",
+      icon: <Zap className="w-16 h-16" />,
+      features: ["High Stamina", "Strength Boost", "Natural Energy"],
+      image: Staminex,
+    },
   ];
 
   useEffect(() => {
     if (!isAutoPlaying) return;
-    
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, [slides.length, isAutoPlaying]);
-
-  const goToSlide = (index: number): void => {
-    setCurrentSlide(index);
-    setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 8000);
-  };
-
-  const goToPrev = (): void => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-    setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 8000);
-  };
-
-  const goToNext = (): void => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-    setIsAutoPlaying(false);
-    setTimeout(() => setIsAutoPlaying(true), 8000);
-  };
-
-  const slideVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 1000 : -1000,
-      opacity: 0
-    }),
-    center: {
-      x: 0,
-      opacity: 1
-    },
-    exit: (direction: number) => ({
-      x: direction < 0 ? 1000 : -1000,
-      opacity: 0
-    })
-  };
+  }, [isAutoPlaying, slides.length]);
 
   return (
     <div className="relative w-full h-[75vh] min-h-[550px] overflow-hidden rounded-b-2xl shadow-2xl max-sm:h-[90vh]">
-      <AnimatePresence mode="wait" custom={currentSlide}>
+      <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
-          custom={currentSlide}
-          variants={slideVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={{
-            x: { type: "spring", stiffness: 300, damping: 30 },
-            opacity: { duration: 0.4 }
-          }}
+          initial={{ opacity: 0, x: 200 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -200 }}
+          transition={{ duration: 0.6 }}
           className={`absolute inset-0 bg-gradient-to-br ${slides[currentSlide].bgColor}`}
         >
-          {/* Background Image */}
           <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0 bg-contain bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/40"></div>
-          </div>
-
-          {/* Background Pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(34,197,94,0.15)_1px,transparent_0)] bg-[length:20px_20px]"></div>
-          </div>
+          />
+          <div className="absolute inset-0 bg-black/60" />
 
           <div className="relative h-full flex items-center">
-            <div className="container mx-auto px-6 lg:px-12">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                
-                {/* Left Content */}
-                <motion.div
-                  className="lg:col-span-8 text-center lg:text-left space-y-6"
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                >
-                  {/* Badge */}
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", delay: 0.3 }}
-                    className="inline-flex items-center gap-2 bg-emerald-500/20 backdrop-blur-sm rounded-full px-4 py-2 border border-emerald-500/30"
+            <div className="container mx-auto px-6 text-white space-y-5">
+              <h1 className="text-4xl md:text-6xl font-bold">
+                {slides[currentSlide].title}
+              </h1>
+              <h2 className="text-2xl font-semibold text-emerald-300">
+                {slides[currentSlide].content}
+              </h2>
+              <p className="max-w-2xl text-white/90">
+                {slides[currentSlide].description}
+              </p>
+
+              <div className="flex gap-3 flex-wrap">
+                {slides[currentSlide].features.map((f, i) => (
+                  <span
+                    key={i}
+                    className="bg-white/20 px-4 py-2 rounded-full text-sm"
                   >
-                    <Sparkles className="w-4 h-4 text-emerald-300" />
-                    <span className="text-sm font-medium text-emerald-300">
-                      {slides[currentSlide].subtitle}
-                    </span>
-                  </motion.div>
-
-                  {/* Title */}
-                  <motion.h1
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                    className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 leading-tight"
-                  >
-                    {slides[currentSlide].title}
-                  </motion.h1>
-
-                  {/* Content */}
-                  <motion.div
-                    initial={{ y: 15, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.5 }}
-                    className={`text-2xl md:text-3xl font-bold ${slides[currentSlide].accentColor} mb-3`}
-                  >
-                    {slides[currentSlide].content}
-                  </motion.div>
-
-                  {/* Description */}
-                  <motion.p
-                    initial={{ y: 15, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
-                    className="text-lg text-white/90 leading-relaxed max-w-2xl"
-                  >
-                    {slides[currentSlide].description}
-                  </motion.p>
-
-                  {/* Features */}
-                  <motion.div
-                    initial={{ y: 15, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.7 }}
-                    className="flex flex-wrap gap-3 justify-center lg:justify-start"
-                  >
-                    {slides[currentSlide].features.map((feature, index) => (
-                      <motion.span
-                        key={index}
-                        whileHover={{ scale: 1.05 }}
-                        className="bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium border border-white/20 flex items-center gap-2"
-                      >
-                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
-                        {feature}
-                      </motion.span>
-                    ))}
-                  </motion.div>
-
-                  {/* CTA & Website */}
-                  <motion.div
-                    initial={{ y: 15, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.8 }}
-                    className="flex flex-col sm:flex-row gap-4 items-center pt-4"
-                  >
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="group relative bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold py-3 px-6 rounded-full overflow-hidden flex items-center gap-2"
-                    >
-                      <span className="relative z-10">Get Started</span>
-                      <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-500"
-                        initial={{ x: "-100%" }}
-                        whileHover={{ x: 0 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    </motion.button>
-
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      className="bg-black/30 backdrop-blur-sm px-5 py-3 rounded-xl border border-emerald-500/20"
-                    >
-                      <p className="text-white font-semibold text-sm tracking-wide">
-                        www.mybyooteas.co.in
-                      </p>
-                    </motion.div>
-                  </motion.div>
-                </motion.div>
-
-                {/* Right Icon */}
-                <motion.div
-                  className="lg:col-span-4 flex justify-center lg:justify-end"
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 15,
-                    delay: 0.4,
-                  }}
-                >
-                  <div className="relative">
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      className="bg-white/20 backdrop-blur-lg rounded-2xl p-8 border border-white/30 shadow-xl"
-                    >
-                      <div className={slides[currentSlide].accentColor}>
-                        {slides[currentSlide].icon}
-                      </div>
-                    </motion.div>
-                    
-                    {/* Floating Elements */}
-                    <motion.div
-                      animate={{ y: [-8, 8, -8] }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                      className="absolute -top-3 -right-3 w-8 h-8 bg-emerald-400/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-emerald-300/30"
-                    >
-                      <Zap className="w-3 h-3 text-emerald-300" />
-                    </motion.div>
-                  </div>
-                </motion.div>
+                    {f}
+                  </span>
+                ))}
               </div>
+
+              <button className="mt-4 bg-emerald-500 hover:bg-emerald-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2">
+                Buy Now <ArrowRight size={18} />
+              </button>
             </div>
           </div>
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation Arrows */}
-      <motion.button
-        onClick={goToPrev}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/20 text-white p-3 rounded-full transition-all z-10 backdrop-blur-sm border border-white/30"
-        aria-label="Previous slide"
+      <button
+        onClick={() =>
+          setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
+        }
+        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 p-3 rounded-full"
       >
-        <ChevronLeft className="w-5 h-5" />
-      </motion.button>
+        <ChevronLeft />
+      </button>
 
-      <motion.button
-        onClick={goToNext}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/20 text-white p-3 rounded-full transition-all z-10 backdrop-blur-sm border border-white/30"
-        aria-label="Next slide"
+      <button
+        onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
+        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 p-3 rounded-full"
       >
-        <ChevronRight className="w-5 h-5" />
-      </motion.button>
-
-      {/* Slide Indicators */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3 z-10">
-        {slides.map((_, index) => (
-          <motion.button
-            key={index}
-            onClick={() => goToSlide(index)}
-            whileHover={{ scale: 1.2 }}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-              index === currentSlide
-                ? "bg-emerald-400 scale-125"
-                : "bg-white/50 hover:bg-white/75"
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
-
-      {/* Progress Bar */}
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20 z-10">
-        <motion.div
-          className="h-full bg-gradient-to-r from-emerald-400 to-green-500"
-          initial={{ width: "0%" }}
-          animate={{ width: "100%" }}
-          transition={{ duration: 5, ease: "linear" }}
-          key={currentSlide}
-        />
-      </div>
-
-      {/* Slide Counter */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="absolute top-4 right-4 bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20 z-10"
-      >
-        <span className="text-white text-sm font-medium">
-          {currentSlide + 1} / {slides.length}
-        </span>
-      </motion.div>
+        <ChevronRight />
+      </button>
     </div>
   );
 };

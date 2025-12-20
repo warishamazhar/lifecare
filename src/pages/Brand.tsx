@@ -42,7 +42,7 @@ const Brand = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
             <div className="mb-8">
-              <h1 className="text-6xl md:text-7xl font-bold mb-4 tracking-tight">byooteas</h1>
+              <h1 className="text-6xl md:text-7xl font-bold mb-4 tracking-tight">Future Life Care </h1>
               <div className="flex items-center justify-center gap-3 text-2xl opacity-90">
                 <span>Wellness</span>
                 <span className="text-gold">|</span>
@@ -62,7 +62,7 @@ const Brand = () => {
           <div className="max-w-4xl mx-auto text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">Our Brand Promise</h2>
             <p className="text-xl text-muted-foreground">
-              Quality, purity, and effectiveness are at the heart of everything we do. Discover what makes Byooteas Life your trusted wellness partner.
+              Quality, purity, and effectiveness are at the heart of everything we do. Discover what makes Future  Life Care  your trusted wellness partner.
             </p>
           </div>
 
@@ -96,7 +96,7 @@ const Brand = () => {
               <div>
                 <h2 className="text-4xl font-bold mb-6">Our Commitment to Quality</h2>
                 <p className="text-lg text-muted-foreground mb-6">
-                  At Byooteas Life, quality is not just a promise—it's our foundation. Every product is crafted with precision, tested rigorously, and delivered with care.
+                  At Future Life Care, quality is not just a promise—it's our foundation. Every product is crafted with precision, tested rigorously, and delivered with care.
                 </p>
                 <div className="space-y-4">
                   {[

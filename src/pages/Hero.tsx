@@ -72,7 +72,7 @@ const Hero = () => {
             >
               <Award className="w-5 h-5 text-emerald-300" />
               <span className="text-emerald-300 font-semibold text-sm">
-                Jharkhand's 1st Direct Selling Company
+                Maharastra's 1st Direct Selling Company
               </span>
             </motion.div>
 
@@ -84,8 +84,11 @@ const Hero = () => {
             >
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight">
                 <span className="bg-gradient-to-r from-emerald-300 via-green-400 to-emerald-200 bg-clip-text text-transparent">
-                  BYOOTEAS
+                  Future Life Care 
                 </span>
+
+                
+                
                 <br />
                 <span className="text-3xl md:text-4xl lg:text-5xl text-white font-light">
                   Where Dreams Come True
@@ -251,7 +254,7 @@ const Hero = () => {
                   <div className="inline-flex items-center gap-3 px-6 py-3 bg-black/30 backdrop-blur-sm rounded-full border border-emerald-500/30">
                     <span className="text-emerald-300">🌐</span>
                     <span className="text-white font-medium text-lg">
-                      www.mybyooteas.co.in
+                      flcbiotech.com
                     </span>
                   </div>
                 </motion.div>

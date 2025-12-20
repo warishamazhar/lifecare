@@ -43,7 +43,7 @@ const WhyByoteas = () => {
             Why Choose Us
           </div>
           <h2 className="text-5xl font-bold bg-gradient-to-br from-gray-900 to-gray-600 bg-clip-text text-transparent mb-6">
-            Why Choose <span className="text-amber-600">Byooteas Life?</span>
+            Why Choose <span className="text-amber-600">Future Life Care?</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Join Jharkhand's premier direct selling company and unlock your 
