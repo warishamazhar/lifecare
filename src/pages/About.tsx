@@ -1,5 +1,16 @@
 import { Link } from "react-router-dom";
-import { Target, Eye, Award, Users, Shield, DollarSign, TrendingUp, Package, ArrowRight } from "lucide-react";
+import {
+  Target,
+  Eye,
+  Award,
+  Users,
+  Shield,
+  TrendingUp,
+  Leaf,
+  Heart,
+  Sprout,
+  ArrowRight,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -10,152 +21,161 @@ const About = () => {
       <section className="bg-gradient-primary text-primary-foreground py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">About Future Life Care</h1>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              About Future Life Care & Biotech Pvt. Ltd.
+            </h1>
             <p className="text-xl opacity-90">
-              Maharastra's First Direct Selling Company
+              Transforming Agriculture, Wellness & Human Empowerment
             </p>
           </div>
         </div>
       </section>
 
-      {/* Our Story */}
+      {/* Introduction */}
       <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold mb-8 text-center">Our Story</h2>
+        <div className="container mx-auto px-4 max-w-4xl text-center">
+          <p className="text-xl leading-relaxed text-muted-foreground">
+            Every great journey begins with a vision — a vision to create meaningful
+            change and redefine the way we live, grow, and care.
+          </p>
 
-            <div className="prose prose-lg max-w-none space-y-6 text-foreground">
-              <p className="text-lg leading-relaxed">
-                Welcome to <span className="font-semibold text-primary">Future Life Care Pvt. Ltd.</span>, where dreams transform into reality through dedication, innovation, and the power of community.
-              </p>
-
-              <p className="text-lg leading-relaxed">
-                As Maharastra's pioneering direct selling company, we stand at the intersection of wellness and opportunity. Our mission is simple yet profound: to empower individuals with premium Ayurvedic products while creating sustainable income streams through an equitable business model.
-              </p>
-
-              <Card className="my-8 border-primary/20 shadow-soft">
-                <CardContent className="pt-6">
-                  <h3 className="text-2xl font-bold mb-4 text-primary">Why We Exist</h3>
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-3">
-                      <div className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                      <span>To provide world-class Ayurvedic wellness products that enhance health naturally</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                      <span>To offer an unmatched compensation plan that rewards effort and dedication</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                      <span>To build a community where success is shared and celebrated together</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="mt-1 h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-                      <span>To champion the timeless wisdom of Ayurveda in modern wellness</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <p className="text-lg leading-relaxed">
-                We believe that everyone deserves access to products that truly nurture well-being, and everyone deserves the opportunity to build financial independence. These twin pillars—Health and Wealth—form the foundation of everything we do.
-              </p>
-            </div>
-          </div>
+          <p className="text-xl leading-relaxed mt-6 text-muted-foreground">
+            Future Life Care & Biotech Pvt. Ltd. was born from a powerful dream —
+            to transform lives through Agriculture, Wellness, and Human Empowerment.
+          </p>
         </div>
       </section>
 
-      {/* Core Values */}
+      {/* Agriculture Section */}
       <section className="py-20 bg-muted">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl font-bold mb-12 text-center">Our Core Values</h2>
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-4xl font-bold mb-8 text-center">
+            Agriculture for a Sustainable Tomorrow
+          </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <Card className="border-none shadow-soft">
-                <CardContent className="pt-8 text-center">
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary mx-auto">
-                    <Target className="h-8 w-8 text-primary-foreground" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">Mission</h3>
-                  <p className="text-muted-foreground">Empower lives through wellness and opportunity</p>
-                </CardContent>
-              </Card>
+          <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            Agriculture is more than an industry — it is the heartbeat of our nation.
+            At Future Life Care & Biotech Pvt. Ltd., we are reimagining this vital sector
+            through organic innovation and sustainable excellence.
+          </p>
 
-              <Card className="border-none shadow-soft">
-                <CardContent className="pt-8 text-center">
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary mx-auto">
-                    <Eye className="h-8 w-8 text-primary-foreground" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">Vision</h3>
-                  <p className="text-muted-foreground">Leading wellness revolution across India</p>
-                </CardContent>
-              </Card>
+          <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            Our advanced range of bio-fertilizers, plant growth enhancers, and
+            eco-friendly agri-solutions enrich soil health, enhance crop productivity,
+            and protect our planet.
+          </p>
 
-              <Card className="border-none shadow-soft">
-                <CardContent className="pt-8 text-center">
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary mx-auto">
-                    <Award className="h-8 w-8 text-primary-foreground" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">Quality</h3>
-                  <p className="text-muted-foreground">Premium Ayurvedic products with guaranteed results</p>
-                </CardContent>
-              </Card>
-
-              <Card className="border-none shadow-soft">
-                <CardContent className="pt-8 text-center">
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary mx-auto">
-                    <Users className="h-8 w-8 text-primary-foreground" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">Community</h3>
-                  <p className="text-muted-foreground">Success is together for you and your teams</p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          <p className="text-lg leading-relaxed text-muted-foreground">
+            By empowering farmers with knowledge, trust, and natural cultivation
+            practices, we are sowing the seeds of a profitable, resilient, and
+            sustainable future.
+          </p>
         </div>
       </section>
 
-      {/* Support Team */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto text-center mb-16">
-            <h2 className="text-4xl font-bold mb-6">Our Dedicated Support Team</h2>
-            <p className="text-xl text-muted-foreground">
-              A team of experts committed to your success and satisfaction
-            </p>
-          </div>
+      {/* Wellness Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-4xl font-bold mb-8 text-center">
+            Wellness for a Better Tomorrow
+          </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              { icon: Users, title: "Doctor Support", description: "Professional medical guidance and consultation." },
-              { icon: Shield, title: "Grievance & Redressal", description: "Dedicated issue resolution team." },
-              { icon: DollarSign, title: "Account Department", description: "Transparent payout and finance handling." },
-              { icon: TrendingUp, title: "Marketing Department", description: "Business growth and promotion support." },
-              { icon: Award, title: "Admin Department", description: "Complete operational assistance." },
-              { icon: Package, title: "Logistic Department", description: "Safe and timely product delivery." },
-            ].map((dept, index) => (
-              <Card key={index} className="border-none shadow-soft">
-                <CardHeader>
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary">
-                    <dept.icon className="h-8 w-8 text-primary-foreground" />
-                  </div>
-                  <CardTitle className="text-xl">{dept.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">{dept.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            True success begins with good health — and good health begins with balance.
+            We redefine wellness through nature-powered, science-backed solutions that
+            nurture the body, mind, and spirit.
+          </p>
+
+          <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            Our range of natural supplements and wellness innovations strengthen
+            immunity, enhance vitality, and support healthier living from within.
+          </p>
+
+          <p className="text-lg leading-relaxed text-muted-foreground">
+            Because wellness is not just about adding years to life — it’s about adding
+            life, joy, and purpose to every year.
+          </p>
+        </div>
+      </section>
+
+      {/* Empowerment Section */}
+      <section className="py-20 bg-muted">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-4xl font-bold mb-8 text-center">
+            Creating Leaders. Inspiring Change.
+          </h2>
+
+          <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            We are more than an organization — we are a movement for transformation.
+            Through innovative business models and leadership development, we empower
+            individuals to achieve financial independence and personal mastery.
+          </p>
+
+          <p className="text-lg leading-relaxed text-muted-foreground">
+            By building a strong community of changemakers, we help people uplift
+            themselves, their families, and society at large.
+          </p>
+        </div>
+      </section>
+
+      {/* Transforming Journey */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-4xl font-bold mb-8 text-center">
+            Our Transforming Journey
+          </h2>
+
+          <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            From hope to health. From vision to transformation.
+            This is not just a business — it is a journey that turns ordinary lives
+            into extraordinary stories of growth, success, and happiness.
+          </p>
+
+          <p className="text-lg leading-relaxed text-muted-foreground">
+            Together, we are not just living. We are transforming.
+          </p>
+        </div>
+      </section>
+
+      {/* Founder Message */}
+      <section className="py-20 bg-muted">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-4xl font-bold mb-8 text-center">
+            A Message from Our Founder
+          </h2>
+
+          <Card className="shadow-soft">
+            <CardContent className="pt-8 space-y-6 text-muted-foreground">
+              <p>
+                “The future is not somewhere ahead of us — the future begins here,
+                with you, with us, today.”
+              </p>
+
+              <p>
+                Future Life Care & Biotech Pvt. Ltd. is a promise — that no dream is
+                too small, no life is ordinary, and no goal is beyond reach when
+                we walk together.
+              </p>
+
+              <p className="font-semibold text-foreground">
+                With heartfelt regards,
+                <br />
+                Mr. Rahul D. Dhekale
+                <br />
+                Founder & CEO
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
       {/* CTA */}
       <section className="py-20 bg-gradient-hero text-primary-foreground text-center">
-        <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Join Our Mission?</h2>
+        <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          Together, We Grow. Together, We Rise.
+        </h2>
         <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-          Be part of a movement that's transforming lives through wellness and opportunity.
+          Because the future isn’t something we wait for — the future is something we create.
         </p>
         <Button variant="gold" size="lg" asChild>
           <Link to="/join">

@@ -6,32 +6,38 @@ const Brand = () => {
     {
       icon: Microscope,
       title: "Self Research & Development",
-      description: "Our dedicated R&D team works tirelessly to innovate and improve our product formulations.",
+      description:
+        "Our innovations are driven by continuous research, blending modern science with nature-inspired solutions.",
     },
     {
       icon: Award,
       title: "Lab Tested Products",
-      description: "Every product undergoes rigorous testing in certified laboratories to ensure quality and safety.",
+      description:
+        "Every Snaffel product is carefully tested to ensure safety, quality, and consistent performance.",
     },
     {
       icon: Leaf,
-      title: "100% Pure Ayurveda",
-      description: "Authentic Ayurvedic formulations using natural ingredients sourced from trusted suppliers.",
+      title: "Nature-Driven Wellness",
+      description:
+        "A harmonious blend of herbal wellness, organic agriculture, and bio-magnetic innovation.",
     },
     {
       icon: Shield,
-      title: "100% Satisfaction Guarantee",
-      description: "We stand behind our products with a complete satisfaction guarantee for your peace of mind.",
+      title: "Commitment to Care",
+      description:
+        "Built on responsibility, transparency, and a deep commitment to your wellbeing.",
     },
     {
       icon: TrendingUp,
-      title: "100% Result Oriented",
-      description: "Our products are designed to deliver measurable results and improve your overall wellness.",
+      title: "Result-Oriented Solutions",
+      description:
+        "Thoughtfully crafted products designed to create meaningful and measurable impact.",
     },
     {
       icon: CheckCircle,
-      title: "Quality Certified",
-      description: "Certified by leading quality assurance organizations for your safety and trust.",
+      title: "Quality You Can Trust",
+      description:
+        "From sourcing to delivery, uncompromised quality remains our foundation.",
     },
   ];
 
@@ -42,15 +48,18 @@ const Brand = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center animate-fade-in">
             <div className="mb-8">
-              <h1 className="text-6xl md:text-7xl font-bold mb-4 tracking-tight">Future Life Care </h1>
+              <h1 className="text-6xl md:text-7xl font-bold mb-4 tracking-tight">
+                Snaffel
+              </h1>
               <div className="flex items-center justify-center gap-3 text-2xl opacity-90">
-                <span>Wellness</span>
+                <span>The Power of Nature</span>
                 <span className="text-gold">|</span>
-                <span>Wellbeing</span>
+                <span>The Promise of Care</span>
               </div>
             </div>
             <p className="text-xl opacity-90 max-w-2xl mx-auto">
-              Your trusted partner in natural wellness. Committed to delivering 100% pure Ayurvedic solutions for a healthier life.
+              More than a brand — Snaffel is a purpose-driven movement empowering
+              individuals to take charge of their health, wellbeing, and future.
             </p>
           </div>
         </div>
@@ -60,9 +69,13 @@ const Brand = () => {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">Our Brand Promise</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Our Brand Promise
+            </h2>
             <p className="text-xl text-muted-foreground">
-              Quality, purity, and effectiveness are at the heart of everything we do. Discover what makes Future  Life Care  your trusted wellness partner.
+              Rooted in science and inspired by nature, Snaffel stands for trust,
+              transformation, and sustainable wellbeing for individuals and
+              communities.
             </p>
           </div>
 
@@ -79,8 +92,12 @@ const Brand = () => {
                       <pillar.icon className="h-10 w-10 text-primary-foreground" />
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-foreground">{pillar.title}</h3>
-                  <p className="text-muted-foreground">{pillar.description}</p>
+                  <h3 className="text-xl font-bold mb-3 text-foreground">
+                    {pillar.title}
+                  </h3>
+                  <p className="text-muted-foreground">
+                    {pillar.description}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -94,22 +111,24 @@ const Brand = () => {
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
-                <h2 className="text-4xl font-bold mb-6">Our Commitment to Quality</h2>
+                <h2 className="text-4xl font-bold mb-6">
+                  Our Commitment to Quality
+                </h2>
                 <p className="text-lg text-muted-foreground mb-6">
-                  At Future Life Care, quality is not just a promise—it's our foundation. Every product is crafted with precision, tested rigorously, and delivered with care.
+                  Quality at Snaffel is a responsibility. Every product reflects
+                  our belief in natural balance, scientific integrity, and
+                  sustainable innovation.
                 </p>
                 <div className="space-y-4">
                   {[
-                    "Sourced from certified Ayurvedic suppliers",
-                    "Manufactured in GMP-certified facilities",
-                    "Third-party lab tested for purity",
-                    "30-day satisfaction guarantee",
-                    "Continuous quality monitoring",
+                    "Nature-inspired, science-backed innovation",
+                    "Sustainable and responsible sourcing",
+                    "Rigorous quality testing and validation",
+                    "Customer trust at the core of everything we do",
+                    "Focused on long-term wellbeing",
                   ].map((item, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <div className="flex-shrink-0 mt-1">
-                        <CheckCircle className="h-5 w-5 text-primary" />
-                      </div>
+                      <CheckCircle className="h-5 w-5 text-primary mt-1" />
                       <p className="text-muted-foreground">{item}</p>
                     </div>
                   ))}
@@ -120,8 +139,12 @@ const Brand = () => {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center text-primary-foreground p-8">
                       <Leaf className="h-24 w-24 mx-auto mb-4 opacity-90" />
-                      <p className="text-2xl font-bold">Pure Ayurveda</p>
-                      <p className="text-lg opacity-90 mt-2">Nature's Gift to Wellness</p>
+                      <p className="text-2xl font-bold">
+                        Pure Innovation
+                      </p>
+                      <p className="text-lg opacity-90 mt-2">
+                        Inspired by Nature
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -135,20 +158,24 @@ const Brand = () => {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
-            <h2 className="text-3xl font-bold text-center mb-12">Certified & Trusted</h2>
+            <h2 className="text-3xl font-bold text-center mb-12">
+              Certified & Trusted
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               {[
-                "GMP Certified",
-                "ISO Certified",
-                "Ayush Approved",
-                "Lab Tested",
+                "Quality Assured",
+                "Science Backed",
+                "Sustainably Crafted",
+                "Trusted by Communities",
               ].map((badge, index) => (
                 <Card key={index} className="border-primary/20 shadow-soft">
                   <CardContent className="pt-6 text-center">
                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-primary mx-auto mb-3">
                       <Award className="h-8 w-8 text-primary-foreground" />
                     </div>
-                    <p className="font-semibold text-foreground">{badge}</p>
+                    <p className="font-semibold text-foreground">
+                      {badge}
+                    </p>
                   </CardContent>
                 </Card>
               ))}

@@ -1,546 +1,247 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Shield, Heart, Zap, Baby, ShoppingCart, Star, Sparkles, ArrowRight, TrendingUp } from "lucide-react";
+import {
+  ShoppingCart,
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import productsAPI, { Product } from "@/api/products";
 import { useCart } from "@/contexts/CartContext";
 import { motion } from "framer-motion";
 
+
+import cardiodelight from "@/assets/cardiodelight.png";
+import greengold from "@/assets/greengold.png";
+import greenVitality from "@/assets/GreenVitality.png";
+import painfree from "@/assets/painfree.png";
+import sugarshield from "@/assets/sugarshield.png";
+import bioActivator from "@/assets/BioActivator.png";
+import fruitingFormulation from "@/assets/FruitingFormulation.png";
+import greenBioShield from "@/assets/GreenBioShield.png";
+import soilSolution from "@/assets/SoilSolution.png";
+import staminex from "@/assets/Staminex.png";
+
 const Products = () => {
   const navigate = useNavigate();
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(12); // Show 12 products initially
-  const productsPerPage = 12;
-  
-  const [categories, setCategories] = useState([
-    { id: "all", name: "All Products", icon: Heart },
-    { id: "health", name: "Health Care", icon: Heart },
-    { id: "men", name: "Men's Care", icon: Zap },
-    { id: "women", name: "Women's Care", icon: Heart },
-    { id: "kids", name: "Kids Care", icon: Baby },
-  ]);
-  
   const { addItem } = useCart();
 
-  useEffect(() => {
-    fetchProducts();
-    fetchCategories();
-  }, []);
+  // 🔹 STATIC PRODUCTS
+  const products = [
+    {
+      id: "1",
+      name: "Cardio Delight",
+      description: "Supports heart health and improves circulation naturally.",
+      price: 1299,
+      pv: 10,
+      category: "Health Care",
+      image: cardiodelight,
+      inStock: true,
+    },
+    {
+      id: "2",
+      name: "Green Gold",
+      description: "Powerful antioxidant blend for daily detox and immunity.",
+      price: 999,
+      pv: 8,
+      category: "Health Care",
+      image: greengold,
+      inStock: true,
+    },
+    {
+      id: "3",
+      name: "Green Vitality",
+      description: "Boosts energy, stamina, and overall wellness.",
+      price: 1499,
+      pv: 12,
+      category: "Health Care",
+      image: greenVitality,
+      inStock: true,
+    },
+    {
+      id: "4",
+      name: "Pain Free",
+      description: "Ayurvedic solution for joint and muscle pain relief.",
+      price: 1199,
+      pv: 9,
+      category: "Health Care",
+      image: painfree,
+      inStock: true,
+    },
+    {
+      id: "5",
+      name: "Sugar Shield",
+      description: "Helps maintain healthy blood sugar levels.",
+      price: 1399,
+      pv: 11,
+      category: "Health Care",
+      image: sugarshield,
+      inStock: true,
+    },
+    {
+      id: "6",
+      name: "Staminex",
+      description: "Enhances strength, stamina, and vitality.",
+      price: 1599,
+      pv: 13,
+      category: "Men's Care",
+      image: staminex,
+      inStock: true,
+    },
+    {
+      id: "7",
+      name: "Bio Activator",
+      description: "Improves soil fertility and crop productivity.",
+      price: 1899,
+      pv: 15,
+      category: "Agriculture",
+      image: bioActivator,
+      inStock: true,
+    },
+    {
+      id: "8",
+      name: "Fruiting Formulation",
+      description: "Enhances fruit quality and yield naturally.",
+      price: 1799,
+      pv: 14,
+      category: "Agriculture",
+      image: fruitingFormulation,
+      inStock: true,
+    },
+    {
+      id: "9",
+      name: "Green Bio Shield",
+      description: "Protects crops from pests using organic methods.",
+      price: 1699,
+      pv: 13,
+      category: "Agriculture",
+      image: greenBioShield,
+      inStock: true,
+    },
+    {
+      id: "10",
+      name: "Soil Solution",
+      description: "Restores soil health and boosts sustainable farming.",
+      price: 1499,
+      pv: 12,
+      category: "Agriculture",
+      image: soilSolution,
+      inStock: true,
+    },
+  ];
 
-  useEffect(() => {
-    // Reset visible count when category changes
-    setVisibleCount(12);
-  }, [activeCategory]);
-
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const response = await productsAPI.getProducts();
-      if (response.success) {
-        setProducts(response.data);
-      }
-    } catch (error: any) {
-      toast.error("Failed to load products");
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const response = await productsAPI.getCategories();
-      if (response.success) {
-        const dynamicCategories = response.data.map((cat: string) => ({
-          id: cat.toLowerCase(),
-          name: cat.charAt(0).toUpperCase() + cat.slice(1) + " Care",
-          icon: cat === "health" ? Heart : cat === "men" ? Zap : cat === "women" ? Heart : Baby
-        }));
-        setCategories([
-          { id: "all", name: "All Products", icon: Heart },
-          ...dynamicCategories
-        ]);
-      }
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
-  };
-
-  const handleAddToCart = (product: Product) => {
-    if (!product.inStock) {
-      toast.error("Product is out of stock");
-      return;
-    }
+  const handleAddToCart = (product) => {
     addItem({
-      productId: product._id,
+      productId: product.id,
       name: product.name,
       price: product.price,
-      discountPrice: product.discountPrice,
-      image: product.images && product.images.length > 0 ? product.images[0] : undefined,
+      image: product.image,
       pv: product.pv,
       inStock: product.inStock,
     });
-    toast.success(`${product.name} added to cart!`);
+    toast.success(`${product.name} added to cart`);
   };
 
-  const filteredProducts =
-    activeCategory === "all"
-      ? products
-      : products.filter((p) => p.category.toLowerCase() === activeCategory);
-
-  const visibleProducts = filteredProducts.slice(0, visibleCount);
-  const hasMore = visibleCount < filteredProducts.length;
-
-  const loadMore = () => {
-    setVisibleCount(prev => prev + productsPerPage);
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 0
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 0,
     }).format(amount);
-  };
-
-  const getDiscountPercent = (price: number, discountPrice: number) => {
-    return Math.round(((price - discountPrice) / price) * 100);
-  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50/30 via-white to-emerald-50/20">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white py-20 relative overflow-hidden">
-        <motion.div
-          className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-amber-400/20 to-yellow-500/20 rounded-full blur-3xl"
-          animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.2, 0.3, 0.2]
-          }}
-          transition={{ 
-            duration: 8, 
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        ></motion.div>
-        <div className="container mx-auto px-4 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">Our Ayurvedic Products</h1>
-            <p className="text-xl opacity-90">
-              World-Class Wellness Products Backed by Ancient Wisdom
-            </p>
-          </motion.div>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50">
+      {/* HERO */}
+      <section className="py-20 bg-gradient-to-br from-emerald-600 to-emerald-800 text-white text-center">
+        <h1 className="text-5xl font-bold mb-4">Our Products</h1>
+        <p className="text-xl opacity-90">
+          Ayurvedic Wellness • Sustainable Agriculture • Natural Living
+        </p>
       </section>
 
-      {/* Guarantee Badge */}
-      <section className="py-8 bg-white/80 backdrop-blur-sm border-b border-emerald-200/50">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-center gap-3"
-          >
-            <div className="p-2 bg-gradient-to-br from-emerald-500/20 to-amber-500/20 rounded-lg backdrop-blur-sm ring-1 ring-amber-300/20">
-              <Shield className="h-8 w-8 text-emerald-600" />
-            </div>
-            <p className="text-lg font-semibold text-emerald-800">
-              30 Days Money Back & Replacement Guarantee
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Category Filter */}
-      <section className="py-12 bg-white/60 backdrop-blur-sm border-b border-emerald-200/50">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-3">
-            {categories.map((category, index) => {
-              const Icon = category.icon;
-              return (
-                <motion.div
-                  key={category.id}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="relative"
-                >
-                  <Button
-                    variant={activeCategory === category.id ? "default" : "outline"}
-                    onClick={() => setActiveCategory(category.id)}
-                    className={cn(
-                      "transition-all duration-300 rounded-full px-5 py-2.5 font-medium border-2",
-                      activeCategory === category.id
-                        ? "bg-gradient-to-r from-emerald-600 to-amber-500 hover:from-emerald-700 hover:to-amber-600 text-white shadow-lg border-transparent ring-2 ring-amber-400/30"
-                        : "bg-white/90 backdrop-blur-sm border-emerald-300/50 text-emerald-800 hover:border-emerald-500/70 hover:bg-emerald-50/80 hover:shadow-emerald-500/30 hover:shadow-lg hover:-translate-y-1 hover:text-green-600"
-                    )}
-                  >
-                    <Icon className="h-4 w-4 mr-2" />
-                    {category.name}
-                  </Button>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Products Grid */}
+      {/* PRODUCTS */}
       <section className="py-20">
-        <div className="container mx-auto px-4">
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {[...Array(8)].map((_, i) => (
-                <Card key={i} className="border-emerald-200/50 bg-white/60 backdrop-blur-sm animate-pulse">
-                  <CardContent className="pt-6">
-                    <div className="mb-4 h-48 rounded-lg bg-emerald-200/50"></div>
-                    <div className="mb-2 h-6 bg-emerald-200/50 rounded w-20"></div>
-                    <div className="mb-2 h-6 bg-emerald-200/50 rounded w-3/4"></div>
-                    <div className="mb-4 h-4 bg-emerald-200/50 rounded w-full"></div>
-                    <div className="mb-4 flex gap-2">
-                      <div className="h-6 bg-emerald-200/50 rounded w-16"></div>
-                      <div className="h-6 bg-emerald-200/50 rounded w-12"></div>
-                    </div>
-                    <div className="h-10 bg-emerald-200/50 rounded w-full"></div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {visibleProducts.map((product, index) => {
-                  const discountPercent = product.discountPrice && product.discountPrice < product.price
-                    ? getDiscountPercent(product.price, product.discountPrice)
-                    : 0;
-                  const finalPrice = product.discountPrice && product.discountPrice > 0 ? product.discountPrice : product.price;
-
-                  return (
-                    <motion.div
-                      key={product._id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      whileHover={{ scale: 1.02, y: -5 }}
-                    >
-                      <Card
-                        className="group relative border-emerald-200/50 bg-white/70 backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden ring-1 ring-amber-400/10 cursor-pointer h-full flex flex-col"
-                        onClick={() => navigate(`/products/${product._id}`)}
-                      >
-                        {/* Discount Badge */}
-                        {discountPercent > 0 && (
-                          <div className="absolute top-4 right-4 z-20">
-                            <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg ring-1 ring-amber-300/30">
-                              <TrendingUp className="h-3 w-3 mr-1" />
-                              {discountPercent}% OFF
-                            </Badge>
-                          </div>
-                        )}
-
-                        {/* Popular Badge for first 3 products */}
-                        {index < 3 && (
-                          <div className="absolute top-4 left-4 z-20">
-                            <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg ring-1 ring-emerald-300/30">
-                              <Star className="h-3 w-3 mr-1 fill-current" />
-                              Popular
-                            </Badge>
-                          </div>
-                        )}
-
-                        {/* Stock Badge */}
-                        {!product.inStock && (
-                          <div className="absolute top-4 left-4 z-20">
-                            <Badge className="bg-red-500/90 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm">
-                              Out of Stock
-                            </Badge>
-                          </div>
-                        )}
-
-                        <CardContent className="pt-6 p-0 flex-1 flex flex-col">
-                          {/* Product Image */}
-                          <div className="relative h-56 bg-gradient-to-br from-emerald-50/70 to-amber-50/50 overflow-hidden flex-shrink-0">
-                            {product.images && product.images.length > 0 ? (
-                              <motion.img
-                                src={product.images[0]}
-                                alt={product.name}
-                                className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                whileHover={{ scale: 1.1 }}
-                              />
-                            ) : (
-                              <div className="flex items-center justify-center h-full">
-                                <Heart className="h-16 w-16 text-emerald-300" />
-                              </div>
-                            )}
-                            {/* Overlay on hover */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                          </div>
-
-                          <div className="p-4 space-y-3">
-                            {/* Category Badge */}
-                            <div>
-                              <Badge className="bg-emerald-100/70 text-emerald-800 ring-1 ring-emerald-300/30 backdrop-blur-sm text-xs transition-all duration-300 cursor-pointer hover:bg-gradient-to-r hover:from-emerald-600 hover:to-amber-500 hover:text-white hover:ring-amber-400/30">
-                                {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
-                              </Badge>
-                            </div>
-
-                            {/* Product Info */}
-                            <h3 className="text-lg font-bold text-emerald-900 line-clamp-2 min-h-[3.5rem]">
-                              {product.name}
-                            </h3>
-                            <p className="text-sm text-emerald-700/70 line-clamp-2 min-h-[2.5rem]">
-                              {product.description}
-                            </p>
-
-                            {/* Price */}
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-2xl font-bold text-emerald-700">
-                                {formatCurrency(finalPrice)}
-                              </span>
-                              {product.discountPrice && product.discountPrice > 0 && product.discountPrice < product.price && (
-                                <span className="text-sm text-emerald-600/70 line-through">
-                                  {formatCurrency(product.price)}
-                                </span>
-                              )}
-                            </div>
-
-                            {/* Retail Profit Display (MRP vs DP) */}
-                            {product.mrp && product.dp && product.mrp > 0 && product.dp > 0 && (
-                              <div className="space-y-1 p-2 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border border-blue-200/50">
-                                <div className="flex justify-between text-xs">
-                                  <span className="text-gray-600">MRP:</span>
-                                  <span className="font-semibold text-gray-800">₹{product.mrp.toLocaleString()}</span>
-                                </div>
-                                <div className="flex justify-between text-xs">
-                                  <span className="text-gray-600">DP:</span>
-                                  <span className="font-semibold text-gray-800">₹{product.dp.toLocaleString()}</span>
-                                </div>
-                                <div className="flex justify-between items-center pt-1 border-t border-blue-200/50">
-                                  <span className="text-xs font-bold text-blue-700">Retail Profit:</span>
-                                  <div className="flex items-center gap-2">
-                                    <span className="text-sm font-bold text-green-600">
-                                      ₹{(product.mrp - product.dp).toLocaleString()}
-                                    </span>
-                                    <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-2 py-0.5">
-                                      {Math.round(((product.mrp - product.dp) / product.dp) * 100)}%
-                                    </Badge>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-
-                            {/* PV Badge */}
-                            {product.pv && product.pv > 0 && (
-                              <div>
-                                <Badge className="bg-gradient-to-r from-amber-500/90 to-yellow-500/90 text-white ring-1 ring-amber-300/30 backdrop-blur-sm">
-                                  <Sparkles className="h-3 w-3 mr-1" />
-                                  {product.pv} PV
-                                </Badge>
-                              </div>
-                            )}
-
-                            {/* Features */}
-                            {product.features && product.features.length > 0 && (
-                              <div className="flex flex-wrap gap-1">
-                                {product.features.slice(0, 2).map((feature, idx) => (
-                                  <Badge
-                                    key={idx}
-                                    variant="outline"
-                                    className="text-xs bg-white/60 backdrop-blur-sm border-emerald-200/50 ring-1 ring-amber-400/10"
-                                  >
-                                    {feature}
-                                  </Badge>
-                                ))}
-                                {product.features.length > 2 && (
-                                  <Badge
-                                    variant="outline"
-                                    className="text-xs bg-white/60 backdrop-blur-sm border-emerald-200/50 ring-1 ring-amber-400/10"
-                                  >
-                                    +{product.features.length - 2}
-                                  </Badge>
-                                )}
-                              </div>
-                            )}
-
-                            {/* CTAs */}
-                            <div className="flex gap-2 pt-2 mt-auto" onClick={(e) => e.stopPropagation()}>
-                              <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="flex-1"
-                              >
-                                <Button
-                                  variant="outline"
-                                  className="w-full border-emerald-200/50 bg-white/60 backdrop-blur-sm ring-1 ring-amber-400/10 hover:bg-emerald-50/50"
-                                  onClick={() => navigate(`/products/${product._id}`)}
-                                >
-                                  View
-                                </Button>
-                              </motion.div>
-                              <motion.div
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="flex-1"
-                              >
-                                <Button
-                                  className="w-full bg-gradient-to-r from-emerald-600 to-amber-500 hover:from-emerald-700 hover:to-amber-600 text-white shadow-lg ring-1 ring-amber-300/30"
-                                  onClick={() => handleAddToCart(product)}
-                                  disabled={!product.inStock}
-                                >
-                                  <ShoppingCart className="h-4 w-4 mr-1" />
-                                  Add
-                                </Button>
-                              </motion.div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </motion.div>
-                  );
-                })}
-              </div>
-
-              {/* View More Button */}
-              {hasMore && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="flex justify-center mt-12"
-                >
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Button
-                      onClick={loadMore}
-                      size="lg"
-                      className="bg-gradient-to-r from-emerald-600 to-amber-500 hover:from-emerald-700 hover:to-amber-600 text-white shadow-lg ring-1 ring-amber-300/30 px-8 py-6 text-lg"
-                    >
-                      View More Products
-                      <ArrowRight className="h-5 w-5 ml-2" />
-                    </Button>
-                  </motion.div>
-                </motion.div>
-              )}
-
-              {/* Products Count Info */}
-              {!loading && filteredProducts.length > 0 && (
-                <div className="text-center mt-8 text-emerald-700/70">
-                  <p className="text-sm">
-                    Showing {visibleProducts.length} of {filteredProducts.length} products
-                  </p>
-                </div>
-              )}
-            </>
-          )}
-
-          {!loading && filteredProducts.length === 0 && (
+        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {products.map((product, index) => (
             <motion.div
+              key={product.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center py-12"
+              transition={{ delay: index * 0.05 }}
+              whileHover={{ scale: 1.03 }}
             >
-              <div className="p-4 bg-white/70 backdrop-blur-sm rounded-lg border border-emerald-200/50 ring-1 ring-amber-400/10 inline-block">
-                <p className="text-xl text-emerald-800">
-                  No products found in this category.
-                </p>
-              </div>
-            </motion.div>
-          )}
-        </div>
-      </section>
-
-      {/* Product Benefits */}
-      <section className="py-20 bg-white/60 backdrop-blur-sm border-t border-emerald-200/50">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-4xl mx-auto text-center"
-          >
-            <h2 className="text-4xl font-bold mb-12 text-emerald-800">Why Choose Our Products?</h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[
-                { icon: Shield, title: "100% Natural", desc: "Pure Ayurvedic ingredients with no harmful chemicals" },
-                { icon: Heart, title: "Certified Quality", desc: "All products are tested and certified for safety" },
-                { icon: Zap, title: "Proven Results", desc: "Backed by traditional wisdom and modern research" },
-              ].map((benefit, index) => (
-                <motion.div
-                  key={benefit.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  className="p-6 bg-white/70 backdrop-blur-xl rounded-xl border border-emerald-200/50 shadow-lg ring-1 ring-amber-400/10"
-                >
-                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500/20 to-amber-500/20 mx-auto ring-2 ring-amber-400/20">
-                    <benefit.icon className="h-8 w-8 text-emerald-600" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2 text-emerald-800">{benefit.title}</h3>
-                  <p className="text-emerald-700/70">
-                    {benefit.desc}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white relative overflow-hidden">
-        <motion.div
-          className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-amber-400/20 to-yellow-500/20 rounded-full blur-3xl"
-          animate={{ 
-            scale: [1, 1.2, 1],
-            opacity: [0.2, 0.3, 0.2]
-          }}
-          transition={{ 
-            duration: 8, 
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        ></motion.div>
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Ready to Start Your Wellness Journey?
-            </h2>
-            <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-              Join our community and get access to premium Ayurvedic products with exclusive partner benefits.
-            </p>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white shadow-xl ring-2 ring-amber-300/30 px-8 py-6 text-lg"
+              <Card
+                className="h-full flex flex-col shadow-lg hover:shadow-xl transition cursor-pointer"
+                onClick={() => navigate(`/products/${product.id}`)}
               >
-                Become a Partner
-              </Button>
+                <CardContent className="p-0 flex flex-col h-full">
+                  {/* IMAGE */}
+                  <div className="h-56 bg-white flex items-center justify-center">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="h-full object-contain p-4"
+                    />
+                  </div>
+
+                  <div className="p-4 flex flex-col flex-1">
+                    <Badge className="w-fit mb-2 bg-emerald-100 text-emerald-800">
+                      {product.category}
+                    </Badge>
+
+                    <h3 className="text-lg font-bold mb-1">{product.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      {product.description}
+                    </p>
+
+                    <div className="mt-auto">
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-xl font-bold text-emerald-700">
+                          {formatCurrency(product.price)}
+                        </span>
+                        <Badge className="bg-amber-500 text-white">
+                          <Sparkles className="h-3 w-3 mr-1" />
+                          {product.pv} PV
+                        </Badge>
+                      </div>
+
+                      {/* ADD TO CART */}
+                      <Button
+                        className="w-full bg-gradient-to-r from-emerald-600 to-amber-500 text-white"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAddToCart(product);
+                        }}
+                      >
+                        <ShoppingCart className="h-4 w-4 mr-2" />
+                        Add to Cart
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </motion.div>
-          </motion.div>
+          ))}
         </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 bg-gradient-to-br from-emerald-700 to-emerald-900 text-white text-center">
+        <h2 className="text-4xl font-bold mb-4">
+          Be a Part of the Change. Be a Part of Snaffel.
+        </h2>
+        <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
+          Embrace natural wellness and sustainable living with Snaffel.
+        </p>
+        <Button
+          size="lg"
+          className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white"
+        >
+          Explore More
+          <ArrowRight className="ml-2 h-5 w-5" />
+        </Button>
       </section>
     </div>
   );
