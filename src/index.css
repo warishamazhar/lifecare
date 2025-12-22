@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent horizontal gaps */
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+
 @keyframes shimmer {
   0% {
     transform: translateX(-100%);
