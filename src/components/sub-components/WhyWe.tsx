@@ -46,8 +46,8 @@ const WhyByoteas = () => {
             Why Choose <span className="text-amber-600">Future Life Care?</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Join Maharastra's premier direct selling company and unlock your 
-            potential with our innovative business model
+            We believe success is built on trust, transparency, and purpose. Our platform blends science-backed products with ethical business practices. We empower individuals to grow with confidence and clarity. Every step is designed for long-term stability and sustainable success.
+
           </p>
         </div>
 

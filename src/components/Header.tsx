@@ -16,9 +16,13 @@ const Header = () => {
     { name: "About", path: "/about" },
     { name: "Services", path: "/services" },
     { name: "Products", path: "/products" },
+    { name: "New Arrivals", path: "/new-arrivals" },
+
     { name: "Compensation Plan", path: "/compensation-plan" },
     { name: "Brand", path: "/brand" },
     { name: "Join Now", path: "/join" },
+    { name: "Earning", path: "/earning" },
+
   ];
 
   const userMenuItems = [

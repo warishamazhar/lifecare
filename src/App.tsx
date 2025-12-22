@@ -16,6 +16,10 @@ import DSSearch from "./pages/DSSearch";
 import DEList from "./pages/DEList";
 import Legals from "./pages/Legals";
 import NotFound from "./pages/NotFound";
+import Earning from "./pages/Earning";
+import NewArrivals from "./pages/NewArrivals";
+
+
 
 // User Panel Pages
 import UserLogin from "./pages/user/Login";
@@ -95,6 +99,9 @@ const App = () => (
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
               <Route path="/products" element={<Products />} />
+               <Route path="/earning" element={<Earning />} />
+               <Route path="/new-arrivals" element={<NewArrivals />} />
+
               <Route path="/products/:id" element={<ProductDetail />} />
               <Route path="/compensation-plan" element={<CompensationPlan />} />
               <Route path="/brand" element={<Brand />} />

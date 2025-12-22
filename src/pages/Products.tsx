@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ShoppingCart,
@@ -11,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { useCart } from "@/contexts/CartContext";
 import { motion } from "framer-motion";
-
 
 import cardiodelight from "@/assets/cardiodelight.png";
 import greengold from "@/assets/greengold.png";
@@ -28,7 +26,6 @@ const Products = () => {
   const navigate = useNavigate();
   const { addItem } = useCart();
 
-  // 🔹 STATIC PRODUCTS
   const products = [
     {
       id: "1",
@@ -153,15 +150,30 @@ const Products = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50">
-      {/* HERO */}
-      <section className="py-20 bg-gradient-to-br from-emerald-600 to-emerald-800 text-white text-center">
-        <h1 className="text-5xl font-bold mb-4">Our Products</h1>
-        <p className="text-xl opacity-90">
-          Ayurvedic Wellness • Sustainable Agriculture • Natural Living
-        </p>
+
+      {/* ✅ HERO – ALL CONTENT INSIDE GREEN SECTION */}
+      <section className="py-20 bg-gradient-to-br from-emerald-600 to-emerald-800 text-white">
+        <div className="container mx-auto px-4 text-center max-w-4xl">
+          <h1 className="text-5xl font-bold mb-6">Premium Products</h1>
+
+          <p className="text-xl opacity-90 mb-8">
+            Innovation-driven solutions across wellness, agriculture, and future-ready categories—built on quality, compliance, and long-term value.
+          </p>
+
+          <ul className="space-y-3 text-left text-emerald-50 max-w-3xl mx-auto text-base">
+            <li>• A diversified range of wellness and agriculture products developed with quality and compliance as core priorities</li>
+            <li>• Research-driven formulations focused on consistency, safety, and responsible usage</li>
+            <li>• Products designed to support evolving lifestyle, farming, and sustainability needs</li>
+            <li>• Continuous innovation with future-focused products under development</li>
+          </ul>
+
+          <p className="text-sm opacity-80 mt-8">
+            All offerings are aligned with applicable regulations and company policies.
+          </p>
+        </div>
       </section>
 
-      {/* PRODUCTS */}
+      {/* PRODUCTS GRID */}
       <section className="py-20">
         <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {products.map((product, index) => (
@@ -177,7 +189,6 @@ const Products = () => {
                 onClick={() => navigate(`/products/${product.id}`)}
               >
                 <CardContent className="p-0 flex flex-col h-full">
-                  {/* IMAGE */}
                   <div className="h-56 bg-white flex items-center justify-center">
                     <img
                       src={product.image}
@@ -207,7 +218,6 @@ const Products = () => {
                         </Badge>
                       </div>
 
-                      {/* ADD TO CART */}
                       <Button
                         className="w-full bg-gradient-to-r from-emerald-600 to-amber-500 text-white"
                         onClick={(e) => {

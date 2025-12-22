@@ -96,7 +96,7 @@ const FirstPurchase: React.FC = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-gradient-to-br from-emerald-50/30 via-white to-emerald-50/20 min-h-screen">
+    <div className="p-4 space-y-6 bg-gradient-to-br from-emerald-50/30 via-white to-emerald-50/20 min-h-screen">
       {/* Wallet Balance Banner with Glass Effect */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -118,12 +118,17 @@ const FirstPurchase: React.FC = () => {
           <CardContent className="p-6 relative">
             <div className="flex items-center justify-between">
               <div>
+
+                 <p className="text-white/90 text-sm font-medium mb-1">
+        Available Purchase Wallet Balance
+      </p>
+
                 <p className="text-white/90 text-sm font-medium mb-1">Available Purchase Wallet Balance</p>
                 <motion.p
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="text-3xl font-bold text-white"
+                  className="text-2xl font-bold text-white"
                 >
                   {formatCurrency(walletData.purchaseWallet)}
                 </motion.p>

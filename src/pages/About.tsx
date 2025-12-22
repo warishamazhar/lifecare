@@ -1,18 +1,8 @@
 import { Link } from "react-router-dom";
-import {
-  Target,
-  Eye,
-  Award,
-  Users,
-  Shield,
-  TrendingUp,
-  Leaf,
-  Heart,
-  Sprout,
-  ArrowRight,
-} from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import biotechLogo from "../assets/biotech.jpg";
 
 const About = () => {
   return (
@@ -108,7 +98,7 @@ const About = () => {
           <p className="text-lg leading-relaxed text-muted-foreground mb-6">
             We are more than an organization — we are a movement for transformation.
             Through innovative business models and leadership development, we empower
-            individuals to achieve financial independence and personal mastery.
+            individuals to achieve personal mastery and long-term growth.
           </p>
 
           <p className="text-lg leading-relaxed text-muted-foreground">
@@ -118,8 +108,39 @@ const About = () => {
         </div>
       </section>
 
-      {/* Transforming Journey */}
+      {/* ✅ Team Performance Bonuses (NEW SECTION) */}
       <section className="py-20">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-4xl font-bold mb-8 text-center">
+            Team Performance Bonuses
+          </h2>
+
+          <p className="text-lg leading-relaxed text-muted-foreground mb-6">
+            Team Performance Bonuses are designed to reward consistent effort,
+            teamwork, and overall network productivity. These bonuses are linked
+            to collective performance parameters as defined in the company’s
+            compensation structure.
+          </p>
+
+          <ul className="list-disc pl-6 space-y-3 text-muted-foreground text-lg">
+            <li>Bonuses based on overall team performance and activity</li>
+            <li>Eligibility linked to active participation and business volume generation</li>
+            <li>Rewards aligned with balanced team growth and sustainability</li>
+            <li>Performance evaluated as per predefined company criteria</li>
+            <li>Encourages leadership, mentoring, and long-term team development</li>
+            <li>Bonus structure subject to company policies and periodic updates</li>
+          </ul>
+
+          <p className="text-sm text-muted-foreground mt-8">
+            All bonuses are performance-based and depend on individual effort,
+            team activity, and compliance with company guidelines. No fixed or
+            guaranteed income is assured.
+          </p>
+        </div>
+      </section>
+
+      {/* Transforming Journey */}
+      <section className="py-20 bg-muted">
         <div className="container mx-auto px-4 max-w-5xl">
           <h2 className="text-4xl font-bold mb-8 text-center">
             Our Transforming Journey
@@ -128,7 +149,7 @@ const About = () => {
           <p className="text-lg leading-relaxed text-muted-foreground mb-6">
             From hope to health. From vision to transformation.
             This is not just a business — it is a journey that turns ordinary lives
-            into extraordinary stories of growth, success, and happiness.
+            into stories of growth, learning, and purpose.
           </p>
 
           <p className="text-lg leading-relaxed text-muted-foreground">
@@ -138,7 +159,7 @@ const About = () => {
       </section>
 
       {/* Founder Message */}
-      <section className="py-20 bg-muted">
+      <section className="py-20">
         <div className="container mx-auto px-4 max-w-5xl">
           <h2 className="text-4xl font-bold mb-8 text-center">
             A Message from Our Founder
@@ -152,9 +173,8 @@ const About = () => {
               </p>
 
               <p>
-                Future Life Care & Biotech Pvt. Ltd. is a promise — that no dream is
-                too small, no life is ordinary, and no goal is beyond reach when
-                we walk together.
+                Future Life Care & Biotech Pvt. Ltd. is a promise — that progress
+                comes from consistency, responsibility, and shared growth.
               </p>
 
               <p className="font-semibold text-foreground">
@@ -169,19 +189,28 @@ const About = () => {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 bg-gradient-hero text-primary-foreground text-center">
-        <h2 className="text-4xl md:text-5xl font-bold mb-6">
-          Together, We Grow. Together, We Rise.
-        </h2>
-        <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-          Because the future isn’t something we wait for — the future is something we create.
-        </p>
-        <Button variant="gold" size="lg" asChild>
-          <Link to="/join">
-            Start Your Journey <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
-        </Button>
+      {/* Brand Section */}
+      <section className="py-20 bg-gradient-hero text-primary-foreground">
+        <div className="container mx-auto px-4 max-w-5xl text-center">
+          <div className="mb-8">
+            <img
+              src={biotechLogo}
+              alt="Snaffel Logo"
+              className="mx-auto h-24 object-contain"
+            />
+          </div>
+
+          <h2 className="text-4xl font-bold mb-4">Our Brand: Snaffel</h2>
+          <p className="text-xl font-semibold mb-6 opacity-90">
+            The Power of Nature. The Promise of Care.
+          </p>
+
+          <p className="text-lg leading-relaxed opacity-90">
+            Snaffel represents our commitment to wellness, sustainability,
+            responsibility, and innovation — crafted with care for people,
+            communities, and the environment.
+          </p>
+        </div>
       </section>
     </div>
   );

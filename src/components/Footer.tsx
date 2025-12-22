@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import biotechLogo from "../assets/biotech.jpg";
-
 import {
-  Leaf,
   Mail,
   Phone,
   MapPin,
@@ -17,165 +15,116 @@ const Footer = () => {
 
   return (
     <footer className="bg-foreground text-background">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {/* Company Info */}
+      <div className="container mx-auto px-4 py-14">
+        {/* TOP GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+          
+          {/* COMPANY INFO */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex h-full w-40 items-center justify-center rounded-lg bg-transparent">
-                <img
-  className="self-center h-[8vh] w-auto max-sm:h-[6vh]"
-  src={biotechLogo}
-  alt="Biotech Logo"
-/>
+            <img
+              src={biotechLogo}
+              alt="Future Life Care & Biotech Pvt. Ltd."
+              className="h-14 mb-4"
+            />
 
-              </div>
-              {/* <div className="flex flex-col">
-                <span className="text-lg font-bold">Byooteas  Life</span>
-                <span className="text-xs opacity-80">(OPC) Pvt. Ltd</span>
-              </div> */}
-            </div>
-            {/* <p className="text-sm opacity-80 mb-4">
-              Jharkhand's 1st Direct Selling Company
-            </p> */}
-            <p className="text-sm opacity-80">
-              Committed to providing world-class Ayurvedic wellness products and
-              an unmatched compensation plan.
+            <p className="text-sm opacity-80 leading-relaxed">
+              <strong>Future Life Care & Biotech Pvt. Ltd.</strong> is committed
+              to delivering quality-driven wellness and agriculture solutions,
+              supported by ethical business practices and regulatory compliance.
             </p>
           </div>
 
-          {/* Quick Links */}
+          {/* QUICK LINKS */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  to="/"
-                  className="text-sm opacity-80 hover:opacity-100 hover:text-secondary transition-colors"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/about"
-                  className="text-sm opacity-80 hover:opacity-100 hover:text-secondary transition-colors"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/services"
-                  className="text-sm opacity-80 hover:opacity-100 hover:text-secondary transition-colors"
-                >
-                  Our Services
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/products"
-                  className="text-sm opacity-80 hover:opacity-100 hover:text-secondary transition-colors"
-                >
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/join"
-                  className="text-sm opacity-80 hover:opacity-100 hover:text-secondary transition-colors"
-                >
-                  Join Now
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/ds-search"
-                  className="text-sm opacity-80 hover:opacity-100 hover:text-secondary transition-colors"
-                >
-                  DS Search
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/de-list"
-                  className="text-sm opacity-80 hover:opacity-100 hover:text-secondary transition-colors"
-                >
-                  DE List
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/legals"
-                  className="text-sm opacity-80 hover:opacity-100 hover:text-secondary transition-colors"
-                >
-                  Legal Certificates
-                </Link>
-              </li>
+            <ul className="space-y-2 text-sm">
+              {[
+                { label: "Home", to: "/" },
+                { label: "About Us", to: "/about" },
+                { label: "Our Services", to: "/services" },
+                { label: "Products", to: "/products" },
+                { label: "Join Now", to: "/join" },
+                { label: "DS Search", to: "/ds-search" },
+                { label: "DE List", to: "/de-list" },
+                { label: "Legal Certificates", to: "/legals" },
+              ].map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="opacity-80 hover:opacity-100 hover:text-secondary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* CONTACT INFO */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-2 text-sm opacity-80">
+            <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
+            <ul className="space-y-3 text-sm opacity-80">
+              <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
                 <span>Maharashtra, India</span>
               </li>
-              <li className="flex items-center gap-2 text-sm opacity-80 hover:opacity-100 transition-colors">
+              <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 flex-shrink-0" />
-                <a href="tel:+911234567890">+91 91121 68221</a>
+                <a href="tel:+919112168221" className="hover:underline">
+                  +91 91121 68221
+                </a>
               </li>
-              <li className="flex items-center gap-2 text-sm opacity-80 hover:opacity-100 transition-colors">
+              <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 flex-shrink-0" />
-                <a href="mailto:info@Byooteas life.com">flcbiotech@gmail.com</a>
+                <a
+                  href="mailto:flcbiotech@gmail.com"
+                  className="hover:underline"
+                >
+                  flcbiotech@gmail.com
+                </a>
               </li>
             </ul>
           </div>
 
-          {/* Social Media */}
+          {/* SOCIAL & COMPLIANCE */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
-            <div className="flex gap-3">
-              <a
-                href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 hover:bg-gradient-primary transition-all"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 hover:bg-gradient-primary transition-all"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 hover:bg-gradient-primary transition-all"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a
-                href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 hover:bg-gradient-primary transition-all"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
+            <h3 className="text-lg font-semibold mb-4">Connect With Us</h3>
+
+            <div className="flex gap-3 mb-6">
+              {[
+                { Icon: Facebook, label: "Facebook" },
+                { Icon: Twitter, label: "Twitter" },
+                { Icon: Instagram, label: "Instagram" },
+                { Icon: Linkedin, label: "LinkedIn" },
+              ].map(({ Icon, label }) => (
+                <a
+                  key={label}
+                  href="#"
+                  aria-label={label}
+                  className="flex h-10 w-10 items-center justify-center rounded-lg 
+                             bg-primary/20 hover:bg-gradient-primary transition-all"
+                >
+                  <Icon className="h-5 w-5" />
+                </a>
+              ))}
             </div>
+
+            <p className="text-xs opacity-70 leading-relaxed">
+              All business activities, earnings, and benefits are subject to
+              company policies, applicable laws, and regulatory guidelines.
+              No income or returns are guaranteed.
+            </p>
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* BOTTOM BAR */}
         <div className="border-t border-background/20 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm opacity-80">
             <p>
-              © {currentYear} Future Life Care. All Rights Reserved.
+              © {currentYear} Future Life Care & Biotech Pvt. Ltd.  
+              All Rights Reserved.
             </p>
+
             <div className="flex gap-4">
               <Link
                 to="/privacy"
