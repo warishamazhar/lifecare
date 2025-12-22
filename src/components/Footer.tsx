@@ -1,146 +1,127 @@
 import { Link } from "react-router-dom";
-import biotechLogo from "../assets/biotech.jpg";
 import {
-  Mail,
-  Phone,
-  MapPin,
   Facebook,
-  Twitter,
   Instagram,
-  Linkedin,
+  Youtube,
+  MessageCircle,
 } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-foreground text-background">
-      <div className="container mx-auto px-4 py-14">
+    <footer className="bg-gradient-to-br from-green-900 via-green-800 to-lime-700 text-white">
+      <div className="container mx-auto px-6 py-16">
+
         {/* TOP GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
-          
-          {/* COMPANY INFO */}
-          <div>
-            <img
-              src={biotechLogo}
-              alt="Future Life Care & Biotech Pvt. Ltd."
-              className="h-14 mb-4"
-            />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-10">
 
-            <p className="text-sm opacity-80 leading-relaxed">
-              <strong>Future Life Care & Biotech Pvt. Ltd.</strong> is committed
-              to delivering quality-driven wellness and agriculture solutions,
-              supported by ethical business practices and regulatory compliance.
-            </p>
-          </div>
-
-          {/* QUICK LINKS */}
+          {/* COMPANY */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-sm">
-              {[
-                { label: "Home", to: "/" },
-                { label: "About Us", to: "/about" },
-                { label: "Our Services", to: "/services" },
-                { label: "Products", to: "/products" },
-                { label: "Join Now", to: "/join" },
-                { label: "DS Search", to: "/ds-search" },
-                { label: "DE List", to: "/de-list" },
-                { label: "Legal Certificates", to: "/legals" },
-              ].map((link) => (
-                <li key={link.to}>
-                  <Link
-                    to={link.to}
-                    className="opacity-80 hover:opacity-100 hover:text-secondary transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+            <h4 className="font-semibold mb-4 uppercase tracking-wide text-lime-200">
+              Company
+            </h4>
+            <ul className="space-y-3 text-sm text-white/80">
+              <li><Link to="/about" className="hover:text-lime-200">About Us</Link></li>
+              <li><Link to="/about/vision-mission" className="hover:text-lime-200">Mission & Vision</Link></li>
+              <li><Link to="/about/transforming-journey" className="hover:text-lime-200">Transformation Journey</Link></li>
+              <li><Link to="/careers" className="hover:text-lime-200">Careers</Link></li>
             </ul>
           </div>
 
-          {/* CONTACT INFO */}
+          {/* PRODUCTS */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
-            <ul className="space-y-3 text-sm opacity-80">
-              <li className="flex items-start gap-2">
-                <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span>Maharashtra, India</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4 flex-shrink-0" />
-                <a href="tel:+919112168221" className="hover:underline">
-                  +91 91121 68221
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail className="h-4 w-4 flex-shrink-0" />
-                <a
-                  href="mailto:flcbiotech@gmail.com"
-                  className="hover:underline"
-                >
-                  flcbiotech@gmail.com
-                </a>
-              </li>
+            <h4 className="font-semibold mb-4 uppercase tracking-wide text-lime-200">
+              Products
+            </h4>
+            <ul className="space-y-3 text-sm text-white/80">
+              <li><Link to="/products" className="hover:text-lime-200">Wellness</Link></li>
+              <li><Link to="/products" className="hover:text-lime-200">Agriculture</Link></li>
+              <li><Link to="/products" className="hover:text-lime-200">Empowerment</Link></li>
+              <li><Link to="/products" className="hover:text-lime-200">Other Categories</Link></li>
             </ul>
           </div>
 
-          {/* SOCIAL & COMPLIANCE */}
+          {/* BUSINESS */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Connect With Us</h3>
+            <h4 className="font-semibold mb-4 uppercase tracking-wide text-lime-200">
+              Business
+            </h4>
+            <ul className="space-y-3 text-sm text-white/80">
+              <li><Link to="/business-opportunity" className="hover:text-lime-200">Why Join Us</Link></li>
+              <li><Link to="/success-stories" className="hover:text-lime-200">Success Stories</Link></li>
+              <li><Link to="/training-events" className="hover:text-lime-200">Training & Events</Link></li>
+            </ul>
+          </div>
 
-            <div className="flex gap-3 mb-6">
-              {[
-                { Icon: Facebook, label: "Facebook" },
-                { Icon: Twitter, label: "Twitter" },
-                { Icon: Instagram, label: "Instagram" },
-                { Icon: Linkedin, label: "LinkedIn" },
-              ].map(({ Icon, label }) => (
-                <a
-                  key={label}
-                  href="#"
-                  aria-label={label}
-                  className="flex h-10 w-10 items-center justify-center rounded-lg 
-                             bg-primary/20 hover:bg-gradient-primary transition-all"
-                >
-                  <Icon className="h-5 w-5" />
-                </a>
-              ))}
+          {/* SUPPORT */}
+          <div>
+            <h4 className="font-semibold mb-4 uppercase tracking-wide text-lime-200">
+              Support
+            </h4>
+            <ul className="space-y-3 text-sm text-white/80">
+              <li><Link to="/contact-us" className="hover:text-lime-200">Contact Us</Link></li>
+              <li><Link to="/support" className="hover:text-lime-200">FAQs</Link></li>
+              <li><Link to="/support" className="hover:text-lime-200">Helpdesk</Link></li>
+              <li><Link to="/downloads" className="hover:text-lime-200">Downloads</Link></li>
+            </ul>
+          </div>
+
+          {/* LEGAL */}
+          <div>
+            <h4 className="font-semibold mb-4 uppercase tracking-wide text-lime-200">
+              Legal
+            </h4>
+            <ul className="space-y-3 text-sm text-white/80">
+              <li><Link to="/privacy" className="hover:text-lime-200">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="hover:text-lime-200">Terms & Conditions</Link></li>
+              <li><Link to="/refund-policy" className="hover:text-lime-200">Refund Policy</Link></li>
+              <li><Link to="/disclaimer" className="hover:text-lime-200">Disclaimer</Link></li>
+            </ul>
+          </div>
+
+          {/* CONNECT */}
+          <div>
+            <h4 className="font-semibold mb-4 uppercase tracking-wide text-lime-200">
+              Connect With Us
+            </h4>
+
+            <div className="flex gap-4 mb-6">
+              <a href="#" aria-label="Facebook" className="hover:text-lime-300">
+                <Facebook />
+              </a>
+              <a href="#" aria-label="Instagram" className="hover:text-lime-300">
+                <Instagram />
+              </a>
+              <a href="#" aria-label="YouTube" className="hover:text-lime-300">
+                <Youtube />
+              </a>
+              <a href="#" aria-label="WhatsApp" className="hover:text-lime-300">
+                <MessageCircle />
+              </a>
             </div>
 
-            <p className="text-xs opacity-70 leading-relaxed">
-              All business activities, earnings, and benefits are subject to
-              company policies, applicable laws, and regulatory guidelines.
-              No income or returns are guaranteed.
-            </p>
+            <input
+              type="email"
+              placeholder="Email for Newsletter"
+              className="w-full px-4 py-2 rounded-md text-black mb-3"
+            />
+            <button className="w-full bg-gradient-to-r from-lime-400 to-yellow-400 text-black font-semibold py-2 rounded-md hover:opacity-90">
+              Subscribe
+            </button>
           </div>
+
         </div>
 
         {/* BOTTOM BAR */}
-        <div className="border-t border-background/20 pt-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm opacity-80">
-            <p>
-              © {currentYear} Future Life Care & Biotech Pvt. Ltd.  
-              All Rights Reserved.
-            </p>
-
-            <div className="flex gap-4">
-              <Link
-                to="/privacy"
-                className="hover:opacity-100 transition-opacity"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                to="/terms"
-                className="hover:opacity-100 transition-opacity"
-              >
-                Terms & Conditions
-              </Link>
-            </div>
-          </div>
+        <div className="border-t border-white/20 mt-14 pt-8 text-center text-sm text-white/80">
+          © {currentYear} <strong>Future Life Care</strong>. All Rights Reserved.
+          <p className="mt-2 text-xs text-white/60 max-w-3xl mx-auto">
+            All business activities, earnings, and benefits are subject to company policies,
+            applicable laws, and regulatory guidelines. No income or returns are guaranteed.
+          </p>
         </div>
+
       </div>
     </footer>
   );

@@ -1,103 +1,142 @@
-import React from 'react'
-import {
-  Users,
-  TrendingUp,
-  Sparkles,
-  ArrowRight,
-} from "lucide-react";
-import { Card, CardContent } from '../ui/card';
+import React from "react";
+import { Users, TrendingUp, Sparkles } from "lucide-react";
+import { Card, CardContent } from "../ui/card";
+import biotech from "../../assets/biotech.jpg";
 
 const WhyByoteas = () => {
   const features = [
     {
       icon: TrendingUp,
       title: "Multiple Earning Sources",
-      description: "Earn through multiple channels with our attractive compensation plan",
+      description:
+        "Earn through multiple channels with our attractive compensation plan",
       gradient: "from-blue-500 to-cyan-500",
     },
     {
       icon: Users,
       title: "Team Performance Bonuses",
-      description: "Grow together and earn rewards based on team achievements",
+      description:
+        "Grow together and earn rewards based on team achievements",
       gradient: "from-green-500 to-emerald-500",
     },
     {
       icon: Sparkles,
       title: "Premium Products",
-      description: "Access to world-class Ayurvedic wellness products",
+      description:
+        "Access to world-class Ayurvedic wellness products",
       gradient: "from-purple-500 to-pink-500",
     },
   ];
 
   return (
-    <section className="py-24 bg-gradient-to-br from-slate-50 via-white to-slate-100 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute top-0 left-0 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-      <div className="absolute top-0 right-0 w-72 h-72 bg-yellow-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-      <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-      
+    <section className="relative overflow-hidden py-28 bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      {/* Background Orbs */}
+      <div className="absolute top-0 left-0 w-72 h-72 bg-blue-200 rounded-full blur-3xl opacity-40 animate-blob" />
+      <div className="absolute top-0 right-0 w-72 h-72 bg-green-200 rounded-full blur-3xl opacity-40 animate-blob animation-delay-2000" />
+      <div className="absolute -bottom-10 left-1/3 w-72 h-72 bg-emerald-200 rounded-full blur-3xl opacity-40 animate-blob animation-delay-4000" />
+
       <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-sm font-medium mb-6">
+        {/* Heading */}
+        <div className="text-center mb-20">
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-green-50 border border-green-200 text-green-700 text-sm font-semibold mb-6 shadow-sm">
             <Sparkles className="h-4 w-4" />
             Why Choose Us
           </div>
-          <h2 className="text-5xl font-bold bg-gradient-to-br from-gray-900 to-gray-600 bg-clip-text text-transparent mb-6">
+
+          <h2 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-br from-gray-900 to-gray-600 bg-clip-text text-transparent mb-6">
             Why Choose <span className="text-amber-600">Future Life Care?</span>
           </h2>
+
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             We believe success is built on trust, transparency, and purpose. Our platform blends science-backed products with ethical business practices. We empower individuals to grow with confidence and clarity. Every step is designed for long-term stability and sustainable success.
-
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {/* Feature Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto mb-28">
           {features.map((feature, index) => (
             <Card
               key={index}
-              className="group relative bg-white/70 backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-soft hover:shadow-xl transition-all duration-500 hover:-translate-y-3 overflow-hidden"
+              className="group bg-white/80 backdrop-blur border border-gray-200/60 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-4"
             >
-              {/* Animated Border Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-              
-              <CardContent className="pt-10 pb-8 px-6 relative z-10">
-                <div className="flex flex-col items-center text-center">
-                  {/* Icon Container */}
-                  <div className={`mb-6 relative`}>
-                    <div className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} rounded-2xl blur-lg group-hover:blur-xl transition-all duration-300 opacity-30 group-hover:opacity-50`}></div>
-                    <div className={`relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br ${feature.gradient} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                      <feature.icon className="h-10 w-10 text-white" />
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <h3 className="text-2xl font-bold bg-gradient-to-br from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4 group-hover:scale-105 transition-transform duration-300">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed mb-6 group-hover:text-gray-700 transition-colors duration-300">
-                    {feature.description}
-                  </p>
-
-                  {/* Learn More Link */}
-                  <div className="flex items-center gap-2 text-sm font-medium text-gray-500 group-hover:text-amber-600 transition-colors duration-300 cursor-pointer">
-                    Learn more
-                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+              <CardContent className="pt-12 pb-10 px-8 text-center">
+                <div className="mb-6 relative">
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} rounded-2xl blur-xl opacity-30`}
+                  />
+                  <div
+                    className={`relative mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br ${feature.gradient} shadow-xl`}
+                  >
+                    <feature.icon className="h-10 w-10 text-white" />
                   </div>
                 </div>
-              </CardContent>
 
-              {/* Hover Effect */}
-              <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                  {feature.title}
+                </h3>
+
+                <p className="text-gray-600 leading-relaxed">
+                  {feature.description}
+                </p>
+              </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* CTA Section */}
-        <div className="text-center mt-16">
-          <button className="group relative bg-gradient-to-r from-amber-500 to-orange-600 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95">
-            <div className="absolute inset-0 bg-white/20 rounded-2xl translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500"></div>
-            <span className="relative">Start Your Journey Today</span>
-          </button>
+        {/* BRAND SECTION */}
+        <div className="max-w-6xl mx-auto text-center">
+          {/* Brand Logo */}
+          <img
+            src={biotech}
+            alt="Snaffel Brand Logo"
+            className="mx-auto h-36 md:h-40 mb-10 object-contain drop-shadow-lg"
+          />
+
+          {/* Brand Heading */}
+          <h3 className="text-4xl md:text-5xl font-extrabold mb-12">
+            <span className="text-black">Our Brand: </span>
+            <span className="text-green-600">Snaffel</span>
+          </h3>
+
+          {/* Green Highlight Card */}
+          <div className="rounded-3xl bg-gradient-to-br from-green-600 to-emerald-700 px-8 md:px-14 py-16 shadow-2xl">
+            {/* Main Description (White Text) */}
+            <p className="text-lg md:text-xl text-white leading-relaxed max-w-4xl mx-auto mb-14">
+              Snaffel is more than a brand — it is a movement of purpose,
+              symbolizing our unwavering commitment to empowering individuals
+              to take charge of their health, wellbeing, and future. Rooted in
+              science and inspired by nature, Snaffel represents a harmonious
+              blend of herbal wellness, organic agriculture, and bio-magnetic
+              innovation.
+            </p>
+
+            {/* White Cards Inside Green */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="bg-white rounded-2xl p-6 shadow-lg">
+                <p className="text-gray-700 leading-relaxed font-medium">
+                  Every Snaffel product reflects our core philosophy: to create
+                  healthier lives, sustainable growth, and a better tomorrow
+                  for every individual and every community we touch.
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-6 shadow-lg">
+                <p className="text-gray-700 leading-relaxed font-medium">
+                  Rooted in science and inspired by nature, our solutions are
+                  thoughtfully crafted to nurture the body, enrich the soil,
+                  and elevate the spirit.
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-6 shadow-lg">
+                <p className="text-gray-700 leading-relaxed font-medium">
+                  With Snaffel, we do not just deliver products — we deliver
+                  trust, transformation, and the power to live life to its
+                  fullest.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

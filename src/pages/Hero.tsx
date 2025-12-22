@@ -22,8 +22,8 @@ const Hero = () => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   const stats = [
-    { value: "15,427+", label: "Active Members" },
-    { value: "3,241+", label: "Business Owners" },
+    // { value: "15,427+", label: "Active Members" },
+    // { value: "3,241+", label: "Business Owners" },
     { value: "₹2.5Cr+", label: "Total Earnings" },
     { value: "100%", label: "Natural Products" },
   ];

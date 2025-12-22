@@ -8,7 +8,6 @@ import {
   Zap,
   ShieldCheck,
   Activity,
-  Droplets,
   Sprout,
   Apple,
   Sparkles,
@@ -26,7 +25,6 @@ import FruitingFormulation from "../../assets/FruitingFormulation.png";
 import GreenBioShield from "../../assets/GreenBioShield.png";
 import SoilSolution from "../../assets/SoilSolution.png";
 import Staminex from "../../assets/Staminex.png";
-
 
 interface Slide {
   id: number;
@@ -187,7 +185,7 @@ const HeroSlider = () => {
   }, [isAutoPlaying, slides.length]);
 
   return (
-    <div className="relative w-full h-[75vh] min-h-[550px] overflow-hidden rounded-b-2xl shadow-2xl max-sm:h-[90vh]">
+    <div className="relative w-full h-[48vh] min-h-[320px] overflow-hidden shadow-2xl max-sm:h-[70vh]">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
@@ -234,6 +232,7 @@ const HeroSlider = () => {
         </motion.div>
       </AnimatePresence>
 
+      {/* Controls */}
       <button
         onClick={() =>
           setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)

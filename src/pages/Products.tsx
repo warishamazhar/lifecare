@@ -151,28 +151,6 @@ const Products = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-emerald-50">
 
-      {/* ✅ HERO – ALL CONTENT INSIDE GREEN SECTION */}
-      <section className="py-20 bg-gradient-to-br from-emerald-600 to-emerald-800 text-white">
-        <div className="container mx-auto px-4 text-center max-w-4xl">
-          <h1 className="text-5xl font-bold mb-6">Premium Products</h1>
-
-          <p className="text-xl opacity-90 mb-8">
-            Innovation-driven solutions across wellness, agriculture, and future-ready categories—built on quality, compliance, and long-term value.
-          </p>
-
-          <ul className="space-y-3 text-left text-emerald-50 max-w-3xl mx-auto text-base">
-            <li>• A diversified range of wellness and agriculture products developed with quality and compliance as core priorities</li>
-            <li>• Research-driven formulations focused on consistency, safety, and responsible usage</li>
-            <li>• Products designed to support evolving lifestyle, farming, and sustainability needs</li>
-            <li>• Continuous innovation with future-focused products under development</li>
-          </ul>
-
-          <p className="text-sm opacity-80 mt-8">
-            All offerings are aligned with applicable regulations and company policies.
-          </p>
-        </div>
-      </section>
-
       {/* PRODUCTS GRID */}
       <section className="py-20">
         <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">

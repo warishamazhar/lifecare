@@ -115,7 +115,7 @@ const FirstPurchase: React.FC = () => {
               ease: "easeInOut"
             }}
           ></motion.div>
-          <CardContent className="p-6 relative">
+          <CardContent className="p-2 relative">
             <div className="flex items-center justify-between">
               <div>
 
@@ -128,7 +128,7 @@ const FirstPurchase: React.FC = () => {
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="text-2xl font-bold text-white"
+                  className="text-lg font-bold text-white"
                 >
                   {formatCurrency(walletData.purchaseWallet)}
                 </motion.p>
@@ -139,7 +139,7 @@ const FirstPurchase: React.FC = () => {
                   whileTap={{ scale: 0.95 }}
                   className="flex items-center space-x-2"
                 >
-                  <AlertCircle className="h-5 w-5 text-amber-300" />
+                  <AlertCircle className="h-4 w-4 text-amber-300" />
                   <Button 
                     size="sm" 
                     variant="secondary"
@@ -232,7 +232,7 @@ const FirstPurchase: React.FC = () => {
                           </div>
                         )}
 
-                        {/* Popular Badge for first 3 products */}
+              
                         {index < 3 && (
                           <div className="absolute top-4 left-4 z-20">
                             <Badge className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg ring-1 ring-emerald-300/30">
@@ -242,7 +242,7 @@ const FirstPurchase: React.FC = () => {
                           </div>
                         )}
 
-                        {/* Stock Badge */}
+                        
                         {!product.inStock && (
                           <div className="absolute top-4 left-4 z-20">
                             <Badge className="bg-red-500/90 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm">
@@ -252,7 +252,7 @@ const FirstPurchase: React.FC = () => {
                         )}
 
                         <CardContent className="p-0">
-                          {/* Product Image */}
+                    
                           <div className="relative h-56 bg-gradient-to-br from-emerald-50/70 to-amber-50/50 overflow-hidden flex-shrink-0">
                             {product.images && product.images.length > 0 ? (
                               <motion.img
