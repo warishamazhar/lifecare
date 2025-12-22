@@ -29,7 +29,7 @@ const Hero = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    <div className="min-h-screen bg-black relative overflow-x-hidden">
       {/* Background Video */}
       <div className="absolute inset-0 z-0">
         <video
@@ -37,7 +37,7 @@ const Hero = () => {
           muted
           loop
           playsInline
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
           poster="/api/placeholder/1920/1080"
         >
           <source
@@ -50,12 +50,14 @@ const Hero = () => {
           />
         </video>
         {/* Video Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/100  via-black/80 to-transparent" />
+       <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-black/90 via-black/70 to-transparent" />
+
       </div>
 
       {/* Main Content */}
       <div className="relative z-10 container mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80vh]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[80vh] max-w-7xl mx-auto">
+
           {/* Left Column - Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}

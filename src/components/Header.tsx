@@ -17,10 +17,11 @@ const Header = () => {
     { name: "Our Products", path: "/our-products" },
     { name: "Business Opportunity", path: "/business-opportunity" },
     { name: "Gallery", path: "/gallery" },
+    
     { name: "Downloads", path: "/downloads" },
     { name: "Support", path: "/support" },
-    { name: "Contact Us", path: "/contact-us" },
     { name: "Join Now", path: "/join" },
+     { name: "Contact Us", path: "/contact-us" },
   ];
 
   const aboutSubMenu = [

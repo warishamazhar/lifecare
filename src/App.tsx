@@ -11,9 +11,9 @@ import Layout from "./components/Layout";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { CartProvider } from "./contexts/CartContext";
 
-/* =======================
+/* 
    MAIN PUBLIC PAGES
-======================= */
+*/
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Products from "./pages/Products";
@@ -24,9 +24,9 @@ import Earning from "./pages/Earning";
 import Legals from "./pages/Legals";
 import NotFound from "./pages/NotFound";
 
-/* =======================
+/* 
    ABOUT SUB PAGES
-======================= */
+*/
 import CompanyOverview from "./pages/about/CompanyOverview";
 import VisionMission from "./pages/about/VisionMission";
 import Philosophy from "./pages/about/Philosophy";
@@ -34,9 +34,9 @@ import LegalCompliance from "./pages/about/LegalCompliance";
 import CeoMessage from "./pages/about/CeoMessage";
 import TransformingJourney from "./pages/about/TransformingJourney";
 
-/* =======================
+/* 
    HEADER PAGES
-======================= */
+ */
 import OurJourney from "./pages/OurJourney";
 import OurProducts from "./pages/OurProducts";
 import BusinessOpportunity from "./pages/BusinessOpportunity";
