@@ -17,7 +17,7 @@ const Header = () => {
     { name: "Gallery", path: "/gallery" },
     { name: "Downloads", path: "/downloads" },
     { name: "Support", path: "/support" },
-    { name: "Join Now", path: "/join" },
+    // { name: "Join Now", path: "/join" },
     { name: "Contact Us", path: "/contact-us" },
   ];
 
@@ -65,7 +65,8 @@ const Header = () => {
               <span className="cursor-pointer text-sm font-medium hover:text-primary">
                 About
               </span>
-              <div className="absolute left-0 top-full mt-3 w-64 rounded-lg bg-white shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-50">
+              <div className="absolute left-0 top-full w-64 rounded-lg bg-white shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-50">
+
                 {aboutSubMenu.map((item) => (
                   <Link
                     key={item.path}
@@ -83,7 +84,8 @@ const Header = () => {
               <span className="cursor-pointer text-sm font-medium hover:text-primary">
                 Products
               </span>
-              <div className="absolute left-0 top-full mt-3 w-56 rounded-xl bg-white shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-50">
+             <div className="absolute left-0 top-full w-56 rounded-xl bg-white shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition z-50">
+
 
                 <Link to="/our-products" className="block px-6 py-3 text-sm hover:bg-gray-100">
                   Wellness Products

@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 // import biotechLogo from "../assets/biotech.jpg";
-import snaffel from "../assets/snaffel1.png";
+// import snaffel from "../assets/snaffel1.png";
 
 
 const About = () => {
@@ -196,7 +196,7 @@ const About = () => {
         <div className="container mx-auto px-4 max-w-5xl text-center">
           <div className="mb-8">
             <img
-              src={snaffel}
+               src="/snaffel1.png"
               alt="Snaffel Logo"
               className="mx-auto h-24 object-contain"
             />

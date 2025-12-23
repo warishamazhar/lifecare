@@ -2,7 +2,7 @@ import React from "react";
 import { Users, TrendingUp, Sparkles, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "../ui/card";
 import { useNavigate } from "react-router-dom";
-import snaffel from "../../assets/snaffel1.png";
+// import snaffel from "../../assets/snaffel1.png";
 
 const WhyByoteas = () => {
   const navigate = useNavigate();
@@ -102,7 +102,7 @@ const WhyByoteas = () => {
           <div className="flex justify-center mb-8">
   <div className="flex justify-center mb-4 -mt-4">
   <img
-    src={snaffel}
+    src="/snaffel1.png"
     alt="Snaffel Logo"
     className="h-36 md:h-40 lg:h-44 object-contain transition-transform duration-300 ease-out hover:scale-110 hover:drop-shadow-2xl"
   />

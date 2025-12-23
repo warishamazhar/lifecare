@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import snaffelLogo from "../assets/snaffel1.png";
+// import snaffelLogo from "../assets/snaffel1.png";
 
 import {
   Users,
@@ -136,13 +136,14 @@ const Hero = () => {
 
               {/* Card Content */}
               <div className="text-center space-y-6">
-                <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center">
+                <div className="mx-auto">
   <img
-    src={snaffelLogo}
+    src="/snaffel.png"
     alt="Snaffel Logo"
-    className="w-14 h-14 object-contain"
+    className="w-40 md:w-48 lg:w-56 mx-auto object-contain drop-shadow-lg"
   />
 </div>
+
 
 
                 <h3 className="text-3xl font-bold text-white">

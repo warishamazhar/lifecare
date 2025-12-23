@@ -7,8 +7,8 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import biotechLogo from "../assets/biotech.jpg";
-import snaffel from "../assets/snaffel1.png";
+//import biotechLogo from "../assets/biotech.jpg";
+// import snaffel from "../assets/snaffel1.png";
 
 const Brand = () => {
   const brandPillars = [
@@ -156,14 +156,29 @@ const Brand = () => {
         </div>
       </section>
 
-      {/* ✅ BRAND SECTION (REPLACEMENT) */}
       <section className="py-24 bg-gradient-to-br from-green-600 via-emerald-600 to-green-700 text-white">
         <div className="container mx-auto px-4 max-w-5xl text-center">
-          <img
-            src={snaffel}
-            alt="Snaffel Logo"
-            className="mx-auto h-24 object-contain mb-8"
-          />
+         <img
+  src="/snaffel1.png"
+  alt="Snaffel Logo"
+  className="
+    mx-auto
+    block
+    max-w-none
+    h-[210px]
+    w-auto
+    object-contain
+    scale-[1.2]
+    md:scale-[1.35]
+    lg:scale-[1.45]
+    mb-12
+  "
+/>
+
+
+
+
+
 
           <h2 className="text-4xl font-bold mb-4">Our Brand: Snaffel</h2>
           <p className="text-xl font-semibold mb-6 opacity-90">
