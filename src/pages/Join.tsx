@@ -175,7 +175,8 @@ const Join = () => {
               className="bg-primary-foreground/10 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
               asChild
             >
-              <Link to="/services">Explore Snaffel Products</Link>
+              <Link to="/">Explore Snaffel Products</Link>
+
             </Button>
           </div>
         </div>

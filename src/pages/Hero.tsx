@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import snaffelLogo from "../assets/snaffel1.png";
+
 import {
   Users,
   TrendingUp,
@@ -17,7 +19,7 @@ const Hero = () => {
   const [isVideoPlaying] = useState(false);
 
   const stats = [
-    { value: "₹2.5Cr+", label: "Total Earnings" },
+    // { value: "₹2.5Cr+", label: "Total Earnings" },
     { value: "100%", label: "Natural Products" },
   ];
 
@@ -135,36 +137,41 @@ const Hero = () => {
               {/* Card Content */}
               <div className="text-center space-y-6">
                 <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-green-500 flex items-center justify-center">
-                  <Leaf className="w-12 h-12 text-white" />
-                </div>
+  <img
+    src={snaffelLogo}
+    alt="Snaffel Logo"
+    className="w-14 h-14 object-contain"
+  />
+</div>
+
 
                 <h3 className="text-3xl font-bold text-white">
-                  Your Business Journey
+                  Our Brand Snaffel
                 </h3>
 
                 <p className="text-emerald-200 text-lg">
-                  Join India's fastest growing community of entrepreneurs. Start
-                  with zero investment and build your empire.
+                  Snaffel is more than a brand — it’s a purpose-driven movement.
+Rooted in science and nature, empowering health, wellness, and a better future.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                  <button className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold rounded-full flex items-center justify-center gap-3 hover:scale-105 transition">
-                    Start Your Business Today
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
+                  <button className="mx-auto px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold rounded-full flex items-center justify-center hover:scale-105 transition">
+  Start Your Business Today
+</button>
 
-                  <button
+
+                  {/* <button
                     onClick={() => navigate("/business-plan")}
                     className="px-8 py-4 border-2 border-emerald-400 text-emerald-300 rounded-full hover:bg-emerald-400/10 transition"
                   >
                     View Business Plan
-                  </button>
+                  </button> */}
                 </div>
 
                 <div className="pt-6 border-t border-emerald-500/20">
-                  <div className="inline-flex px-6 py-3 rounded-full bg-black/30 border border-emerald-500/30 text-white">
+                  {/* <div className="inline-flex px-6 py-3 rounded-full bg-black/30 border border-emerald-500/30 text-white">
                     🌐 flcbiotech.com
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

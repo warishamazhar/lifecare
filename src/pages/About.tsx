@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import biotechLogo from "../assets/biotech.jpg";
+// import biotechLogo from "../assets/biotech.jpg";
+import snaffel from "../assets/snaffel1.png";
+
 
 const About = () => {
   return (
@@ -194,7 +196,7 @@ const About = () => {
         <div className="container mx-auto px-4 max-w-5xl text-center">
           <div className="mb-8">
             <img
-              src={biotechLogo}
+              src={snaffel}
               alt="Snaffel Logo"
               className="mx-auto h-24 object-contain"
             />

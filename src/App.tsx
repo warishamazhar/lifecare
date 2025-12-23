@@ -6,10 +6,17 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MultipleEarningSources from "./pages/MultipleEarningSources";
 import TeamPerformanceBonuses from "./pages/TeamPerformanceBonuses";
 
-
+import Brand from "./pages/Brand";
 import Layout from "./components/Layout";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { CartProvider } from "./contexts/CartContext";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
+import RefundPolicy from "./pages/RefundPolicy";
+import Disclaimer from "./pages/Disclaimer";
+
+
+
 
 /* 
    MAIN PUBLIC PAGES
@@ -171,12 +178,20 @@ const App = () => (
                 {/* Products */}
                 <Route path="/products" element={<Products />} />
                 <Route path="/products/:id" element={<ProductDetail />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsConditions />} />
+                <Route path="/refund-policy" element={<RefundPolicy />} />
+<Route path="/disclaimer" element={<Disclaimer />} />
+
+
+
 
                 {/* Others */}
                 <Route path="/earning" element={<Earning />} />
                 <Route path="/compensation-plan" element={<CompensationPlan />} />
                 <Route path="/join" element={<Join />} />
                 <Route path="/legals" element={<Legals />} />
+                <Route path="/brand" element={<Brand />} />
               </Route>
 
               {/* AUTH */}

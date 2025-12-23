@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import biotechLogo from "../assets/biotech.jpg";
+import snaffel from "../assets/snaffel1.png";
 
 const Brand = () => {
   const brandPillars = [
@@ -50,7 +51,7 @@ const Brand = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="w-full">
       {/* Hero Section */}
       <section className="bg-gradient-primary text-primary-foreground py-20">
         <div className="container mx-auto px-4">
@@ -156,10 +157,10 @@ const Brand = () => {
       </section>
 
       {/* ✅ BRAND SECTION (REPLACEMENT) */}
-      <section className="py-24 bg-gradient-hero text-primary-foreground">
+      <section className="py-24 bg-gradient-to-br from-green-600 via-emerald-600 to-green-700 text-white">
         <div className="container mx-auto px-4 max-w-5xl text-center">
           <img
-            src={biotechLogo}
+            src={snaffel}
             alt="Snaffel Logo"
             className="mx-auto h-24 object-contain mb-8"
           />

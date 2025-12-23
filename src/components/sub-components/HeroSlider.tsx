@@ -196,9 +196,10 @@ const HeroSlider = () => {
           className={`absolute inset-0 bg-gradient-to-br ${slides[currentSlide].bgColor}`}
         >
           <div
-            className="absolute inset-0 bg-contain bg-center bg-no-repeat"
-            style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
-          />
+  className="absolute inset-0 bg-contain bg-right bg-no-repeat opacity-80"
+  style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
+/>
+
           <div className="absolute inset-0 bg-black/60" />
 
           <div className="relative h-full flex items-center">
