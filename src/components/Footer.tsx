@@ -25,7 +25,7 @@ const Footer = () => {
               <li><Link to="/about" className="hover:text-lime-200">About Us</Link></li>
               <li><Link to="/about/vision-mission" className="hover:text-lime-200">Mission & Vision</Link></li>
               <li><Link to="/about/transforming-journey" className="hover:text-lime-200">Transformation Journey</Link></li>
-              <li><Link to="/disclaimer">Careers</Link></li>
+              <li><Link to="/disclaimer" className="hover:text-lime-200">Careers</Link></li>
             </ul>
           </div>
 
@@ -48,9 +48,8 @@ const Footer = () => {
               Business
             </h4>
             <ul className="space-y-3 text-sm text-white/80">
-              <li><Link to="/business-opportunity" className="hover:text-lime-200">Why Join Us</Link></li>
-              <li><Link to="/disclaimer">Success Stories</Link></li>
-              <li><Link to="/disclaimer">Training & Events</Link></li>
+              <li><Link to="/disclaimer" className="hover:text-lime-200">Success Stories</Link></li>
+              <li><Link to="/disclaimer" className="hover:text-lime-200">Training & Events</Link></li>
             </ul>
           </div>
 
@@ -63,7 +62,6 @@ const Footer = () => {
               <li><Link to="/contact-us" className="hover:text-lime-200">Contact Us</Link></li>
               <li><Link to="/support" className="hover:text-lime-200">FAQs</Link></li>
               <li><Link to="/support" className="hover:text-lime-200">Helpdesk</Link></li>
-              <li><Link to="/downloads" className="hover:text-lime-200">Downloads</Link></li>
             </ul>
           </div>
 
@@ -73,10 +71,7 @@ const Footer = () => {
               Legal
             </h4>
             <ul className="space-y-3 text-sm text-white/80">
-              <li><Link to="/privacy-policy" className="hover:text-lime-200">
-  Privacy Policy
-</Link>
-</li>
+              <li><Link to="/privacy-policy" className="hover:text-lime-200">Privacy Policy</Link></li>
               <li><Link to="/terms" className="hover:text-lime-200">Terms & Conditions</Link></li>
               <li><Link to="/refund-policy" className="hover:text-lime-200">Refund Policy</Link></li>
               <li><Link to="/disclaimer" className="hover:text-lime-200">Disclaimer</Link></li>

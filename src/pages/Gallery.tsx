@@ -63,20 +63,20 @@ const Gallery = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {shorts.map((short) => (
           <div
             key={short.id}
             className="rounded-xl overflow-hidden shadow-lg bg-background"
           >
             {/* Video */}
-            <div className="aspect-[9/16] w-full">
+            <div className="aspect-[9/16] w-full max-h-[360px] mx-auto">
               <iframe
                 src={short.embed}
                 title={short.title}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                className="w-full h-full"
+                className="w-full h-full rounded-lg"
               />
             </div>
 

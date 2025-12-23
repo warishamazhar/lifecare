@@ -14,7 +14,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import RefundPolicy from "./pages/RefundPolicy";
 import Disclaimer from "./pages/Disclaimer";
-
+import ComingSoon from "./pages/ComingSoon";
 
 
 
@@ -166,6 +166,8 @@ const App = () => (
                 {/* Header Pages */}
                 <Route path="/our-journey" element={<OurJourney />} />
                 <Route path="/our-products" element={<OurProducts />} />
+                <Route path="/coming-soon" element={<ComingSoon />} />
+
                 <Route path="/business-opportunity" element={<BusinessOpportunity />} />
                 <Route path="/multiple-earning-sources" element={<MultipleEarningSources />} />
 <Route path="/team-performance-bonuses" element={<TeamPerformanceBonuses />} />
@@ -177,6 +179,8 @@ const App = () => (
 
                 {/* Products */}
                 <Route path="/products" element={<Products />} />
+                
+
                 <Route path="/products/:id" element={<ProductDetail />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms" element={<TermsConditions />} />

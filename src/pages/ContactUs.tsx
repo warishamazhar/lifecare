@@ -2,7 +2,7 @@ import { Mail, Phone, MapPin, User, MessageSquare } from "lucide-react";
 
 const ContactUs = () => {
   const handleSubmit = (e) => {
-    e.preventDefault(); // prevents error / page reload
+    e.preventDefault();
     alert("Message sent successfully!");
   };
 
@@ -75,20 +75,27 @@ const ContactUs = () => {
         </form>
 
         {/* Contact Info */}
-        <div className="mt-10 border-t pt-6 grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm text-gray-600">
-          <div className="flex items-start gap-3">
-            <MapPin className="h-5 w-5 text-green-700" />
-            <span>Maharashtra, India</span>
-          </div>
+        <div className="mt-10 border-t pt-6 space-y-4 text-sm text-gray-600">
 
           <div className="flex items-start gap-3">
+            <MapPin className="h-5 w-5 text-green-700 mt-1" />
+            <span>
+              <strong>Corporate Office:</strong><br />
+              A77, 1st Floor, Rashtrakuta, Empire Industrial Hub,<br />
+              Plot No. 22, Chikhloli MIDC, K.B. Road,<br />
+              Ambernath (West), Pin: 421505,<br />
+              Dist: Thane, Maharashtra.
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
             <Phone className="h-5 w-5 text-green-700" />
             <a href="tel:+919112168221" className="hover:underline">
               +91 91121 68221
             </a>
           </div>
 
-          <div className="flex items-start gap-3">
+          <div className="flex items-center gap-3">
             <Mail className="h-5 w-5 text-green-700" />
             <a href="mailto:flcbiotech@gmail.com" className="hover:underline">
               flcbiotech@gmail.com
